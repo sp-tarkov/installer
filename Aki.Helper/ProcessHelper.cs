@@ -6,7 +6,7 @@ using System.Threading;
 using System.IO;
 using System.Diagnostics;
 
-namespace Installer.Aki.Helper
+namespace SPT_AKI_Installer.Aki.Helper
 {
     public class ProcessHelper
     {

@@ -1,12 +1,13 @@
-﻿using System;
+﻿using SPT_AKI_Installer.Aki.Core;
+using System;
 using System.IO;
 
-namespace Installer.Aki.Helper
+namespace SPT_AKI_Installer.Aki.Helper
 {
     public static class FileHelper
     {
         /// <summary>
-        /// CopyDirectory will use old path and copy to new path and 
+        /// CopyDirectory will use old path and copy to new path and
         /// asks if inner files/folders should be included
         /// </summary>
         /// <exception cref="DirectoryNotFoundException"></exception>
@@ -23,7 +24,6 @@ namespace Installer.Aki.Helper
 
             foreach (FileInfo file in dir.GetFiles())
             {
-                Console.WriteLine(file.FullName);
                 string targetFilePath = Path.Combine(newDir, file.Name);
                 file.CopyTo(targetFilePath, true);
             }
@@ -39,7 +39,7 @@ namespace Installer.Aki.Helper
         }
 
         /// <summary>
-        /// DeleteFiles will use a type to look for, the path 
+        /// DeleteFiles will use a type to look for, the path
         /// and if all inner files/folders should be included
         /// </summary>
         /// <remarks>
@@ -88,7 +88,7 @@ namespace Installer.Aki.Helper
         {
             var patchInfo = new FileInfo(patchRef);
             var patchName = patchInfo.Name.Replace(patchInfo.Extension, "");
-            var path = new DirectoryInfo(Path.Join(Environment.CurrentDirectory, patchName));
+            var path = new DirectoryInfo(Path.Join(SPTinstaller.targetPath, patchName));
             if (path.Exists)
             {
                 dir = path;

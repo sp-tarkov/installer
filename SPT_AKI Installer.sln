@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SPT-AKI Installer", "SPT-AKI Installer.csproj", "{7B07749A-3BE8-41B5-9B98-9F41C83FA15B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SPT_AKI Installer", "SPT_AKI Installer.csproj", "{7B07749A-3BE8-41B5-9B98-9F41C83FA15B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

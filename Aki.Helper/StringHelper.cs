@@ -1,4 +1,4 @@
-﻿namespace Installer.Aki.Helper
+﻿namespace SPT_AKI_Installer.Aki.Helper
 {
     public static class StringHelper
     {

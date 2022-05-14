@@ -1,19 +1,22 @@
 ﻿using System;
+using Spectre.Console;
 
-namespace Installer.Aki.Helper
+namespace SPT_AKI_Installer.Aki.Helper
 {
     public static class LogHelper
     {
+        private static void Log(string tag, string message, string foreground, string background = "black")
+        {
+            AnsiConsole.MarkupLine($"[{foreground} on {background}][[{tag}]]: {message.EscapeMarkup()}[/]");
+        }
+
         /// <summary>
         /// Outputs a string to console starting with [USER] with
         /// a Green background and Black foreground
         /// </summary>
         public static void User(string text)
         {
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine($"[USER]: {text}");
-            Console.ResetColor();
+            Log("USER", text, "green");
         }
 
         /// <summary>
@@ -22,10 +25,7 @@ namespace Installer.Aki.Helper
         /// </summary>
         public static void Warning(string text)
         {
-            Console.BackgroundColor = ConsoleColor.Yellow;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine($"[WARNING]: {text}");
-            Console.ResetColor();
+            Log("WARNING", text, "yellow");
         }
 
         /// <summary>
@@ -34,10 +34,7 @@ namespace Installer.Aki.Helper
         /// </summary>
         public static void Error(string text)
         {
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine($"[ERROR]: {text}");
-            Console.ResetColor();
+            Log("ERROR", text, "red");
         }
 
         /// <summary>
@@ -46,10 +43,7 @@ namespace Installer.Aki.Helper
         /// </summary>
         public static void Info(string text)
         {
-            Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine($"[INFO]: {text}");
-            Console.ResetColor();
+            Log("INFO", text, "blue");
         }
     }
 }

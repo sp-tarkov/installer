@@ -2,22 +2,32 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
-using Installer.Aki.Helper;
+using SPT_AKI_Installer.Aki.Helper;
+using Spectre.Console;
 
-namespace Installer.Aki.Core
+namespace SPT_AKI_Installer.Aki.Core
 {
     //TODO:
     // delete patcher zip and aki zip
+    // progress for copyDirectory
+    // move Game/patcher/aki check methods out of core
+    // add figlet for SPT-AKI INSTALLER
+    // locales, language selection
 
     public static class SPTinstaller
     {
+        public static string targetPath = Environment.CurrentDirectory;
         private static string patchRef;
         private static string akiRef;
         private static DirectoryInfo dir;
+        private static string gamePath;
 
         static void Main(string[] args)
         {
-            string gamePath = GameHelper.DetectOriginalGamePath();
+#if DEBUG
+            targetPath = @"D:\install";
+#endif
+            GameCheck(out gamePath);
 
             if (PatcherCheck(gamePath, out patchRef))
             {
@@ -48,14 +58,16 @@ namespace Installer.Aki.Core
             Console.ReadKey();
 
             // copies and pastes EFT to AKI installer test folder
-            FileHelper.CopyDirectory(gamePath, Environment.CurrentDirectory, true);
+#if !DEBUG
+            FileHelper.CopyDirectory(gamePath, targetPath, true);
             LogHelper.User("GAME HAS BEEN COPIED, PRESS ENTER TO EXTRACT PATCHER!");
             Console.ReadKey();
+#endif
 
             // extracts patcher and moves out inner folders
-            ZipHelper.Decompress(patchRef, Environment.CurrentDirectory);
+            ZipHelper.Decompress(patchRef, targetPath);
             FileHelper.FindFolder(patchRef, out dir);
-            FileHelper.CopyDirectory(dir.FullName, Environment.CurrentDirectory, true);
+            FileHelper.CopyDirectory(dir.FullName, targetPath, true);
             if (dir.Exists)
             {
                 dir.Delete(true);
@@ -68,9 +80,9 @@ namespace Installer.Aki.Core
             }
 
             // starts patcher and checks for user input to exit patcher and proceed
-            LogHelper.User("PATCHER HAS BEEN EXTRACTED, STARTING PATCHER!");
-            ProcessHelper patcherProcess = new ProcessHelper();
-            patcherProcess.StartProcess(Path.Join(Environment.CurrentDirectory + "/patcher.exe"), Environment.CurrentDirectory);
+            LogHelper.Info("PATCHER HAS BEEN EXTRACTED, STARTING PATCHER!");
+            ProcessHelper patcherProcess = new();
+            patcherProcess.StartProcess(Path.Join(targetPath + "/patcher.exe"), targetPath);
             LogHelper.User("PATCHER HAS BEEN STARTED, TYPE YES ONCE THE PATCHER IS COMPLETE!");
             var complete = Console.ReadLine();
 
@@ -87,20 +99,44 @@ namespace Installer.Aki.Core
             {
                 patcherProcess.EndProcess();
                 Thread.Sleep(1000);
-                FileHelper.DeleteFile("file", Environment.CurrentDirectory + "/patcher.exe");
-                ZipHelper.Decompress(akiRef, Environment.CurrentDirectory);
+                FileHelper.DeleteFile("file", targetPath + "/patcher.exe");
+                ZipHelper.Decompress(akiRef, targetPath);
                 LogHelper.Info("AKI HAS BEEN EXTRACTED, RUN THE SERVER AND WAIT TILL YOU SEE HAPPY SERVER THEN LAUNCHER AND ENJOY!");
                 LogHelper.User("PRESS ENTER TO CLOSE THE APP");
                 Console.ReadKey();
             }
         }
 
+        /// <summary>
+        /// checks the game is installed, out = game directory
+        /// </summary>
+        /// <param name="gamePath"></param>
+        private static void GameCheck(out string gamePath)
+        {
+            string Path = GameHelper.DetectOriginalGamePath();
+
+            if (Path == null)
+            {
+                LogHelper.Error("EFT IS NOT INSTALLED!");
+                LogHelper.Error("Press enter to close the app");
+                Console.ReadKey();
+                Environment.Exit(0);
+            }
+            gamePath = Path;
+        }
+
+        /// <summary>
+        /// checks for patcher zip path, out = patcher path
+        /// </summary>
+        /// <param name="gamePath"></param>
+        /// <param name="patchRef"></param>
+        /// <returns>bool</returns>
         private static bool PatcherCheck(string gamePath, out string patchRef)
         {
             FileVersionInfo version = FileVersionInfo.GetVersionInfo(Path.Join(gamePath + "/EscapeFromTarkov.exe"));
             string versionCheck = StringHelper.Splitter(version.ProductVersion, '-', '.', 2);
             LogHelper.Info($"GAME VERSION IS: {version.ProductVersion}");
-            string patcherRef = FileHelper.FindFile(Environment.CurrentDirectory, versionCheck);
+            string patcherRef = FileHelper.FindFile(targetPath, versionCheck);
 
             if (patcherRef != null)
             {
@@ -111,9 +147,14 @@ namespace Installer.Aki.Core
             return false;
         }
 
+        /// <summary>
+        /// checks for aki zip path, out = aki path
+        /// </summary>
+        /// <param name="akiRef"></param>
+        /// <returns>bool</returns>
         private static bool AkiCheck(out string akiRef)
         {
-            string aki = FileHelper.FindFile(Environment.CurrentDirectory, "2.3.1");
+            string aki = FileHelper.FindFile(targetPath, "2.3.1");
 
             if (aki != null)
             {
