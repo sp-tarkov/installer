@@ -1,16 +1,90 @@
 ﻿using System;
 using System.IO;
+using Spectre.Console;
+using System.Threading;
 
 namespace SPT_AKI_Installer.Aki.Helper
 {
     public static class FileHelper
     {
+        public static int totalFiles;
         /// <summary>
         /// CopyDirectory will use old path and copy to new path and
         /// asks if inner files/folders should be included
         /// </summary>
         /// <exception cref="DirectoryNotFoundException"></exception>
         public static void CopyDirectory(string oldDir, string newDir, bool recursive)
+        {
+            AnsiConsole.Progress().Columns(
+            new TaskDescriptionColumn(),
+            new SpinnerColumn(),
+            new ElapsedTimeColumn()
+            ).Start((ProgressContext context) =>
+            {
+                var dir = new DirectoryInfo(oldDir);
+
+                if (!dir.Exists)
+                    throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
+
+                DirectoryInfo[] dirs = dir.GetDirectories();
+
+                foreach (FileInfo f in dir.GetFiles())
+                {
+                    totalFiles++;
+                }
+                foreach (DirectoryInfo subD in dirs)
+                {
+                    foreach (FileInfo f in subD.GetFiles())
+                    {
+                        totalFiles++;
+                    }
+                }
+
+                var task = context.AddTask("Copying files: ", true, totalFiles);
+                Directory.CreateDirectory(newDir);
+
+                foreach (FileInfo file in dir.GetFiles())
+                {
+                    string targetFilePath = Path.Combine(newDir, file.Name);
+                    file.CopyTo(targetFilePath, true);
+                }
+
+                if (recursive)
+                {
+                    foreach (DirectoryInfo subDir in dirs)
+                    {
+                        string newDestinationDir = Path.Combine(newDir, subDir.Name);
+                        AltCopyDirectory(subDir.FullName, newDestinationDir, true);
+                    }
+                }
+            });
+            
+            //var dir = new DirectoryInfo(oldDir);
+
+            //if (!dir.Exists)
+            //    throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
+
+            //DirectoryInfo[] dirs = dir.GetDirectories();
+
+            //Directory.CreateDirectory(newDir);
+
+            //foreach (FileInfo file in dir.GetFiles())
+            //{
+            //    string targetFilePath = Path.Combine(newDir, file.Name);
+            //    file.CopyTo(targetFilePath, true);
+            //}
+
+            //if (recursive)
+            //{
+            //    foreach (DirectoryInfo subDir in dirs)
+            //    {
+            //        string newDestinationDir = Path.Combine(newDir, subDir.Name);
+            //        CopyDirectory(subDir.FullName, newDestinationDir, true);
+            //    }
+            //}
+        }
+
+        public static void AltCopyDirectory(string oldDir, string newDir, bool recursive)
         {
             var dir = new DirectoryInfo(oldDir);
 
@@ -32,7 +106,7 @@ namespace SPT_AKI_Installer.Aki.Helper
                 foreach (DirectoryInfo subDir in dirs)
                 {
                     string newDestinationDir = Path.Combine(newDir, subDir.Name);
-                    CopyDirectory(subDir.FullName, newDestinationDir, true);
+                    AltCopyDirectory(subDir.FullName, newDestinationDir, true);
                 }
             }
         }

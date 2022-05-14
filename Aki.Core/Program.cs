@@ -9,8 +9,6 @@ namespace SPT_AKI_Installer.Aki.Core
 {
     //TODO:
     // delete patcher zip and aki zip
-    // progress for copyDirectory
-    // add figlet for SPT-AKI INSTALLER
     // locales, language selection
     // PreCheckHelper.AkiCheck is currently hardcoded for 2.3.1
     // get waffle to add exit code on patcher
@@ -24,11 +22,14 @@ namespace SPT_AKI_Installer.Aki.Core
     {
         static void Main(string[] args)
         {
+            SpectreHelper spectreHelper = new SpectreHelper();
+            spectreHelper.Figlet("SPT-AKI INSTALLER");
+
             string targetPath = Environment.CurrentDirectory;
             PreCheckHelper preCheckHelper = new();
-#if DEBUG
+//#if DEBUG
             targetPath = @"D:\install";
-#endif
+//#endif
             preCheckHelper.GameCheck(out string gamePath);
 
             if (preCheckHelper.PatcherCheck(gamePath,targetPath, out string patchRef))
@@ -59,7 +60,7 @@ namespace SPT_AKI_Installer.Aki.Core
             LogHelper.User("PLEASE PRESS ENTER TO COPY GAME FILES!");
             Console.ReadKey();
 
-            GameCopy(gamePath, targetPath, akiRef);
+            GameCopy(gamePath, targetPath,patchRef, akiRef);
         }
 
         /// <summary>
@@ -67,26 +68,27 @@ namespace SPT_AKI_Installer.Aki.Core
         /// </summary>
         /// <param name="gamePath"></param>
         /// <param name="targetPath"></param>
-        static void GameCopy(string gamePath, string targetPath, string akiRef)
+        static void GameCopy(string gamePath, string targetPath, string patchRef, string akiRef)
         {
-#if !DEBUG
+//#if !DEBUG
             FileHelper.CopyDirectory(gamePath, targetPath, true);
-#endif
+//#endif
             LogHelper.User("GAME HAS BEEN COPIED, PRESS ENTER TO EXTRACT PATCHER!");
             Console.ReadKey();
 
-            PatcherCopy(gamePath, targetPath, akiRef);
+            PatcherCopy(gamePath, targetPath,patchRef, akiRef);
         }
 
         /// <summary>
         /// extracts patcher and moves out inner folders
         /// </summary>
-        /// <param name="patchRef"></param>
+        /// <param name="gamePath"></param>
         /// <param name="targetPath"></param>
+        /// <param name="patchRef"></param>
         /// <param name="akiRef"></param>
-        static void PatcherCopy(string patchRef, string targetPath, string akiRef)
+        static void PatcherCopy(string gamePath, string targetPath, string patchRef, string akiRef)
         {
-#if !DEBUG
+//#if !DEBUG
             ZipHelper.Decompress(patchRef, targetPath);
             FileHelper.FindFolder(patchRef, targetPath, out DirectoryInfo dir);
             FileHelper.CopyDirectory(dir.FullName, targetPath, true);
@@ -100,7 +102,7 @@ namespace SPT_AKI_Installer.Aki.Core
                     LogHelper.Error($"please delete folder called {dir.FullName}");
                 }
             }
-#endif
+//#endif
             PatcherProcessStart(targetPath, akiRef);
         }
 
@@ -111,11 +113,11 @@ namespace SPT_AKI_Installer.Aki.Core
         /// <param name="akiRef"></param>
         static void PatcherProcessStart(string targetPath, string akiRef)
         {
-#if !DEBUG
+//#if !DEBUG
             LogHelper.Info("PATCHER HAS BEEN EXTRACTED, STARTING PATCHER!");
             ProcessHelper patcherProcess = new();
             patcherProcess.StartProcess(Path.Join(targetPath + "/patcher.exe"), targetPath);
-#endif
+//#endif
             LogHelper.User("PATCHER HAS BEEN STARTED, TYPE YES ONCE THE PATCHER IS COMPLETE!");
             var complete = Console.ReadLine();
 
@@ -130,12 +132,12 @@ namespace SPT_AKI_Installer.Aki.Core
             // if user input "yes" kill patcher process, delete patcher.exe, extract aki zip
             if (string.Equals(complete, "yes", StringComparison.OrdinalIgnoreCase))
             {
-#if !DEBUG
+//#if !DEBUG
                 patcherProcess.EndProcess();
                 Thread.Sleep(1000);
                 FileHelper.DeleteFile("file", targetPath + "/patcher.exe");
                 ZipHelper.Decompress(akiRef, targetPath);
-#endif
+//#endif
                 LogHelper.Info("AKI HAS BEEN EXTRACTED, RUN THE SERVER AND WAIT TILL YOU SEE HAPPY SERVER THEN LAUNCHER AND ENJOY!");
                 LogHelper.User("PRESS ENTER TO CLOSE THE APP");
                 Console.ReadKey();
