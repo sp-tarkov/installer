@@ -1,5 +1,4 @@
-﻿using SPT_AKI_Installer.Aki.Core;
-using System;
+﻿using System;
 using System.IO;
 
 namespace SPT_AKI_Installer.Aki.Helper
@@ -84,11 +83,11 @@ namespace SPT_AKI_Installer.Aki.Helper
         /// <param name="patchRef"></param>
         /// <param name="dir"></param>
         /// <returns></returns>
-        public static bool FindFolder(string patchRef, out DirectoryInfo dir)
+        public static bool FindFolder(string patchRef, string targetPath, out DirectoryInfo dir)
         {
             var patchInfo = new FileInfo(patchRef);
             var patchName = patchInfo.Name.Replace(patchInfo.Extension, "");
-            var path = new DirectoryInfo(Path.Join(SPTinstaller.targetPath, patchName));
+            var path = new DirectoryInfo(Path.Join(targetPath, patchName));
             if (path.Exists)
             {
                 dir = path;

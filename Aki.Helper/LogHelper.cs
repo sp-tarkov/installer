@@ -12,7 +12,7 @@ namespace SPT_AKI_Installer.Aki.Helper
 
         /// <summary>
         /// Outputs a string to console starting with [USER] with
-        /// a Green background and Black foreground
+        /// Green text
         /// </summary>
         public static void User(string text)
         {
@@ -21,7 +21,7 @@ namespace SPT_AKI_Installer.Aki.Helper
 
         /// <summary>
         /// Outputs a string to console starting with [WARNING] with
-        /// a Yellow background and Black foreground
+        /// Yellow text
         /// </summary>
         public static void Warning(string text)
         {
@@ -30,7 +30,7 @@ namespace SPT_AKI_Installer.Aki.Helper
 
         /// <summary>
         /// Outputs a string to console starting with [ERROR] with
-        /// a Red background and Black foreground
+        /// Red text
         /// </summary>
         public static void Error(string text)
         {
@@ -39,7 +39,7 @@ namespace SPT_AKI_Installer.Aki.Helper
 
         /// <summary>
         /// Outputs a string to console starting with [INFO] with
-        /// a DarkGray background and White foreground
+        /// Blue text
         /// </summary>
         public static void Info(string text)
         {

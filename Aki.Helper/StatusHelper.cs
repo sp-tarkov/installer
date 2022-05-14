@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SPT_AKI_Installer.Aki.Helper
 {
-    internal class StatusHelper
-{
-}
+    public class StatusHelper
+    {
+    }
 }

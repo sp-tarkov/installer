@@ -1,6 +1,6 @@
 ﻿namespace SPT_AKI_Installer.Aki.Helper
 {
-    public static class StringHelper
+    public class StringHelper
     {
         /// <summary>
         /// string to split, changes oldChar to newChar
@@ -10,7 +10,7 @@
         /// <param name="newChar"></param>
         /// <param name="amount"></param>
         /// <returns>returns the string at a position using amount</returns>
-        public static string Splitter(string toSplit, char oldChar, char newChar, int amount)
+        public string Splitter(string toSplit, char oldChar, char newChar, int amount)
         {
             return toSplit.Replace(oldChar, newChar).Split(newChar)[^amount];
         }
