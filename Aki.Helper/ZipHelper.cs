@@ -36,22 +36,6 @@ namespace SPT_AKI_Installer.Aki.Helper
                     task.Increment(1);
                 }
             });
-
-            //Stream stream = File.OpenRead(zipPath);
-            //var reader = ReaderFactory.Open(stream);
-
-            //while (reader.MoveToNextEntry())
-            //{
-            //    if (!reader.Entry.IsDirectory)
-            //    {
-            //        Console.WriteLine(reader.Entry.Key);
-            //        reader.WriteEntryToDirectory(extPath, new ExtractionOptions()
-            //        {
-            //            ExtractFullPath = true,
-            //            Overwrite = true
-            //        });
-            //    }
-            //}
         }
     }
 }

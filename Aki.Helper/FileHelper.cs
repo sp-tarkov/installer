@@ -78,11 +78,11 @@ namespace SPT_AKI_Installer.Aki.Helper
         }
 
         /// <summary>
-        /// Finds folder with name supplied
+        /// Finds folder with name supplied, out = directory for extracted patch folder
         /// </summary>
         /// <param name="patchRef"></param>
         /// <param name="dir"></param>
-        /// <returns></returns>
+        /// <returns>bool</returns>
         public static bool FindFolder(string patchRef, string targetPath, out DirectoryInfo dir)
         {
             var patchInfo = new FileInfo(patchRef);
