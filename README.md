@@ -2,19 +2,21 @@
 ## EFT - SPT-AKI. - 2.3.1
 
 ### New implementation of an Installer for SPT-AKI.
-- uses Spectre Console for a cleaner look
+- uses Spectre Console for a cleaner look:
+added "SPT-AKI Installer" as Figlet title,
+progress bars for extracting and copying of files.
+
+- pre install checks:
+checks installer is not in OG game directory,
+checks install folder does not have game files already in it,
+checks if gameversion matches aki version, if so skip patcher process,
+checks both zips are there, other than when the above match, patcher isnt checked for.
+
 - copies files from registry logged GamePath to new location,
-- extracts, runs and deletes patcher with minor user input,
+- extracts, runs and deletes patcher with no user input,
 - extracts Aki
-- static: FileHelper, ZipHelper, LogHelper 
-- nonStatic: ProcessHelper, PreCheckHelper, StringHelper
+- deletes both Patcher and AKI zips at the end
 
 ### plans:
 - maybe download right version for EFT patcher and server
-- maybe make a cool UI :OWO:
-- delete patcher zip and aki zip
-- progressBar for CopyDirectory
-- add figlet for SPT-AKI INSTALLER
 - locales, language selection
-- fix PreCheckHelper.AkiCheck currently being hardcoded for 2.3.1
-- get waffle to add exit code on patcher to remove the need for user input bar errors
