@@ -13,7 +13,7 @@
 
 ![Progress Bars](https://cdn.discordapp.com/attachments/976519592119762994/976845443831070790/unknown.png)
 
-### pre install checks:
+### Pre install checks:
 - Checks installer is not in OG game directory,
 - Checks install folder does not have game files already in it,
 - Checks if gameversion matches aki version, if so skip patcher process,
@@ -25,7 +25,7 @@
 - Extracts Aki,
 - Deletes both Patcher and AKI zips at the end.
 
-### plans:
+### Plans:
 - Maybe download right version for EFT patcher and server
 - Locales, Language selection
 
@@ -45,7 +45,7 @@
 - If you want to change the location for this under L18 make this the path you desire
 - You have to be in Debug for this to be used
 
-#### to run Debug:
+#### Run Debug:
 
 - Make sure Visual Studio is in Debug mode.
 
