@@ -7,7 +7,7 @@ added "SPT-AKI Installer" as Figlet title,
 progress bars for extracting and copying of files.
 
 - pre install checks:
-checks installer is not in OG game directory,
+checks installer is not in OG game directory, \n
 checks install folder does not have game files already in it,
 checks if gameversion matches aki version, if so skip patcher process,
 checks both zips are there, other than when the above match, patcher isnt checked for.
