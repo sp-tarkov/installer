@@ -1,143 +1,50 @@
 ﻿using System;
 using System.IO;
 using Spectre.Console;
-using System.Threading;
 
 namespace SPT_AKI_Installer.Aki.Helper
 {
     public static class FileHelper
     {
-        public static int totalFiles;
-        /// <summary>
-        /// CopyDirectory will use old path and copy to new path and
-        /// asks if inner files/folders should be included
-        /// </summary>
-        /// <exception cref="DirectoryNotFoundException"></exception>
-        public static void CopyDirectory(string oldDir, string newDir, bool recursive)
+        public static void CopyDirectory(string oldDir, string newDir, bool overwrite)
         {
+            int totalFiles = Directory.GetFiles(oldDir, "*.*", SearchOption.AllDirectories).Length;
+
             AnsiConsole.Progress().Columns(
+        new PercentageColumn(),
             new TaskDescriptionColumn(),
-            new SpinnerColumn(),
-            new ElapsedTimeColumn()
+            new ProgressBarColumn(),
+            new ElapsedTimeColumn(),
+            new SpinnerColumn()
             ).Start((ProgressContext context) =>
             {
-                var dir = new DirectoryInfo(oldDir);
+                var task = context.AddTask("Copying Files", true, totalFiles);
 
-                if (!dir.Exists)
-                    throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
-
-                DirectoryInfo[] dirs = dir.GetDirectories();
-
-                foreach (FileInfo f in dir.GetFiles())
+                foreach (string dirPath in Directory.GetDirectories(oldDir, "*", SearchOption.AllDirectories))
                 {
-                    totalFiles++;
-                }
-                foreach (DirectoryInfo subD in dirs)
-                {
-                    foreach (FileInfo f in subD.GetFiles())
-                    {
-                        totalFiles++;
-                    }
+                    Directory.CreateDirectory(dirPath.Replace(oldDir, newDir));
                 }
 
-                var task = context.AddTask("Copying files: ", true, totalFiles);
-                Directory.CreateDirectory(newDir);
-
-                foreach (FileInfo file in dir.GetFiles())
+                foreach (string newPath in Directory.GetFiles(oldDir, "*.*", SearchOption.AllDirectories))
                 {
-                    string targetFilePath = Path.Combine(newDir, file.Name);
-                    file.CopyTo(targetFilePath, true);
-                }
-
-                if (recursive)
-                {
-                    foreach (DirectoryInfo subDir in dirs)
-                    {
-                        string newDestinationDir = Path.Combine(newDir, subDir.Name);
-                        AltCopyDirectory(subDir.FullName, newDestinationDir, true);
-                    }
+                    File.Copy(newPath, newPath.Replace(oldDir, newDir), overwrite);
+                    task.Increment(1);
                 }
             });
-            
-            //var dir = new DirectoryInfo(oldDir);
-
-            //if (!dir.Exists)
-            //    throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
-
-            //DirectoryInfo[] dirs = dir.GetDirectories();
-
-            //Directory.CreateDirectory(newDir);
-
-            //foreach (FileInfo file in dir.GetFiles())
-            //{
-            //    string targetFilePath = Path.Combine(newDir, file.Name);
-            //    file.CopyTo(targetFilePath, true);
-            //}
-
-            //if (recursive)
-            //{
-            //    foreach (DirectoryInfo subDir in dirs)
-            //    {
-            //        string newDestinationDir = Path.Combine(newDir, subDir.Name);
-            //        CopyDirectory(subDir.FullName, newDestinationDir, true);
-            //    }
-            //}
         }
 
-        public static void AltCopyDirectory(string oldDir, string newDir, bool recursive)
+        public static void DeleteFiles(string filePath, bool allFolders = false)
         {
-            var dir = new DirectoryInfo(oldDir);
-
-            if (!dir.Exists)
-                throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
-
-            DirectoryInfo[] dirs = dir.GetDirectories();
-
-            Directory.CreateDirectory(newDir);
-
-            foreach (FileInfo file in dir.GetFiles())
-            {
-                string targetFilePath = Path.Combine(newDir, file.Name);
-                file.CopyTo(targetFilePath, true);
-            }
-
-            if (recursive)
-            {
-                foreach (DirectoryInfo subDir in dirs)
-                {
-                    string newDestinationDir = Path.Combine(newDir, subDir.Name);
-                    AltCopyDirectory(subDir.FullName, newDestinationDir, true);
-                }
-            }
-        }
-
-        /// <summary>
-        /// DeleteFiles will use a type to look for, the path
-        /// and if all inner files/folders should be included
-        /// </summary>
-        /// <remarks>
-        /// Types are "file" or "folder" as a string
-        /// </remarks>
-        public static void DeleteFile(string type, string filePath, bool allFolders = false)
-        {
-            // type = "file" or "folder"
-            if (string.Equals(type, "file", StringComparison.OrdinalIgnoreCase))
+            if (filePath.Contains('.'))
             {
                 File.Delete(filePath);
             }
-
-            if (string.Equals(type, "folder", StringComparison.OrdinalIgnoreCase))
+            else
             {
                 Directory.Delete(filePath, allFolders);
             }
         }
 
-        /// <summary>
-        /// finds file based on Path and File name
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="name"></param>
-        /// <returns>String or null</returns>
         public static string FindFile(string path, string name)
         {
             string[] filePaths = Directory.GetFiles(path);
@@ -151,12 +58,20 @@ namespace SPT_AKI_Installer.Aki.Helper
             return null;
         }
 
-        /// <summary>
-        /// Finds folder with name supplied, out = directory for extracted patch folder
-        /// </summary>
-        /// <param name="patchRef"></param>
-        /// <param name="dir"></param>
-        /// <returns>bool</returns>
+        public static string FindFile(string path, string name, string altName)
+        {
+            string[] filePaths = Directory.GetFiles(path);
+            foreach (string file in filePaths)
+            {
+                if (file.Contains(name, StringComparison.OrdinalIgnoreCase) &&
+                    file.Contains(altName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return file;
+                }
+            }
+            return null;
+        }
+
         public static bool FindFolder(string patchRef, string targetPath, out DirectoryInfo dir)
         {
             var patchInfo = new FileInfo(patchRef);

@@ -8,22 +8,19 @@ namespace SPT_AKI_Installer.Aki.Helper
 {
     public static class ZipHelper
     {
-        /// <summary>
-        /// will extract Zips in LZMA compression format, using Zips path
-        /// to new path
-        /// </summary>
         public static void Decompress(string ArchivePath, string OutputFolderPath)
         {
             AnsiConsole.Progress().Columns(
-    new PercentageColumn(),
+        new PercentageColumn(),
             new TaskDescriptionColumn(),
             new ProgressBarColumn(),
-            new ElapsedTimeColumn()
+            new ElapsedTimeColumn(),
+            new SpinnerColumn()
             ).Start((ProgressContext context) =>
             {
                 using var archive = ZipArchive.Open(ArchivePath);
                 var entries = archive.Entries.Where(entry => !entry.IsDirectory);
-                var task = context.AddTask("Extracting", true, entries.Count());
+                var task = context.AddTask("Extracting Files", true, entries.Count());
 
                 foreach (var entry in entries)
                 {

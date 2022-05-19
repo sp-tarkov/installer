@@ -6,15 +6,16 @@ using System.Diagnostics;
 
 namespace SPT_AKI_Installer.Aki.Helper
 {
-    public class PreCheckHelper
+    public static class PreCheckHelper
     {
         private const string registryInstall = @"Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov";
+        private static string gameVersion;
+        private static string patchZip;
+        private static string patchToVersion;
+        private static string akiZip;
+        private static string akiVersion;
 
-        /// <summary>
-        /// gets the original EFT game path
-        /// </summary>
-        /// <returns>Path or null</returns>
-        public string DetectOriginalGamePath()
+        public static string DetectOriginalGamePath()
         {
             // We can't detect the installed path on non-Windows
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -26,11 +27,7 @@ namespace SPT_AKI_Installer.Aki.Helper
             return info?.DirectoryName;
         }
 
-        /// <summary>
-        /// checks path is not null, out = gamePath
-        /// </summary>
-        /// <param name="gamePath"></param>
-        public void GameCheck(out string gamePath)
+        public static void GameCheck(out string gamePath)
         {
             string Path = DetectOriginalGamePath();
 
@@ -44,48 +41,39 @@ namespace SPT_AKI_Installer.Aki.Helper
             gamePath = Path;
         }
 
-        /// <summary>
-        /// Checks version of EFT installed, Then checks that matches the Zip, out = patch version number 0.12.12.*here*
-        /// </summary>
-        /// <param name="gamePath"></param>
-        /// <param name="targetPath"></param>
-        /// <param name="patchRef"></param>
-        /// <returns>bool</returns>
-        public bool PatcherCheck(string gamePath,string targetPath, out string patchRef)
+        public static void PatcherZipCheck(string gamePath, string targetPath, out string patcherZipPath)
         {
-            StringHelper stringHelper = new StringHelper();
-            FileVersionInfo version = FileVersionInfo.GetVersionInfo(Path.Join(gamePath + "/EscapeFromTarkov.exe"));
+            // example patch name - Patcher.12.12.15.17861.to.12.12.15.17349.zip
+            gameVersion = FileVersionInfo.GetVersionInfo(Path.Join(gamePath + "/EscapeFromTarkov.exe")).ProductVersion.Replace('-', '.').Split('.')[^2];
+            patchZip = FileHelper.FindFile(targetPath, gameVersion, "Patcher");
+            patchToVersion = patchZip?.Split('.')[^2];
+            patcherZipPath = patchZip;
+        }
 
-            string versionCheck = stringHelper.Splitter(version.ProductVersion, '-', '.', 2);
-            LogHelper.Info($"GAME VERSION IS: {version.ProductVersion}");
-            string patcherRef = FileHelper.FindFile(targetPath, versionCheck);
-
-            if (patcherRef != null)
-            {
-                patchRef = patcherRef;
-                return true;
-            }
-            patchRef = null;
-            return false;
+        public static void AkiZipCheck(string targetPath, out string akiZipPath)
+        {
+            // example aki name - RELEASE-SPT-2.3.1-17349.zip
+            akiZip = FileHelper.FindFile(targetPath, "SPT", "RELEASE");
+            akiVersion = akiZip?.Replace('-', '.').Split('.')[^2];
+            akiZipPath = akiZip;
         }
 
         /// <summary>
-        /// Checks Aki Zip is 2.3.1 currently
+        /// will return true if Patcher version at the end of the zip matches aki zip version
         /// </summary>
-        /// <param name="targetPath"></param>
-        /// <param name="akiRef"></param>
         /// <returns>bool</returns>
-        public bool AkiCheck(string targetPath,out string akiRef)
+        public static bool PatcherAkiCheck()
         {
-            string aki = FileHelper.FindFile(targetPath, "2.3.1");
+            return patchToVersion == akiVersion;
+        }
 
-            if (aki != null)
-            {
-                akiRef = aki;
-                return true;
-            }
-            akiRef = null;
-            return false;
+        /// <summary>
+        /// will return true if game version is not equal to aki zip version (patcher is needed)
+        /// </summary>
+        /// <returns>bool</returns>
+        public static bool PatcherNeededCheck()
+        {
+            return gameVersion != akiVersion;
         }
     }
 }

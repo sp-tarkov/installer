@@ -1,97 +1,81 @@
-﻿using System.IO;
-using System;
-using System.Diagnostics;
-using System.Threading;
+﻿using Spectre.Console;
 using SPT_AKI_Installer.Aki.Helper;
-using Spectre.Console;
+using System;
+using System.IO;
 
 namespace SPT_AKI_Installer.Aki.Core
 {
     //TODO:
-    // delete patcher zip and aki zip
     // locales, language selection
-    // PreCheckHelper.AkiCheck is currently hardcoded for 2.3.1
-    // get waffle to add exit code on patcher
-    // remove all user input other than errors
-
-    //comments:
-    // static: FileHelper, ZipHelper, LogHelper 
-    // nonStatic: ProcessHelper, PreCheckHelper, StringHelper
+    // make the installer download relevant version of patcher and aki based on game version if possible
 
     public static class SPTinstaller
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            SpectreHelper spectreHelper = new SpectreHelper();
-            spectreHelper.Figlet("SPT-AKI INSTALLER");
-
             string targetPath = Environment.CurrentDirectory;
-            PreCheckHelper preCheckHelper = new();
-//#if DEBUG
+#if DEBUG
             targetPath = @"D:\install";
-//#endif
-            preCheckHelper.GameCheck(out string gamePath);
+#endif
+            SpectreHelper.Figlet("SPT-AKI INSTALLER", Color.Yellow);
+            PreCheckHelper.GameCheck(out string originalGamePath);
 
-            if (preCheckHelper.PatcherCheck(gamePath,targetPath, out string patchRef))
+            if (originalGamePath == targetPath)
             {
-                LogHelper.Info($"Correct Zip for Patcher Present: {patchRef}");
-            }
-            else
-            {
-                LogHelper.Error("Patcher zip is Incorrect or missing");
-                LogHelper.Error("Press enter to close the app");
-                Console.ReadKey();
-                Environment.Exit(0);
+                CloseApp("Installer is located in EFT's original directory! \n Please move the installer to a seperate folder as per the guide!");
             }
 
-            if (preCheckHelper.AkiCheck(targetPath,out string akiRef))
+            var checkForExistingFiles = FileHelper.FindFile(targetPath, "EscapeFromTarkov.exe");
+            //Console.WriteLine(checkForExistingFiles ?? "null");
+            if (checkForExistingFiles != null)
             {
-                LogHelper.Info($"Correct Zip for SPT-AKI Present: {akiRef}");
+                CloseApp("Installer is located in a Folder that has existing Game Files \n Please make sure the installer is in a fresh folder as per the guide");
             }
-            else
+            //Console.ReadKey();
+
+            PreCheckHelper.PatcherZipCheck(originalGamePath, targetPath, out string patcherZipPath);
+            PreCheckHelper.AkiZipCheck(targetPath, out string akiZipPath);
+
+            if (patcherZipPath == null && PreCheckHelper.PatcherNeededCheck())
             {
-                LogHelper.Error("SPT-AKI zip is Incorrect or missing");
-                LogHelper.Error("Press enter to close the app");
-                Console.ReadKey();
-                Environment.Exit(0);
+                CloseApp("Game Version needs to be patched to match Aki Version \n but Patcher is missing or the wrong version \n Press enter to close the app");
             }
 
-            // checks for input to copy game files
-            LogHelper.User("PLEASE PRESS ENTER TO COPY GAME FILES!");
-            Console.ReadKey();
+            if (akiZipPath == null)
+            {
+                CloseApp("Aki's Zip could not be found \n Press enter to close the app");
+            }
 
-            GameCopy(gamePath, targetPath,patchRef, akiRef);
+            if (PreCheckHelper.PatcherNeededCheck() && !PreCheckHelper.PatcherAkiCheck())
+            {
+                CloseApp("Patcher does not match downgraded version that Aki Requires \n Press enter to close the app");
+            }
+
+            LogHelper.Info("Copying game files");
+
+            GameCopy(originalGamePath, targetPath);
+            if (PreCheckHelper.PatcherNeededCheck())
+            {
+                PatcherCopy(targetPath, patcherZipPath);
+                PatcherProcess(targetPath);
+            }
+
+            AkiInstall(targetPath, akiZipPath);
+            DeleteZip(patcherZipPath, akiZipPath);
         }
 
-        /// <summary>
-        /// copies and pastes EFT to AKI installer test folder
-        /// </summary>
-        /// <param name="gamePath"></param>
-        /// <param name="targetPath"></param>
-        static void GameCopy(string gamePath, string targetPath, string patchRef, string akiRef)
+        static void GameCopy(string originalGamePath, string targetPath)
         {
-//#if !DEBUG
-            FileHelper.CopyDirectory(gamePath, targetPath, true);
-//#endif
-            LogHelper.User("GAME HAS BEEN COPIED, PRESS ENTER TO EXTRACT PATCHER!");
-            Console.ReadKey();
-
-            PatcherCopy(gamePath, targetPath,patchRef, akiRef);
+            FileHelper.CopyDirectory(originalGamePath, targetPath, true);
+            LogHelper.Info("Game has been copied, Extracting patcher");
         }
 
-        /// <summary>
-        /// extracts patcher and moves out inner folders
-        /// </summary>
-        /// <param name="gamePath"></param>
-        /// <param name="targetPath"></param>
-        /// <param name="patchRef"></param>
-        /// <param name="akiRef"></param>
-        static void PatcherCopy(string gamePath, string targetPath, string patchRef, string akiRef)
+        static void PatcherCopy(string targetPath, string patcherZipPath)
         {
-//#if !DEBUG
-            ZipHelper.Decompress(patchRef, targetPath);
-            FileHelper.FindFolder(patchRef, targetPath, out DirectoryInfo dir);
+            ZipHelper.Decompress(patcherZipPath, targetPath);
+            FileHelper.FindFolder(patcherZipPath, targetPath, out DirectoryInfo dir);
             FileHelper.CopyDirectory(dir.FullName, targetPath, true);
+
             if (dir.Exists)
             {
                 dir.Delete(true);
@@ -102,47 +86,39 @@ namespace SPT_AKI_Installer.Aki.Core
                     LogHelper.Error($"please delete folder called {dir.FullName}");
                 }
             }
-//#endif
-            PatcherProcessStart(targetPath, akiRef);
         }
 
-        /// <summary>
-        /// starts patcher and checks for user input to exit patcher and proceed
-        /// </summary>
-        /// <param name="targetPath"></param>
-        /// <param name="akiRef"></param>
-        static void PatcherProcessStart(string targetPath, string akiRef)
+        static void PatcherProcess(string targetPath)
         {
-//#if !DEBUG
-            LogHelper.Info("PATCHER HAS BEEN EXTRACTED, STARTING PATCHER!");
+            LogHelper.Info("patcher has been extracted, starting patcher");
             ProcessHelper patcherProcess = new();
             patcherProcess.StartProcess(Path.Join(targetPath + "/patcher.exe"), targetPath);
-//#endif
-            LogHelper.User("PATCHER HAS BEEN STARTED, TYPE YES ONCE THE PATCHER IS COMPLETE!");
-            var complete = Console.ReadLine();
 
-            // waiting for user to enter "yes", if something else is entered do while loop
-            while (!string.Equals(complete, "yes", StringComparison.OrdinalIgnoreCase))
-            {
-                LogHelper.Warning("YOU DIDNT TYPE YES, IF SOMETHING WENT WRONG MAKE A SUPPORT THREAD AND CLOSE THIS APP");
-                LogHelper.User("IF IT DID FINISH TYPE YES NOW");
-                complete = Console.ReadLine();
-            }
+            FileHelper.DeleteFiles(Path.Join(targetPath, "/patcher.exe"));
+        }
 
-            // if user input "yes" kill patcher process, delete patcher.exe, extract aki zip
-            if (string.Equals(complete, "yes", StringComparison.OrdinalIgnoreCase))
-            {
-//#if !DEBUG
-                patcherProcess.EndProcess();
-                Thread.Sleep(1000);
-                FileHelper.DeleteFile("file", targetPath + "/patcher.exe");
-                ZipHelper.Decompress(akiRef, targetPath);
-//#endif
-                LogHelper.Info("AKI HAS BEEN EXTRACTED, RUN THE SERVER AND WAIT TILL YOU SEE HAPPY SERVER THEN LAUNCHER AND ENJOY!");
-                LogHelper.User("PRESS ENTER TO CLOSE THE APP");
-                Console.ReadKey();
-                Environment.Exit(0);
-            }
+        static void AkiInstall(string targetPath, string akiZipPath)
+        {
+            ZipHelper.Decompress(akiZipPath, targetPath);
+            LogHelper.Info("Aki has been extracted");
+        }
+
+        static void DeleteZip(string patcherZipPath, string akiZipPath)
+        {
+            FileHelper.DeleteFiles(patcherZipPath, false);
+            FileHelper.DeleteFiles(akiZipPath, false);
+
+            LogHelper.User("Removed Zips, Press enter to close the installer, you can then delete the installer");
+            LogHelper.User("ENJOY SPT-AKI!");
+            Console.ReadKey();
+            Environment.Exit(0);
+        }
+
+        static void CloseApp(string text)
+        {
+            LogHelper.Warning(text);
+            Console.ReadKey();
+            Environment.Exit(0);
         }
     }
 }
