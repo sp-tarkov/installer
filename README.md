@@ -31,16 +31,15 @@
 
 ----
 
-# Setup
+# Setup:
 
-- Requires: .net 6.0
 1. Visual Studio > File > Open > Project/Solution `\SPT_AKI Installer.sln`
 2. Visual Studio > Build > Publish Selection > Publish
 3. check your folder for the project `\bin\Debug\net6.0\publish\`
 4. in here should be an .Exe and a .pdb
 - only the .exe is needed
 
-# Debug
+# Debug:
 
 - The project has PreProccessor Directives for the location to test installing too
 - If you want to change the location for this under L18 make this the path you desire
@@ -53,3 +52,9 @@
 ![Debug Mode](https://cdn.discordapp.com/attachments/976519592119762994/976850003521835058/unknown.png)
 
 1. Visual Studio > Debug > Start Debugging or the F5 shortcut Key
+
+# Dependencies:
+
+- .net 6.0
+- SharpCompress
+- SpectreConsole
