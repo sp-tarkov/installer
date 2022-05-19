@@ -14,6 +14,7 @@
 ![Progress Bars](https://cdn.discordapp.com/attachments/976519592119762994/976845443831070790/unknown.png)
 
 ### Pre install checks:
+- Checks if EFT is installed,
 - Checks installer is not in OG game directory,
 - Checks install folder does not have game files already in it,
 - Checks if gameversion matches aki version, if so skip patcher process,
@@ -26,8 +27,8 @@
 - Deletes both Patcher and AKI zips at the end.
 
 ### Plans:
-- Maybe download right version for EFT patcher and server
-- Locales, Language selection
+- Maybe download right version for EFT patcher and server,
+- Locales, Language selection.
 
 ----
 
@@ -37,13 +38,13 @@
 2. Visual Studio > Build > Publish Selection > Publish
 3. Check your folder for the project `\bin\Debug\net6.0\publish\`
 4. In here should be an .Exe and a .pdb
--  Only the .exe is needed
+-  Only the .exe is needed.
 
 # Debug:
 
-- The project has PreProccessor Directives for the location to test installing too
-- If you want to change the location for this under L18 make this the path you desire
-- You have to be in Debug for this to be used
+- The project has PreProccessor Directives for the location to test installing too,
+- If you want to change the location for this under L18 make this the path you desire,
+- You have to be in Debug for this to be used.
 
 #### Run Debug:
 
