@@ -2,6 +2,9 @@
 using SPT_AKI_Installer.Aki.Helper;
 using System;
 using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SPT_AKI_Installer.Aki.Core
 {
@@ -11,12 +14,27 @@ namespace SPT_AKI_Installer.Aki.Core
 
     public static class SPTinstaller
     {
+        private static string akiLink;
+        private static string patcherLink;
         static void Main()
         {
             string targetPath = Environment.CurrentDirectory;
 #if DEBUG
             targetPath = @"D:\install";
 #endif
+
+            _ = DownloadFileAsync(targetPath, "https://dev.sp-tarkov.com/api/v1/repos/CWX/Installer_Test/raw/ClientVersions.json", "/ClientVersions.json");
+            Console.ReadKey();
+
+            ReadJson(targetPath);
+            Console.ReadKey();
+
+            _ = DownloadFileAsync(targetPath, akiLink, "/RELEASE-SPT-2.3.1-17349.zip");
+            Console.ReadKey();
+
+            _ = DownloadFileAsync(targetPath, patcherLink, "/Patcher_12.12.15.18103_to_12.12.15.17349.zip");
+            Console.ReadKey();
+
             SpectreHelper.Figlet("SPT-AKI INSTALLER", Color.Yellow);
             PreCheckHelper.GameCheck(out string originalGamePath);
 
@@ -119,6 +137,38 @@ namespace SPT_AKI_Installer.Aki.Core
             LogHelper.Warning(text);
             Console.ReadKey();
             Environment.Exit(0);
+        }
+
+        // https://dev.sp-tarkov.com/api/v1/repos/CWX/Installer_Test/raw/ClientVersions.json
+        // https://dev.sp-tarkov.com/CWX/Installer_Test/src/branch/master/ClientVersions.json
+
+        static async Task DownloadFileAsync(string targetFilePath, string targetLink, string newFileName)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                await httpClient.DownloadFile(targetLink, Path.Join(targetFilePath, newFileName));
+            }
+        }
+
+        static void ReadJson(string targetPath)
+        {
+            var json = FileHelper.FindFile(targetPath, "ClientVersions.json");
+            var text = File.ReadAllText(json);
+            dynamic result = JsonConvert.DeserializeObject<object>(text);
+            akiLink = result.client18103.AKI;
+            patcherLink = result.client18103.PATCHER;
+            Console.WriteLine(akiLink);
+            Console.WriteLine(patcherLink);
+        }
+
+        public static async Task DownloadFile(this HttpClient client, string address, string fileName)
+        {
+            using (var response = await client.GetAsync(address))
+            using (var stream = await response.Content.ReadAsStreamAsync())
+            using (var file = File.OpenWrite(fileName))
+            {
+                stream.CopyTo(file);
+            }
         }
     }
 }
