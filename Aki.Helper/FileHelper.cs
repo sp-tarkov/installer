@@ -74,9 +74,16 @@ namespace SPT_AKI_Installer.Aki.Helper
 
         public static bool FindFolder(string patchRef, string targetPath, out DirectoryInfo dir)
         {
-            var patchInfo = new FileInfo(patchRef);
-            var patchName = patchInfo.Name.Replace(patchInfo.Extension, "");
-            var path = new DirectoryInfo(Path.Join(targetPath, patchName));
+            var dirInfo = new DirectoryInfo(targetPath).GetDirectories();
+            string patchInner = null;
+            foreach (var file in dirInfo)
+            {
+                if (file.FullName.Contains("patcher", StringComparison.OrdinalIgnoreCase))
+                {
+                    patchInner = file.FullName;
+                }
+            }
+            var path = new DirectoryInfo(patchInner);
             if (path.Exists)
             {
                 dir = path;
