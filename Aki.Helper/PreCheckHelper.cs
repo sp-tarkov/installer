@@ -53,7 +53,7 @@ namespace SPT_AKI_Installer.Aki.Helper
             patchZip = FileHelper.FindFile(targetPath, gameVersion, "Patcher");
             if (patchZip == null)
             {
-                patchZip = FileHelper.FindFile(targetPath, "PATCHER");
+                patchZip = FileHelper.FindFile(targetPath, "PATCHERZIP");
             }
             patcherZipPath = patchZip;
         }
@@ -64,7 +64,7 @@ namespace SPT_AKI_Installer.Aki.Helper
             akiZip = FileHelper.FindFile(targetPath, "SPT", "RELEASE");
             if (akiZip == null)
             {
-                akiZip = FileHelper.FindFile(targetPath, "AKI");
+                akiZip = FileHelper.FindFile(targetPath, "AKIZIP");
             }
             akiZipPath = akiZip;
         }

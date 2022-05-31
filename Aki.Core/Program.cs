@@ -8,7 +8,6 @@ namespace SPT_AKI_Installer.Aki.Core
 {
     //TODO:
     // locales, language selection
-    // make the installer download relevant version of patcher and aki based on game version if possible
 
     public static class SPTinstaller
     {
@@ -59,7 +58,6 @@ namespace SPT_AKI_Installer.Aki.Core
             while (jsonDownload.Status != System.Threading.Tasks.TaskStatus.RanToCompletion)
             {
             }
-            //Thread.Sleep(3000);
             LogHelper.Info("Downloading Complete, Checking Versions!");
             DownloadHelper.ReadJson(targetPath);
 
@@ -85,7 +83,7 @@ namespace SPT_AKI_Installer.Aki.Core
             {
                 LogHelper.Info("Unable to find Patcher Zip in Directory");
                 LogHelper.Info("Downloading Patcher Zip now!");
-                var task = DownloadHelper.DownloadFileAsync(targetPath, DownloadHelper.patcherLink, "/PATCHER.zip");
+                var task = DownloadHelper.DownloadFileAsync(targetPath, DownloadHelper.patcherLink, "/PATCHERZIP.zip");
                 while(task.Status != System.Threading.Tasks.TaskStatus.RanToCompletion)
                 {
                 }
@@ -100,14 +98,13 @@ namespace SPT_AKI_Installer.Aki.Core
             {
                 LogHelper.Info("Unable to find Aki Zip in Directory");
                 LogHelper.Info("Downloading Aki Zip now!");
-                var task = DownloadHelper.DownloadFileAsync(targetPath, DownloadHelper.akiLink, "/AKI.zip");
+                var task = DownloadHelper.DownloadFileAsync(targetPath, DownloadHelper.akiLink, "/AKIZIP.zip");
                 while (task.Status != System.Threading.Tasks.TaskStatus.RanToCompletion)
                 {
                 }
                 LogHelper.Info("Download Complete!");
             }
             LogHelper.Info("Ready to continue with installation");
-            Console.ReadKey();
 
             PreCheckHelper.PatcherZipCheck(originalGamePath, targetPath, out patcherZipPath);
             PreCheckHelper.AkiZipCheck(targetPath, out akiZipPath);
