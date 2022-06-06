@@ -12,9 +12,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FubarCoder.RestSharp.Portable.Core" Version="4.0.8" />
+    <PackageReference Include="FubarCoder.RestSharp.Portable.HttpClient" Version="4.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SharpCompress" Version="0.31.0" />
     <PackageReference Include="Spectre.Console" Version="0.44.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Gitea">
+      <HintPath>shared\Gitea.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

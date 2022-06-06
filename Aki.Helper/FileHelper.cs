@@ -50,7 +50,7 @@ namespace SPT_AKI_Installer.Aki.Helper
             string[] filePaths = Directory.GetFiles(path);
             foreach (string file in filePaths)
             {
-                if (file.Contains(name))
+                if (file.Contains(name, StringComparison.OrdinalIgnoreCase))
                 {
                     return file;
                 }

@@ -8,7 +8,7 @@ namespace SPT_AKI_Installer.Aki.Helper
 {
     public static class ZipHelper
     {
-        public static void Decompress(string ArchivePath, string OutputFolderPath)
+        public static void ZipDecompress(string ArchivePath, string OutputFolderPath)
         {
             AnsiConsole.Progress().Columns(
         new PercentageColumn(),

@@ -9,6 +9,7 @@ namespace SPT_AKI_Installer.Aki.Helper
         private Process _process;
         private string _exeDir;
         private string _workingDir;
+        private string response;
 
         public void StartProcess(string exeDir, string workingDir)
         {
@@ -43,30 +44,25 @@ namespace SPT_AKI_Installer.Aki.Helper
             {
                 case 0:
                     LogHelper.Warning("Patcher was closed before completing!");
-                    LogHelper.Warning("If you need to start the patcher again, type RETRY");
-                    LogHelper.Warning("If you want to close the installer, type CLOSE");
-                    var response = Console.ReadLine();
+                    LogHelper.Warning("If you need to start the patcher again, type retry");
+                    LogHelper.Warning("If you want to close the installer, close the app.");
+                    response = Console.ReadLine();
 
-                    while (!string.Equals(response, "retry", StringComparison.OrdinalIgnoreCase) ||
-                        !string.Equals(response, "close", StringComparison.OrdinalIgnoreCase))
+                    while (!string.Equals(response, "retry", StringComparison.OrdinalIgnoreCase))
                     {
-                        LogHelper.Warning("answer needs to be retry or close");
-                        LogHelper.Warning("Try Again!");
+                        LogHelper.Warning("Answer needs to be retry");
+                        LogHelper.Warning("Try Again..");
+                        response = Console.ReadLine();
                     }
                     if (string.Equals(response, "retry", StringComparison.OrdinalIgnoreCase))
                     {
                         StartProcess(_exeDir, _workingDir);
                         break;
                     }
-                    if (string.Equals(response, "close", StringComparison.OrdinalIgnoreCase))
-                    {
-                        Environment.Exit(0);
-                        break;
-                    }
                     break;
 
                 case 10:
-                    LogHelper.User("Patcher Finished Successfully, extracting Aki");
+                    LogHelper.Info("Patcher Finished Successfully, extracting Aki");
                     break;
 
                 case 11:
