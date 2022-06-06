@@ -18,7 +18,8 @@
 - Checks installer is not in OG game directory,
 - Checks install folder does not have game files already in it,
 - Checks if gameversion matches aki version, if so skip patcher process,
-- Checks both zips are there, other than when the above match, patcher isnt checked for.
+- Checks both zips are there, other than when the above match, patcher isnt checked for
+- downloads both Zips from the Repo's if needed
 
 ### Installer Processes:
 - Copies files from registry logged GamePath to new location,
@@ -27,7 +28,6 @@
 - Deletes both Patcher and AKI zips at the end.
 
 ### Plans:
-- Maybe download right version for EFT patcher and server,
 - Locales, Language selection.
 
 ----
@@ -59,3 +59,6 @@
 - .net 6.0
 - SharpCompress
 - SpectreConsole
+- FubarCoder.RestSharp.Portable.Core
+- FubarCoder.RestSharp.Portable.HttpClient
+- Gitea.dll (included with repo)
