@@ -3,10 +3,12 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Threading;
 using Gitea.Api;
 using Gitea.Client;
 using Gitea.Model;
-using System.Collections.Generic;
+using Spectre.Console;
+using HttpClientProgress;
 
 namespace SPT_AKI_Installer.Aki.Helper
 {
@@ -15,14 +17,6 @@ namespace SPT_AKI_Installer.Aki.Helper
         public static bool patchNeedCheck;
         public static string akiLink;
         public static string patcherLink;
-
-        public static async Task DownloadFileAsync(string targetFilePath, string targetLink, string newFileName)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                await httpClient.DownloadFile(targetLink, Path.Join(targetFilePath, newFileName));
-            }
-        }
 
         public static async Task ReleaseCheck()
         {
@@ -79,14 +73,32 @@ namespace SPT_AKI_Installer.Aki.Helper
             }
         }
 
-        public static async Task DownloadFile(this HttpClient client, string address, string fileName)
+        public static async Task DownloadFile(string targetFilePath, string targetLink, string newFileName)
         {
-            using (var response = await client.GetAsync(address))
-            using (var stream = await response.Content.ReadAsStreamAsync())
-            using (var file = File.OpenWrite(fileName))
+            await AnsiConsole.Progress().Columns(
+        new PercentageColumn(),
+            new TaskDescriptionColumn(),
+            new ProgressBarColumn(),
+            new ElapsedTimeColumn(),
+            new SpinnerColumn()
+            ).StartAsync(async (ProgressContext context) =>
             {
-                stream.CopyTo(file);
-            }
+                var task = context.AddTask("Downloading File");
+
+                var client = new HttpClient();
+                var docUrl = targetLink;
+                var filePath = Path.Join(targetFilePath, newFileName);
+
+                // Setup your progress reporter
+                var progress = new Progress<float>((float progress) =>
+                {
+                    task.Value = progress;
+                });
+
+                // Use the provided extension method
+                using (var file = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    await client.DownloadDataAsync(docUrl, file, progress);
+            });
         }
     }
 }

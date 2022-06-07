@@ -55,7 +55,7 @@ namespace SPT_AKI_Installer.Aki.Core
             if (patcherZipPath == null && DownloadHelper.patchNeedCheck)
             {
                 LogHelper.Info("No Patcher zip file present in directory, downloading...");
-                var task = DownloadHelper.DownloadFileAsync(targetPath, DownloadHelper.patcherLink, "/PATCHERZIP.zip");
+                var task = DownloadHelper.DownloadFile(targetPath, DownloadHelper.patcherLink, "/PATCHERZIP.zip");
                 while(task.Status != System.Threading.Tasks.TaskStatus.RanToCompletion)
                 {
                 }
@@ -65,7 +65,7 @@ namespace SPT_AKI_Installer.Aki.Core
             if (akiZipPath == null)
             {
                 LogHelper.Info("No AKI zip file present in directory, downloading...");
-                var task = DownloadHelper.DownloadFileAsync(targetPath, DownloadHelper.akiLink, "/AKIZIP.zip");
+                var task = DownloadHelper.DownloadFile(targetPath, DownloadHelper.akiLink, "/AKIZIP.zip");
                 while (task.Status != System.Threading.Tasks.TaskStatus.RanToCompletion)
                 {
                 }
