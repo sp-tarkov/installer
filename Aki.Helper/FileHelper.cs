@@ -35,13 +35,16 @@ namespace SPT_AKI_Installer.Aki.Helper
 
         public static void DeleteFiles(string filePath, bool allFolders = false)
         {
-            if (filePath.Contains('.'))
+            if (File.Exists(filePath) || Directory.Exists(filePath))
             {
-                File.Delete(filePath);
-            }
-            else
-            {
-                Directory.Delete(filePath, allFolders);
+                if (filePath.Contains('.'))
+                {
+                    File.Delete(filePath);
+                }
+                else
+                {
+                    Directory.Delete(filePath, allFolders);
+                }
             }
         }
 

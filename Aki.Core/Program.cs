@@ -75,7 +75,7 @@ namespace SPT_AKI_Installer.Aki.Core
             PreCheckHelper.PatcherZipCheck(originalGamePath, targetPath, out patcherZipPath);
             PreCheckHelper.AkiZipCheck(targetPath, out akiZipPath);
 
-            LogHelper.Info("Copying game files");
+            
 
             GameCopy(originalGamePath, targetPath);
 
@@ -91,12 +91,13 @@ namespace SPT_AKI_Installer.Aki.Core
 
         static void GameCopy(string originalGamePath, string targetPath)
         {
+            LogHelper.Info("Copying game files");
             FileHelper.CopyDirectory(originalGamePath, targetPath, true);
-            LogHelper.Info("Extracting patcher");
         }
 
         static void PatcherCopy(string targetPath, string patcherZipPath)
         {
+            LogHelper.Info("Extracting patcher");
             ZipHelper.ZipDecompress(patcherZipPath, targetPath);
             FileHelper.FindFolder(patcherZipPath, targetPath, out DirectoryInfo dir);
             FileHelper.CopyDirectory(dir.FullName, targetPath, true);
