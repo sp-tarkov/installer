@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using CG.Web.MegaApiClient;
+using Newtonsoft.Json;
 using SPT_AKI_Installer.Aki.Core.Model;
 using SPT_AKI_Installer.Aki.Helper;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using CG.Web.MegaApiClient;
 
 namespace SPT_AKI_Installer.Aki.Core.Tasks
 {
@@ -70,7 +70,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
                         return GenericResult.FromSuccess();
                     }
-                    catch(Exception)
+                    catch (Exception)
                     {
                         //most likely a 509 (Bandwidth limit exceeded) due to mega's user quotas.
                         continue;
@@ -79,7 +79,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
                 var result = await DownloadHelper.DownloadFile(_data.PatcherZipInfo, mirror, progress);
 
-                if(result.Succeeded)
+                if (result.Succeeded)
                 {
                     return GenericResult.FromSuccess();
                 }
@@ -91,7 +91,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
         public override async Task<GenericResult> RunAsync()
         {
             _data.PatcherZipInfo = new FileInfo(Path.Join(_data.TargetInstallPath, "patcher.zip"));
-            _data.AkiZipInfo= new FileInfo(Path.Join(_data.TargetInstallPath, "sptaki.zip"));
+            _data.AkiZipInfo = new FileInfo(Path.Join(_data.TargetInstallPath, "sptaki.zip"));
 
             if (_data.PatchNeeded)
             {
@@ -103,7 +103,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                 {
                     return buildResult;
                 }
-                
+
                 Progress = 0;
 
                 var progress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
@@ -120,7 +120,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
             SetStatus("Downloading SPT-AKI", false);
 
             Progress = 0;
-                
+
             var akiProgress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
 
             var releaseDownloadResult = await DownloadHelper.DownloadFile(_data.AkiZipInfo, _data.AkiReleaseDownloadLink, akiProgress);

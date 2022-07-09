@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Threading.Tasks;
 using Spectre.Console;
-using System.IO;
 using SPT_AKI_Installer.Aki.Core.Model;
 using SPT_AKI_Installer.Aki.Core.Tasks;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace SPT_AKI_Installer.Aki.Core
 {

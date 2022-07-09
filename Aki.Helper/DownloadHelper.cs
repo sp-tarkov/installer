@@ -1,9 +1,9 @@
-﻿using System;
+﻿using HttpClientProgress;
+using SPT_AKI_Installer.Aki.Core.Model;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using HttpClientProgress;
-using SPT_AKI_Installer.Aki.Core.Model;
 
 namespace SPT_AKI_Installer.Aki.Helper
 {
@@ -25,14 +25,14 @@ namespace SPT_AKI_Installer.Aki.Helper
 
                 outputFile.Refresh();
 
-                if(!outputFile.Exists)
+                if (!outputFile.Exists)
                 {
                     return GenericResult.FromError($"Failed to download {outputFile.Name}");
                 }
 
                 return GenericResult.FromSuccess();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return GenericResult.FromError(ex.Message);
             }

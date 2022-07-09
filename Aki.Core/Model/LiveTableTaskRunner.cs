@@ -62,11 +62,11 @@ namespace SPT_AKI_Installer.Aki.Core.Model
                 var result = await RunAllTasksAsync(tasks, context, table);
 
                 // if a task failed and returned early, set any remaining task status to cancelled
-                if(!result.Item1)
+                if (!result.Item1)
                 {
-                    var cancelledTasks = tasks.Take(new Range(tasks.IndexOf(result.Item2)+1, tasks.Count));
+                    var cancelledTasks = tasks.Take(new Range(tasks.IndexOf(result.Item2) + 1, tasks.Count));
 
-                    foreach(var task in cancelledTasks)
+                    foreach (var task in cancelledTasks)
                     {
                         task.SetStatus("[grey]Cancelled[/]");
                     }

@@ -1,6 +1,5 @@
 ﻿using SPT_AKI_Installer.Aki.Core.Model;
 using SPT_AKI_Installer.Aki.Helper;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 

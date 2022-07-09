@@ -10,7 +10,7 @@ namespace SPT_AKI_Installer.Aki.Helper
 {
     public static class ZipHelper
     {
-        public static GenericResult Decompress(FileInfo ArchivePath,  DirectoryInfo OutputFolderPath, IProgress<double> progress = null)
+        public static GenericResult Decompress(FileInfo ArchivePath, DirectoryInfo OutputFolderPath, IProgress<double> progress = null)
         {
             try
             {
@@ -40,14 +40,14 @@ namespace SPT_AKI_Installer.Aki.Helper
 
                 OutputFolderPath.Refresh();
 
-                if(!OutputFolderPath.Exists)
+                if (!OutputFolderPath.Exists)
                 {
                     return GenericResult.FromError($"Failed to extract files: {ArchivePath.Name}");
                 }
 
                 return GenericResult.FromSuccess();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return GenericResult.FromError(ex.Message);
             }

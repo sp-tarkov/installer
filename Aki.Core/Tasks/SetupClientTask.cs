@@ -27,7 +27,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
             var extractPatcherResult = ZipHelper.Decompress(_data.PatcherZipInfo, patcherOutputDir, extractPatcherProgress);
 
-            if(!extractPatcherResult.Succeeded)
+            if (!extractPatcherResult.Succeeded)
             {
                 return extractPatcherResult;
             }
@@ -42,7 +42,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
             var copyPatcherResult = FileHelper.CopyDirectoryWithProgress(patcherDirInfo, targetInstallDirInfo, copyPatcherProgress);
 
-            if(!copyPatcherResult.Succeeded)
+            if (!copyPatcherResult.Succeeded)
             {
                 return copyPatcherResult;
             }
@@ -55,7 +55,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
             var patchingResult = ProcessHelper.PatchClientFiles(patcherEXE, targetInstallDirInfo);
 
-            if(!patchingResult.Succeeded)
+            if (!patchingResult.Succeeded)
             {
                 return patchingResult;
             }
@@ -68,7 +68,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
             var extractReleaseResult = ZipHelper.Decompress(_data.AkiZipInfo, targetInstallDirInfo, extractReleaseProgress);
 
-            if(!extractReleaseResult.Succeeded)
+            if (!extractReleaseResult.Succeeded)
             {
                 return extractPatcherResult;
             }

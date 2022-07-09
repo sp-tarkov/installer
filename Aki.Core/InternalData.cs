@@ -19,7 +19,7 @@ namespace SPT_AKI_Installer.Aki.Core
         /// The original EFT game version
         /// </summary>
         public string OriginalGameVersion { get; set; }
-        
+
         /// <summary>
         /// Patcher zip file info
         /// </summary>

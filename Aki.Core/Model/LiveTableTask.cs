@@ -1,7 +1,6 @@
 ﻿using Spectre.Console;
 using SPT_AKI_Installer.Aki.Core.Interfaces;
 using System;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

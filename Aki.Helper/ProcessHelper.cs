@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
+﻿using SPT_AKI_Installer.Aki.Core.Model;
+using System.Diagnostics;
 using System.IO;
-using SPT_AKI_Installer.Aki.Core.Model;
 
 namespace SPT_AKI_Installer.Aki.Helper
 {
@@ -19,7 +19,7 @@ namespace SPT_AKI_Installer.Aki.Helper
     {
         public static GenericResult PatchClientFiles(FileInfo executable, DirectoryInfo workingDir)
         {
-            if(!executable.Exists || !workingDir.Exists)
+            if (!executable.Exists || !workingDir.Exists)
             {
                 return GenericResult.FromError($"Could not find executable ({executable.Name}) or working directory ({workingDir.Name})");
             }

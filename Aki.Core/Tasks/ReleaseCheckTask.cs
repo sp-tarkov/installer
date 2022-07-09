@@ -67,7 +67,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
                 string status = $"Current Release: {latestAkiVersion}";
 
-                if(_data.PatchNeeded)
+                if (_data.PatchNeeded)
                 {
                     status += " - Patch Available";
                 }
