@@ -8,7 +8,7 @@ namespace HttpClientProgress
 {
 	public static class HttpClientProgressExtensions
 	{
-		public static async Task DownloadDataAsync(this HttpClient client, string requestUrl, Stream destination, IProgress<float> progress = null, CancellationToken cancellationToken = default(CancellationToken))
+		public static async Task DownloadDataAsync(this HttpClient client, string requestUrl, Stream destination, IProgress<double> progress = null, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			using (var response = await client.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead))
 			{

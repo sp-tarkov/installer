@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using System.Runtime.InteropServices;
 using System.IO;
-using System;
 using System.Diagnostics;
 
 namespace SPT_AKI_Installer.Aki.Helper
@@ -9,10 +8,6 @@ namespace SPT_AKI_Installer.Aki.Helper
     public static class PreCheckHelper
     {
         private const string registryInstall = @"Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov";
-        private static string OGGamePath;
-        public static string gameVersion;
-        private static string patchZip;
-        private static string akiZip;
 
         public static string DetectOriginalGamePath()
         {
@@ -23,50 +18,38 @@ namespace SPT_AKI_Installer.Aki.Helper
             var uninstallStringValue = Registry.LocalMachine.OpenSubKey(registryInstall, false)
                 ?.GetValue("UninstallString");
             var info = (uninstallStringValue is string key) ? new FileInfo(key) : null;
-            OGGamePath = info?.DirectoryName;
-
-            return OGGamePath;
+            
+            return info?.DirectoryName;
         }
 
-        public static void GameCheck(out string gamePath)
+        public static string DetectOriginalGameVersion(string gamePath)
         {
-            string Path = DetectOriginalGamePath();
-
-            if (Path == null)
-            {
-                LogHelper.Error("EFT IS NOT INSTALLED!");
-                LogHelper.Error("Press enter to close the app");
-                Console.ReadKey();
-                Environment.Exit(0);
-            }
-            gamePath = Path;
+            return FileVersionInfo.GetVersionInfo(Path.Join(gamePath + "/EscapeFromTarkov.exe")).ProductVersion.Replace('-', '.').Split('.')[^2];
         }
 
-        public static void DetectOriginalGameVersion(string gamePath)
-        {
-            gameVersion = FileVersionInfo.GetVersionInfo(Path.Join(gamePath + "/EscapeFromTarkov.exe")).ProductVersion.Replace('-', '.').Split('.')[^2];
-        }
-
-        public static void PatcherZipCheck(string gamePath, string targetPath, out string patcherZipPath)
+        public static string GetPatcherZipPath(string gameVersion, string targetPath)
         {
             // example patch name - Patcher.12.12.15.17861.to.12.12.15.17349.zip
-            patchZip = FileHelper.FindFile(targetPath, gameVersion, "Patcher");
+            var patchZip = FileHelper.FindFile(targetPath, gameVersion, "Patcher");
             if (patchZip == null)
             {
                 patchZip = FileHelper.FindFile(targetPath, "PATCHERZIP");
             }
-            patcherZipPath = patchZip;
+            
+            return patchZip;
         }
 
-        public static void AkiZipCheck(string targetPath, out string akiZipPath)
+        public static string GetAkiZipPath(string targetPath)
         {
             // example aki name - RELEASE-SPT-2.3.1-17349.zip
-            akiZip = FileHelper.FindFile(targetPath, "SPT", "RELEASE");
+            var akiZip = FileHelper.FindFile(targetPath, "SPT", "RELEASE");
+
             if (akiZip == null)
             {
                 akiZip = FileHelper.FindFile(targetPath, "AKIZIP");
             }
-            akiZipPath = akiZip;
+
+            return akiZip;
         }
     }
 }
