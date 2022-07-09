@@ -1,99 +1,37 @@
-﻿using System;
+﻿using SPT_AKI_Installer.Aki.Core.Model;
+using System;
 using System.IO;
-using Spectre.Console;
 
 namespace SPT_AKI_Installer.Aki.Helper
 {
     public static class FileHelper
     {
-        public static void CopyDirectory(string oldDir, string newDir, bool overwrite)
+        public static GenericResult CopyDirectoryWithProgress(DirectoryInfo sourceDir, DirectoryInfo targetDir, IProgress<double> progress)
         {
-            int totalFiles = Directory.GetFiles(oldDir, "*.*", SearchOption.AllDirectories).Length;
-
-            AnsiConsole.Progress().Columns(
-        new PercentageColumn(),
-            new TaskDescriptionColumn(),
-            new ProgressBarColumn(),
-            new ElapsedTimeColumn(),
-            new SpinnerColumn()
-            ).Start((ProgressContext context) =>
+            try
             {
-                var task = context.AddTask("Copying Files", true, totalFiles);
+                int totalFiles = sourceDir.GetFiles("*.*", SearchOption.AllDirectories).Length;
+                int processedFiles = 0;
 
-                foreach (string dirPath in Directory.GetDirectories(oldDir, "*", SearchOption.AllDirectories))
+                foreach (var dir in sourceDir.GetDirectories("*", SearchOption.AllDirectories))
                 {
-                    Directory.CreateDirectory(dirPath.Replace(oldDir, newDir));
+                    Directory.CreateDirectory(dir.FullName.Replace(sourceDir.FullName, targetDir.FullName));
                 }
 
-                foreach (string newPath in Directory.GetFiles(oldDir, "*.*", SearchOption.AllDirectories))
+                foreach (var file in sourceDir.GetFiles("*.*", SearchOption.AllDirectories))
                 {
-                    File.Copy(newPath, newPath.Replace(oldDir, newDir), overwrite);
-                    task.Increment(1);
-                }
-            });
-        }
+                    File.Copy(file.FullName, file.FullName.Replace(sourceDir.FullName, targetDir.FullName), true);
+                    processedFiles++;
 
-        public static void DeleteFiles(string filePath, bool allFolders = false)
-        {
-            if (File.Exists(filePath) || Directory.Exists(filePath))
-            {
-                if (filePath.Contains('.'))
-                {
-                    File.Delete(filePath);
+                    progress.Report((int)Math.Floor(((double)processedFiles / totalFiles) * 100));
                 }
-                else
-                {
-                    Directory.Delete(filePath, allFolders);
-                }
+
+                return GenericResult.FromSuccess();
             }
-        }
-
-        public static string FindFile(string path, string name)
-        {
-            string[] filePaths = Directory.GetFiles(path);
-            foreach (string file in filePaths)
+            catch (Exception ex)
             {
-                if (file.Contains(name, StringComparison.OrdinalIgnoreCase))
-                {
-                    return file;
-                }
+                return GenericResult.FromError(ex.Message);
             }
-            return null;
-        }
-
-        public static string FindFile(string path, string name, string altName)
-        {
-            string[] filePaths = Directory.GetFiles(path);
-            foreach (string file in filePaths)
-            {
-                if (file.Contains(name, StringComparison.OrdinalIgnoreCase) &&
-                    file.Contains(altName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return file;
-                }
-            }
-            return null;
-        }
-
-        public static bool FindFolder(string patchRef, string targetPath, out DirectoryInfo dir)
-        {
-            var dirInfo = new DirectoryInfo(targetPath).GetDirectories();
-            string patchInner = null;
-            foreach (var file in dirInfo)
-            {
-                if (file.FullName.Contains("patcher", StringComparison.OrdinalIgnoreCase))
-                {
-                    patchInner = file.FullName;
-                }
-            }
-            var path = new DirectoryInfo(patchInner);
-            if (path.Exists)
-            {
-                dir = path;
-                return true;
-            }
-            dir = null;
-            return false;
         }
     }
 }
