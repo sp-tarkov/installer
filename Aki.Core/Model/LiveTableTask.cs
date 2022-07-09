@@ -29,7 +29,8 @@ namespace SPT_AKI_Installer.Aki.Core.Model
         /// </summary>
         public int RowIndex { get; set; }
 
-        private bool _continueRendering = false;
+        private bool _continueRenderingProgress = false;
+        private bool _continueRenderingIndeterminateProgress = false;
 
         private int _indeterminateState = 0;
 
@@ -66,14 +67,19 @@ namespace SPT_AKI_Installer.Aki.Core.Model
         /// <remarks>this doesn't need to be called if you set isIndeterminate in the constructor. You need to set IsIndeterminate to false to stop this background task</remarks>
         public void StartDrawingIndeterminateProgress()
         {
-            _continueRendering = true;
-            new Task(new Action(() => { RenderIndeterminateProgress(ref _continueRendering); })).Start();
+            _continueRenderingProgress = false;
+            _continueRenderingIndeterminateProgress = true;
+
+            new Task(new Action(() => { RenderIndeterminateProgress(ref _continueRenderingIndeterminateProgress); })).Start();
         }
 
         public void StartDrawingProgress()
         {
-            _continueRendering = true;
-            new Task(new Action(() => { RenderProgress(ref _continueRendering); })).Start();
+            Progress = 0;
+            _continueRenderingIndeterminateProgress = false;
+            _continueRenderingProgress = true;
+
+            new Task(new Action(() => { RenderProgress(ref _continueRenderingProgress); })).Start();
         }
 
         private void ReRenderEntry(string message)
@@ -134,7 +140,8 @@ namespace SPT_AKI_Installer.Aki.Core.Model
 
             if (stopRendering)
             {
-                _continueRendering = false;
+                _continueRenderingProgress = false;
+                _continueRenderingIndeterminateProgress = false;
                 ReRenderEntry(message);
             }
         }

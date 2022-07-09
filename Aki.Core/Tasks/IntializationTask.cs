@@ -28,17 +28,17 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
             if (_data.OriginalGamePath == null)
             {
-                GenericResult.FromError("Unable to find EFT OG directory \n please make sure EFT is installed \n please also run EFT once");
+                return GenericResult.FromError("Unable to find EFT OG directory, please make sure EFT is installed. Please also run EFT once");
             }
 
             if (_data.OriginalGamePath == _data.TargetInstallPath)
             {
-                GenericResult.FromError("Installer is located in EFT's original directory \n Please move the installer to a seperate folder as per the guide");
+                return GenericResult.FromError("Installer is located in EFT's original directory. Please move the installer to a seperate folder as per the guide");
             }
 
             if (File.Exists(Path.Join(_data.TargetInstallPath, "EscapeFromTarkov.exe")))
             {
-                GenericResult.FromError("Installer is located in a Folder that has existing Game Files \n Please make sure the installer is in a fresh folder as per the guide");
+                return GenericResult.FromError("Installer is located in a Folder that has existing Game Files. Please make sure the installer is in a fresh folder as per the guide");
             }
 
             return GenericResult.FromSuccess($"Current Game Version: {_data.OriginalGameVersion}");

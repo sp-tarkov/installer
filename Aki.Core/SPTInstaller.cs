@@ -30,42 +30,6 @@ namespace SPT_AKI_Installer.Aki.Core
                          .RunTasksAsync(taskList)
                          .GetAwaiter()
                          .GetResult();
-
-            //            GameCopy(originalGamePath, targetPath);
-
-            //            if (DownloadHelper.patchNeedCheck)
-            //            {
-            //                PatcherCopy(targetPath, patcherZipPath);
-            //                PatcherProcess(targetPath);
-            //            }
-
-            //            AkiInstall(targetPath, akiZipPath);
-            //            DeleteZip(patcherZipPath, akiZipPath);
-            //        }
-
-            //        static void GameCopy(string originalGamePath, string targetPath)
-            //        {
-            //            LogHelper.Info("Copying game files");
-            //            FileHelper.CopyDirectory(originalGamePath, targetPath, true);
-            //        }
-
-            //        static void PatcherCopy(string targetPath, string patcherZipPath)
-            //        {
-            //            LogHelper.Info("Extracting patcher");
-            //            ZipHelper.ZipDecompress(patcherZipPath, targetPath);
-            //            FileHelper.FindFolder(patcherZipPath, targetPath, out DirectoryInfo dir);
-            //            FileHelper.CopyDirectory(dir.FullName, targetPath, true);
-
-            //            if (dir.Exists)
-            //            {
-            //                dir.Delete(true);
-            //                dir.Refresh();
-            //                if (dir.Exists)
-            //                {
-            //                    LogHelper.Error("unable to delete patcher folder");
-            //                    LogHelper.Error($"please delete folder called {dir.FullName}");
-            //                }
-            //            }
         }
 
         public SPTinstaller(
@@ -91,6 +55,7 @@ namespace SPT_AKI_Installer.Aki.Core
 #endif
 
             await LiveTableTaskRunner.RunAsync(tasks);
+            CloseApp("SPT is Ready to play");
         }
 
         private static IHost ConfigureHost()
@@ -102,36 +67,11 @@ namespace SPT_AKI_Installer.Aki.Core
                 services.AddTransient<LiveTableTask, ReleaseCheckTask>();
                 services.AddTransient<LiveTableTask, DownloadTask>();
                 services.AddTransient<LiveTableTask, CopyClientTask>();
+                services.AddTransient<LiveTableTask, SetupClientTask>();
                 services.AddTransient<SPTinstaller>();
             })
             .Build();
         }
-
-        //static void PatcherProcess(string targetPath)
-        //{
-        //    LogHelper.Info("Starting patcher");
-        //    ProcessHelper patcherProcess = new();
-        //    patcherProcess.StartProcess(Path.Join(targetPath + "/patcher.exe"), targetPath);
-
-        //    FileHelper.DeleteFiles(Path.Join(targetPath, "/patcher.exe"));
-        //}
-
-        //static void AkiInstall(string targetPath, string akiZipPath)
-        //{
-        //    ZipHelper.ZipDecompress(akiZipPath, targetPath);
-        //    LogHelper.Info("Aki has been extracted");
-        //}
-
-        //static void DeleteZip(string patcherZipPath, string akiZipPath)
-        //{
-        //    FileHelper.DeleteFiles(patcherZipPath, false);
-        //    FileHelper.DeleteFiles(akiZipPath, false);
-
-        //    LogHelper.User("Removed Zips, Press enter to close the installer, you can then delete the installer");
-        //    LogHelper.User("ENJOY SPT-AKI!");
-        //    Console.ReadKey();
-        //    Environment.Exit(0);
-        //}
 
         static void CloseApp(string text)
         {

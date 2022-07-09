@@ -27,29 +27,29 @@ namespace SPT_AKI_Installer.Aki.Helper
             return FileVersionInfo.GetVersionInfo(Path.Join(gamePath + "/EscapeFromTarkov.exe")).ProductVersion.Replace('-', '.').Split('.')[^2];
         }
 
-        public static string GetPatcherZipPath(string gameVersion, string targetPath)
-        {
-            // example patch name - Patcher.12.12.15.17861.to.12.12.15.17349.zip
-            var patchZip = FileHelper.FindFile(targetPath, gameVersion, "Patcher");
-            if (patchZip == null)
-            {
-                patchZip = FileHelper.FindFile(targetPath, "PATCHERZIP");
-            }
+        //public static string GetPatcherZipPath(string gameVersion, string targetPath)
+        //{
+        //    // example patch name - Patcher.12.12.15.17861.to.12.12.15.17349.zip
+        //    var patchZip = FileHelper.FindFile(targetPath, gameVersion, "Patcher");
+        //    if (patchZip == null)
+        //    {
+        //        patchZip = FileHelper.FindFile(targetPath, "PATCHERZIP");
+        //    }
             
-            return patchZip;
-        }
+        //    return patchZip;
+        //}
 
-        public static string GetAkiZipPath(string targetPath)
-        {
-            // example aki name - RELEASE-SPT-2.3.1-17349.zip
-            var akiZip = FileHelper.FindFile(targetPath, "SPT", "RELEASE");
+        //public static string GetAkiZipPath(string targetPath)
+        //{
+        //    // example aki name - RELEASE-SPT-2.3.1-17349.zip
+        //    var akiZip = FileHelper.FindFile(targetPath, "SPT", "RELEASE");
 
-            if (akiZip == null)
-            {
-                akiZip = FileHelper.FindFile(targetPath, "AKIZIP");
-            }
+        //    if (akiZip == null)
+        //    {
+        //        akiZip = FileHelper.FindFile(targetPath, "AKIZIP");
+        //    }
 
-            return akiZip;
-        }
+        //    return akiZip;
+        //}
     }
 }

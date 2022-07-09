@@ -1,38 +1,56 @@
 ﻿using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
 using SharpCompress.Common;
-using Spectre.Console;
+using SPT_AKI_Installer.Aki.Core.Model;
+using System;
+using System.IO;
 using System.Linq;
 
 namespace SPT_AKI_Installer.Aki.Helper
 {
     public static class ZipHelper
     {
-        public static void ZipDecompress(string ArchivePath, string OutputFolderPath)
+        public static GenericResult Decompress(FileInfo ArchivePath,  DirectoryInfo OutputFolderPath, IProgress<double> progress = null)
         {
-            AnsiConsole.Progress().Columns(
-        new PercentageColumn(),
-            new TaskDescriptionColumn(),
-            new ProgressBarColumn(),
-            new ElapsedTimeColumn(),
-            new SpinnerColumn()
-            ).Start((ProgressContext context) =>
+            try
             {
-                using var archive = ZipArchive.Open(ArchivePath);
-                var entries = archive.Entries.Where(entry => !entry.IsDirectory);
-                var task = context.AddTask("Extracting Files", true, entries.Count());
+                OutputFolderPath.Refresh();
 
-                foreach (var entry in entries)
+                if (!OutputFolderPath.Exists) OutputFolderPath.Create();
+
+                using var archive = ZipArchive.Open(ArchivePath);
+                var totalEntries = archive.Entries.Where(entry => !entry.IsDirectory);
+                int processedEntries = 0;
+
+                foreach (var entry in totalEntries)
                 {
-                    entry.WriteToDirectory($"{OutputFolderPath}", new ExtractionOptions()
+                    entry.WriteToDirectory(OutputFolderPath.FullName, new ExtractionOptions()
                     {
                         ExtractFullPath = true,
                         Overwrite = true
                     });
 
-                    task.Increment(1);
+                    processedEntries++;
+
+                    if (progress != null)
+                    {
+                        progress.Report(Math.Floor(((double)processedEntries / totalEntries.Count()) * 100));
+                    }
                 }
-            });
+
+                OutputFolderPath.Refresh();
+
+                if(!OutputFolderPath.Exists)
+                {
+                    return GenericResult.FromError($"Failed to extract files: {ArchivePath.Name}");
+                }
+
+                return GenericResult.FromSuccess();
+            }
+            catch(Exception ex)
+            {
+                return GenericResult.FromError(ex.Message);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using SPT_AKI_Installer.Aki.Core.Model;
 
 namespace SPT_AKI_Installer.Aki.Helper
@@ -14,13 +15,18 @@ namespace SPT_AKI_Installer.Aki.Helper
         PatchFailed = 15
     }
 
-    public class ProcessHelper
+    public static class ProcessHelper
     {
-        public GenericResult PatchClientFiles(string exeDir, string workingDir)
+        public static GenericResult PatchClientFiles(FileInfo executable, DirectoryInfo workingDir)
         {
+            if(!executable.Exists || !workingDir.Exists)
+            {
+                return GenericResult.FromError($"Could not find executable ({executable.Name}) or working directory ({workingDir.Name})");
+            }
+
             var process = new Process();
-            process.StartInfo.FileName = exeDir;
-            process.StartInfo.WorkingDirectory = workingDir;
+            process.StartInfo.FileName = executable.FullName;
+            process.StartInfo.WorkingDirectory = workingDir.FullName;
             process.EnableRaisingEvents = true;
             process.StartInfo.Arguments = "autoclose";
             process.Start();

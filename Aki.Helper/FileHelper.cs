@@ -1,36 +1,38 @@
 ﻿using System;
 using System.IO;
 using Spectre.Console;
+using SPT_AKI_Installer.Aki.Core.Model;
 
 namespace SPT_AKI_Installer.Aki.Helper
 {
     public static class FileHelper
     {
-        public static void CopyDirectory(string oldDir, string newDir, bool overwrite)
+        public static GenericResult CopyDirectoryWithProgress(DirectoryInfo sourceDir, DirectoryInfo targetDir, IProgress<double> progress)
         {
-            int totalFiles = Directory.GetFiles(oldDir, "*.*", SearchOption.AllDirectories).Length;
-
-            AnsiConsole.Progress().Columns(
-        new PercentageColumn(),
-            new TaskDescriptionColumn(),
-            new ProgressBarColumn(),
-            new ElapsedTimeColumn(),
-            new SpinnerColumn()
-            ).Start((ProgressContext context) =>
+            try
             {
-                var task = context.AddTask("Copying Files", true, totalFiles);
+                int totalFiles = sourceDir.GetFiles("*.*", SearchOption.AllDirectories).Length;
+                int processedFiles = 0;
 
-                foreach (string dirPath in Directory.GetDirectories(oldDir, "*", SearchOption.AllDirectories))
+                foreach (var dir in sourceDir.GetDirectories("*", SearchOption.AllDirectories))
                 {
-                    Directory.CreateDirectory(dirPath.Replace(oldDir, newDir));
+                    Directory.CreateDirectory(dir.FullName.Replace(sourceDir.FullName, targetDir.FullName));
                 }
 
-                foreach (string newPath in Directory.GetFiles(oldDir, "*.*", SearchOption.AllDirectories))
+                foreach (var file in sourceDir.GetFiles("*.*", SearchOption.AllDirectories))
                 {
-                    File.Copy(newPath, newPath.Replace(oldDir, newDir), overwrite);
-                    task.Increment(1);
+                    File.Copy(file.FullName, file.FullName.Replace(sourceDir.FullName, targetDir.FullName), true);
+                    processedFiles++;
+
+                    progress.Report((int)Math.Floor(((double)processedFiles / totalFiles) * 100));
                 }
-            });
+
+                return GenericResult.FromSuccess();
+            }
+            catch(Exception ex)
+            {
+                return GenericResult.FromError(ex.Message);
+            }
         }
 
         public static void DeleteFiles(string filePath, bool allFolders = false)

@@ -22,7 +22,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
         {
             var mirrorListInfo = new FileInfo(Path.Join(_data.TargetInstallPath, "mirrors.json"));
 
-            SetStatus("Downloading mirror list", false);
+            SetStatus("Downloading Mirror List", false);
 
             var progress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
 
@@ -45,11 +45,11 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
             return GenericResult.FromError("Failed to deserialize mirrors list");
         }
 
-        private async Task<GenericResult> DownloadPatcherFromMirrors(FileInfo patcherZip, IProgress<double> progress)
+        private async Task<GenericResult> DownloadPatcherFromMirrors(IProgress<double> progress)
         {
             foreach (string mirror in _data.PatcherReleaseMirrors)
             {
-                SetStatus($"Download Patcher: {mirror}", false);
+                SetStatus($"Downloading Patcher: {mirror}", false);
 
                 // mega is a little weird since they use encryption, but thankfully there is a great library for their api :)
                 if (mirror.StartsWith("https://mega"))
@@ -63,7 +63,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                     try
                     {
                         using var megaDownloadStream = await megaClient.DownloadAsync(new Uri(mirror), progress);
-                        using var patcherFileStream = patcherZip.Open(FileMode.Create);
+                        using var patcherFileStream = _data.PatcherZipInfo.Open(FileMode.Create);
                         {
                             await megaDownloadStream.CopyToAsync(patcherFileStream);
                         }
@@ -77,7 +77,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                     }
                 }
 
-                var result = await DownloadHelper.DownloadFile(patcherZip, mirror, progress);
+                var result = await DownloadHelper.DownloadFile(_data.PatcherZipInfo, mirror, progress);
 
                 if(result.Succeeded)
                 {
@@ -90,12 +90,12 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
         public override async Task<GenericResult> RunAsync()
         {
-            var patcherZipInfo = new FileInfo(Path.Join(_data.TargetInstallPath, "patcher.zip"));
-            var akiZipInfo = new FileInfo(Path.Join(_data.TargetInstallPath, "sptaki.zip"));
+            _data.PatcherZipInfo = new FileInfo(Path.Join(_data.TargetInstallPath, "patcher.zip"));
+            _data.AkiZipInfo= new FileInfo(Path.Join(_data.TargetInstallPath, "sptaki.zip"));
 
             if (_data.PatchNeeded)
             {
-                if (patcherZipInfo.Exists) patcherZipInfo.Delete();
+                if (_data.PatcherZipInfo.Exists) _data.PatcherZipInfo.Delete();
 
                 var buildResult = await BuildMirrorList();
 
@@ -103,13 +103,11 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                 {
                     return buildResult;
                 }
-
-                SetStatus("Downloading Patcher", false);
                 
                 Progress = 0;
 
                 var progress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
-                var patcherDownloadRresult = await DownloadPatcherFromMirrors(patcherZipInfo, progress);
+                var patcherDownloadRresult = await DownloadPatcherFromMirrors(progress);
 
                 if (!patcherDownloadRresult.Succeeded)
                 {
@@ -117,7 +115,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                 }
             }
 
-            if (akiZipInfo.Exists) akiZipInfo.Delete();
+            if (_data.AkiZipInfo.Exists) _data.AkiZipInfo.Delete();
 
             SetStatus("Downloading SPT-AKI", false);
 
@@ -125,7 +123,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                 
             var akiProgress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
 
-            var releaseDownloadResult = await DownloadHelper.DownloadFile(akiZipInfo, _data.AkiReleaseDownloadLink, akiProgress);
+            var releaseDownloadResult = await DownloadHelper.DownloadFile(_data.AkiZipInfo, _data.AkiReleaseDownloadLink, akiProgress);
 
             if (!releaseDownloadResult.Succeeded)
             {

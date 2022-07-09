@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 
 namespace SPT_AKI_Installer.Aki.Core
 {
@@ -18,7 +19,16 @@ namespace SPT_AKI_Installer.Aki.Core
         /// The original EFT game version
         /// </summary>
         public string OriginalGameVersion { get; set; }
+        
+        /// <summary>
+        /// Patcher zip file info
+        /// </summary>
+        public FileInfo PatcherZipInfo { get; set; }
 
+        /// <summary>
+        /// SPT-AKI zip file info
+        /// </summary>
+        public FileInfo AkiZipInfo { get; set; }
 
         /// <summary>
         /// The release download link for SPT-AKI
