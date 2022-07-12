@@ -12,8 +12,6 @@ namespace HttpClientProgress
         {
             using (var response = await client.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead))
             {
-                var blah = await response.Content.ReadAsStringAsync();
-
                 var contentLength = response.Content.Headers.ContentLength;
                 using (var download = await response.Content.ReadAsStreamAsync())
                 {
