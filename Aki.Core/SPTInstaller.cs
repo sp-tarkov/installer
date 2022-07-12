@@ -55,7 +55,7 @@ namespace SPT_AKI_Installer.Aki.Core
 #endif
 
             await LiveTableTaskRunner.RunAsync(tasks);
-            CloseApp("SPT is Ready to play");
+            CloseApp("");
         }
 
         private static IHost ConfigureHost()
