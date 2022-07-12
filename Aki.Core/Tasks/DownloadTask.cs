@@ -33,9 +33,9 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                 return downloadResult;
             }
 
-            var blah = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(mirrorListInfo.FullName));
+            var blah = JsonConvert.DeserializeObject<List<DownloadMirror>>(File.ReadAllText(mirrorListInfo.FullName));
 
-            if (blah is List<string> mirrors)
+            if (blah is List<DownloadMirror> mirrors)
             {
                 _data.PatcherReleaseMirrors = mirrors;
 
@@ -47,12 +47,12 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
         private async Task<GenericResult> DownloadPatcherFromMirrors(IProgress<double> progress)
         {
-            foreach (string mirror in _data.PatcherReleaseMirrors)
+            foreach (var mirror in _data.PatcherReleaseMirrors)
             {
-                SetStatus($"Downloading Patcher: {mirror}", false);
+                SetStatus($"Downloading Patcher: {mirror.Link}", false);
 
                 // mega is a little weird since they use encryption, but thankfully there is a great library for their api :)
-                if (mirror.StartsWith("https://mega"))
+                if (mirror.Link.StartsWith("https://mega"))
                 {
                     var megaClient = new MegaApiClient();
                     await megaClient.LoginAnonymousAsync();
@@ -62,10 +62,17 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
                     try
                     {
-                        using var megaDownloadStream = await megaClient.DownloadAsync(new Uri(mirror), progress);
+                        using var megaDownloadStream = await megaClient.DownloadAsync(new Uri(mirror.Link), progress);
                         using var patcherFileStream = _data.PatcherZipInfo.Open(FileMode.Create);
                         {
                             await megaDownloadStream.CopyToAsync(patcherFileStream);
+                        }
+
+                        patcherFileStream.Close();
+
+                        if(!DownloadHelper.FileHashCheck(_data.PatcherZipInfo, mirror.Hash))
+                        {
+                            return GenericResult.FromError("Hash mismatch");
                         }
 
                         return GenericResult.FromSuccess();
@@ -77,7 +84,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                     }
                 }
 
-                var result = await DownloadHelper.DownloadFile(_data.PatcherZipInfo, mirror, progress);
+                var result = await DownloadHelper.DownloadFile(_data.PatcherZipInfo, mirror.Link, progress, mirror.Hash);
 
                 if (result.Succeeded)
                 {

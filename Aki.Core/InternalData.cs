@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SPT_AKI_Installer.Aki.Core.Model;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SPT_AKI_Installer.Aki.Core
@@ -43,7 +44,7 @@ namespace SPT_AKI_Installer.Aki.Core
         /// <summary>
         /// The release download mirrors for the patcher
         /// </summary>
-        public List<string> PatcherReleaseMirrors { get; set; } = null;
+        public List<DownloadMirror> PatcherReleaseMirrors { get; set; } = null;
 
         /// <summary>
         /// Whether or not a patch is needed to downgrade the client files
