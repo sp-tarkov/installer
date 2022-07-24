@@ -18,47 +18,57 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
         public override async Task<GenericResult> RunAsync()
         {
-            // extract patcher files
-            SetStatus("Extrating Patcher", false);
-
-            var extractPatcherProgress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
+            var targetInstallDirInfo = new DirectoryInfo(_data.TargetInstallPath);
 
             var patcherOutputDir = new DirectoryInfo(Path.Join(_data.TargetInstallPath, "patcher"));
 
-            var extractPatcherResult = ZipHelper.Decompress(_data.PatcherZipInfo, patcherOutputDir, extractPatcherProgress);
-
-            if (!extractPatcherResult.Succeeded)
-            {
-                return extractPatcherResult;
-            }
-
-            // copy patcher files to install directory
-            SetStatus("Copying Patcher", false);
-
-            var patcherDirInfo = patcherOutputDir.GetDirectories("Patcher*", SearchOption.TopDirectoryOnly).First();
-            var targetInstallDirInfo = new DirectoryInfo(_data.TargetInstallPath);
-
-            var copyPatcherProgress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
-
-            var copyPatcherResult = FileHelper.CopyDirectoryWithProgress(patcherDirInfo, targetInstallDirInfo, copyPatcherProgress);
-
-            if (!copyPatcherResult.Succeeded)
-            {
-                return copyPatcherResult;
-            }
-
-            // run patcher
-            SetStatus("Running Patcher");
-            StartDrawingIndeterminateProgress();
-
             var patcherEXE = new FileInfo(Path.Join(_data.TargetInstallPath, "patcher.exe"));
 
-            var patchingResult = ProcessHelper.PatchClientFiles(patcherEXE, targetInstallDirInfo);
-
-            if (!patchingResult.Succeeded)
+            if (_data.PatchNeeded)
             {
-                return patchingResult;
+                // extract patcher files
+                SetStatus("Extrating Patcher", false);
+
+                var extractPatcherProgress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
+
+                
+
+                var extractPatcherResult = ZipHelper.Decompress(_data.PatcherZipInfo, patcherOutputDir, extractPatcherProgress);
+
+                if (!extractPatcherResult.Succeeded)
+                {
+                    return extractPatcherResult;
+                }
+
+                // copy patcher files to install directory
+                SetStatus("Copying Patcher", false);
+
+                var patcherDirInfo = patcherOutputDir.GetDirectories("Patcher*", SearchOption.TopDirectoryOnly).First();
+                
+
+                var copyPatcherProgress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
+
+                var copyPatcherResult = FileHelper.CopyDirectoryWithProgress(patcherDirInfo, targetInstallDirInfo, copyPatcherProgress);
+
+                if (!copyPatcherResult.Succeeded)
+                {
+                    return copyPatcherResult;
+                }
+
+                // run patcher
+                SetStatus("Running Patcher");
+                StartDrawingIndeterminateProgress();
+
+                var patchingResult = ProcessHelper.PatchClientFiles(patcherEXE, targetInstallDirInfo);
+
+                if (!patchingResult.Succeeded)
+                {
+                    return patchingResult;
+                }
+
             }
+
+            
 
             // extract release files
             SetStatus("Extracting Release");
@@ -70,17 +80,21 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
             if (!extractReleaseResult.Succeeded)
             {
-                return extractPatcherResult;
+                return extractReleaseResult;
             }
 
             // cleanup temp files
             SetStatus("Cleanup");
             StartDrawingIndeterminateProgress();
 
-            patcherOutputDir.Delete(true);
+            if(_data.PatchNeeded)
+            {
+                patcherOutputDir.Delete(true);
+                patcherEXE.Delete();
+            }
+            
             _data.PatcherZipInfo.Delete();
             _data.AkiZipInfo.Delete();
-            patcherEXE.Delete();
 
             return GenericResult.FromSuccess("SPT is Setup. Happy Playing!");
         }
