@@ -23,7 +23,14 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                 return GenericResult.FromError("EFT IS NOT INSTALLED!");
             }
 
-            _data.OriginalGameVersion = PreCheckHelper.DetectOriginalGameVersion(_data.OriginalGamePath);
+            var result = PreCheckHelper.DetectOriginalGameVersion(_data.OriginalGamePath);
+
+            if (!result.Succeeded)
+            {
+                return result;
+            }
+
+            _data.OriginalGameVersion = result.Message;
 
             if (_data.OriginalGamePath == null)
             {
@@ -39,6 +46,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
             {
                 return GenericResult.FromError("Installer is located in a Folder that has existing Game Files. Please make sure the installer is in a fresh folder as per the guide");
             }
+
 
             return GenericResult.FromSuccess($"Current Game Version: {_data.OriginalGameVersion}");
         }

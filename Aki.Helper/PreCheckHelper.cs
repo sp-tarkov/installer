@@ -1,4 +1,6 @@
 ﻿using Microsoft.Win32;
+using SPT_AKI_Installer.Aki.Core.Model;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -22,9 +24,17 @@ namespace SPT_AKI_Installer.Aki.Helper
             return info?.DirectoryName;
         }
 
-        public static string DetectOriginalGameVersion(string gamePath)
+        public static GenericResult DetectOriginalGameVersion(string gamePath)
         {
-            return FileVersionInfo.GetVersionInfo(Path.Join(gamePath + "/EscapeFromTarkov.exe")).ProductVersion.Replace('-', '.').Split('.')[^2];
+            try
+            {
+                string version = FileVersionInfo.GetVersionInfo(Path.Join(gamePath + "/EscapeFromTarkov.exe")).ProductVersion.Replace('-', '.').Split('.')[^2];
+                return GenericResult.FromSuccess(version);
+            }
+            catch (Exception ex)
+            {
+                return GenericResult.FromError($"File not found: {ex.Message}");
+            }
         }
     }
 }
