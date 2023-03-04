@@ -20,22 +20,20 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
         private async Task<GenericResult> BuildMirrorList()
         {
-            var mirrorListInfo = new FileInfo(Path.Join(_data.TargetInstallPath, "mirrors.json"));
-
             SetStatus("Downloading Mirror List", false);
 
             var progress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
 
-            var downloadResult = await DownloadHelper.DownloadFile(mirrorListInfo, _data.PatcherMirrorsLink, progress);
+            var file = await DownloadCacheHelper.GetOrDownloadFileAsync("mirrors.json", _data.PatcherMirrorsLink, progress);
 
-            if (!downloadResult.Succeeded)
+            if (file == null)
             {
-                return downloadResult;
+                return GenericResult.FromError("Failed to download mirror list");
             }
 
-            var blah = JsonConvert.DeserializeObject<List<DownloadMirror>>(File.ReadAllText(mirrorListInfo.FullName));
+            var mirrorsList = JsonConvert.DeserializeObject<List<DownloadMirror>>(File.ReadAllText(file.FullName));
 
-            if (blah is List<DownloadMirror> mirrors)
+            if (mirrorsList is List<DownloadMirror> mirrors)
             {
                 _data.PatcherReleaseMirrors = mirrors;
 
@@ -63,30 +61,26 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                     try
                     {
                         using var megaDownloadStream = await megaClient.DownloadAsync(new Uri(mirror.Link), progress);
-                        using var patcherFileStream = _data.PatcherZipInfo.Open(FileMode.Create);
-                        {
-                            await megaDownloadStream.CopyToAsync(patcherFileStream);
-                        }
 
-                        patcherFileStream.Close();
+                        _data.PatcherZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("patcher.zip", megaDownloadStream, mirror.Hash);
 
-                        if(!DownloadHelper.FileHashCheck(_data.PatcherZipInfo, mirror.Hash))
+                        if(_data.PatcherZipInfo == null)
                         {
-                            return GenericResult.FromError("Hash mismatch");
+                            continue;
                         }
 
                         return GenericResult.FromSuccess();
                     }
-                    catch (Exception)
+                    catch
                     {
                         //most likely a 509 (Bandwidth limit exceeded) due to mega's user quotas.
                         continue;
                     }
                 }
 
-                var result = await DownloadHelper.DownloadFile(_data.PatcherZipInfo, mirror.Link, progress, mirror.Hash);
+                _data.PatcherZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("patcher.zip", mirror.Link, progress, mirror.Hash);
 
-                if (result.Succeeded)
+                if (_data.PatcherZipInfo != null)
                 {
                     return GenericResult.FromSuccess();
                 }
@@ -97,13 +91,8 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
         public override async Task<GenericResult> RunAsync()
         {
-            _data.PatcherZipInfo = new FileInfo(Path.Join(_data.TargetInstallPath, "patcher.zip"));
-            _data.AkiZipInfo = new FileInfo(Path.Join(_data.TargetInstallPath, "sptaki.zip"));
-
             if (_data.PatchNeeded)
             {
-                if (_data.PatcherZipInfo.Exists) _data.PatcherZipInfo.Delete();
-
                 var buildResult = await BuildMirrorList();
 
                 if (!buildResult.Succeeded)
@@ -122,19 +111,17 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                 }
             }
 
-            if (_data.AkiZipInfo.Exists) _data.AkiZipInfo.Delete();
-
             SetStatus("Downloading SPT-AKI", false);
 
             Progress = 0;
 
             var akiProgress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
 
-            var releaseDownloadResult = await DownloadHelper.DownloadFile(_data.AkiZipInfo, _data.AkiReleaseDownloadLink, akiProgress);
+            _data.AkiZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("sptaki.zip", _data.AkiReleaseDownloadLink, akiProgress);
 
-            if (!releaseDownloadResult.Succeeded)
+            if (_data.AkiZipInfo == null)
             {
-                return releaseDownloadResult;
+                return GenericResult.FromError("Failed to download spt-aki");
             }
 
             return GenericResult.FromSuccess();
