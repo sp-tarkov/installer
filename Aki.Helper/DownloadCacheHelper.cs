@@ -43,30 +43,40 @@ namespace SPT_AKI_Installer.Aki.Helper
 
         private static async Task<GenericResult> ProcessInboundStreamAsync(FileInfo cacheFile, Stream downloadStream, string expectedHash = null)
         {
-            if (cacheFile.Exists)
+            try
             {
-                if (expectedHash != null && FileHashHelper.CheckHash(cacheFile, expectedHash))
+                cacheFile.Refresh();
+                Directory.CreateDirectory(_cachePath);
+
+                if (cacheFile.Exists)
                 {
-                    return GenericResult.FromSuccess();
+                    if (expectedHash != null && FileHashHelper.CheckHash(cacheFile, expectedHash))
+                    {
+                        return GenericResult.FromSuccess();
+                    }
+
+                    cacheFile.Delete();
+                    cacheFile.Refresh();
                 }
 
-                cacheFile.Delete();
-                cacheFile.Refresh();
-            }
+                using var patcherFileStream = cacheFile.Open(FileMode.Create);
+                {
+                    await downloadStream.CopyToAsync(patcherFileStream);
+                }
 
-            using var patcherFileStream = cacheFile.Open(FileMode.Create);
+                patcherFileStream.Close();
+
+                if (expectedHash != null && !FileHashHelper.CheckHash(cacheFile, expectedHash))
+                {
+                    return GenericResult.FromError("Hash mismatch");
+                }
+
+                return GenericResult.FromSuccess();
+            }
+            catch(Exception ex)
             {
-                await downloadStream.CopyToAsync(patcherFileStream);
+                return GenericResult.FromError(ex.Message);
             }
-
-            patcherFileStream.Close();
-
-            if (expectedHash != null && !FileHashHelper.CheckHash(cacheFile, expectedHash))
-            {
-                return GenericResult.FromError("Hash mismatch");
-            }
-
-            return GenericResult.FromSuccess();
         }
 
         private static async Task<GenericResult> ProcessInboundFileAsync(FileInfo cacheFile, string targetLink, IProgress<double> progress, string expectedHash = null)
