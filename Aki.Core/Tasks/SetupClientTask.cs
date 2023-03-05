@@ -31,8 +31,6 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
                 var extractPatcherProgress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
 
-                
-
                 var extractPatcherResult = ZipHelper.Decompress(_data.PatcherZipInfo, patcherOutputDir, extractPatcherProgress);
 
                 if (!extractPatcherResult.Succeeded)
@@ -65,7 +63,6 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                 {
                     return patchingResult;
                 }
-
             }
 
             
@@ -92,9 +89,6 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
                 patcherOutputDir.Delete(true);
                 patcherEXE.Delete();
             }
-            
-            _data.PatcherZipInfo.Delete();
-            _data.AkiZipInfo.Delete();
 
             return GenericResult.FromSuccess("SPT is Setup. Happy Playing!");
         }
