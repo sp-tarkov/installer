@@ -36,6 +36,9 @@ namespace SPT_AKI_Installer.Aki.Core
         /// </summary>
         public string AkiReleaseDownloadLink { get; set; }
 
+        /// <summary>
+		/// The release zip hash
+		/// </summary>
         public string AkiReleaseHash { get; set; } = null;
 
         /// <summary>
