@@ -117,7 +117,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
             var akiProgress = new Progress<double>((d) => { Progress = (int)Math.Floor(d); });
 
-            _data.AkiZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("sptaki.zip", _data.AkiReleaseDownloadLink, akiProgress);
+            _data.AkiZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("sptaki.zip", _data.AkiReleaseDownloadLink, akiProgress, _data.AkiReleaseHash);
 
             if (_data.AkiZipInfo == null)
             {

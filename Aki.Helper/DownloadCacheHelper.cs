@@ -13,6 +13,32 @@ namespace SPT_AKI_Installer.Aki.Helper
 
         private static string _cachePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "spt-installer/cache");
 
+        private static bool CheckCache(FileInfo cacheFile, string expectedHash = null)
+        {
+            try
+            {
+                cacheFile.Refresh();
+                Directory.CreateDirectory(_cachePath);
+
+                if (cacheFile.Exists)
+                {
+                    if (expectedHash != null && FileHashHelper.CheckHash(cacheFile, expectedHash))
+                    {
+                        return true;
+                    }
+
+                    cacheFile.Delete();
+                    cacheFile.Refresh();
+                }
+
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private static async Task<GenericResult> DownloadFile(FileInfo outputFile, string targetLink, IProgress<double> progress, string expectedHash = null)
         {
             try
@@ -45,19 +71,7 @@ namespace SPT_AKI_Installer.Aki.Helper
         {
             try
             {
-                cacheFile.Refresh();
-                Directory.CreateDirectory(_cachePath);
-
-                if (cacheFile.Exists)
-                {
-                    if (expectedHash != null && FileHashHelper.CheckHash(cacheFile, expectedHash))
-                    {
-                        return GenericResult.FromSuccess();
-                    }
-
-                    cacheFile.Delete();
-                    cacheFile.Refresh();
-                }
+                if (CheckCache(cacheFile, expectedHash)) return GenericResult.FromSuccess();
 
                 using var patcherFileStream = cacheFile.Open(FileMode.Create);
                 {
@@ -83,19 +97,7 @@ namespace SPT_AKI_Installer.Aki.Helper
         {
             try
             {
-                cacheFile.Refresh();
-                Directory.CreateDirectory(_cachePath);
-
-                if (cacheFile.Exists)
-                {
-                    if (expectedHash != null && FileHashHelper.CheckHash(cacheFile, expectedHash))
-                    {
-                        return GenericResult.FromSuccess();
-                    }
-
-                    cacheFile.Delete();
-                    cacheFile.Refresh();
-                }
+                if (CheckCache(cacheFile, expectedHash)) return GenericResult.FromSuccess();
 
                 return await DownloadFile(cacheFile, targetLink, progress, expectedHash);
             }

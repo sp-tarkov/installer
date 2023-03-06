@@ -1,7 +1,10 @@
 ﻿using Gitea.Api;
 using Gitea.Client;
+using Gitea.Model;
 using SPT_AKI_Installer.Aki.Core.Model;
+using SPT_AKI_Installer.Aki.Helper;
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SPT_AKI_Installer.Aki.Core.Tasks
@@ -37,6 +40,7 @@ namespace SPT_AKI_Installer.Aki.Core.Tasks
 
                 _data.PatcherMirrorsLink = comparePatchToAki?.Assets[0].BrowserDownloadUrl;
                 _data.AkiReleaseDownloadLink = latestAkiRelease.Assets[0].BrowserDownloadUrl;
+                _data.AkiReleaseHash = FileHashHelper.GetGiteaReleaseHash(latestAkiRelease);
 
                 int IntAkiVersion = int.Parse(latestAkiVersion);
                 int IntGameVersion = int.Parse(_data.OriginalGameVersion);
