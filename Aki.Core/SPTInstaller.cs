@@ -43,6 +43,8 @@ namespace SPT_AKI_Installer.Aki.Core
         {
             _data.TargetInstallPath = Environment.CurrentDirectory;
 
+            var cursorPos = Console.GetCursorPosition();
+
 #if DEBUG
             var path = AnsiConsole.Ask<string>("[purple]DEBUG[/] [blue]::[/] Enter path to install folder: ").Replace("\"", "");
 
@@ -53,7 +55,12 @@ namespace SPT_AKI_Installer.Aki.Core
 
             _data.TargetInstallPath = path;
 #endif
+            var continueInstall = AnsiConsole.Confirm($"SPT will install into:\n[blue]{_data.TargetInstallPath}[/]\n\nContinue?", false);
 
+            if (!continueInstall) CloseApp("Please move the installer to the folder you want to install into");
+
+
+            Console.SetCursorPosition(cursorPos.Left, cursorPos.Top);
             await LiveTableTaskRunner.RunAsync(tasks);
             CloseApp("");
         }
@@ -63,6 +70,7 @@ namespace SPT_AKI_Installer.Aki.Core
             return Host.CreateDefaultBuilder().ConfigureServices((_, services) =>
             {
                 services.AddSingleton<InternalData>();
+                services.AddTransient<LiveTableTask, DependencyCheckTask>();
                 services.AddTransient<LiveTableTask, InitializationTask>();
                 services.AddTransient<LiveTableTask, ReleaseCheckTask>();
                 services.AddTransient<LiveTableTask, DownloadTask>();

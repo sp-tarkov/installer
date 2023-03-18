@@ -23,12 +23,21 @@ namespace SPT_AKI_Installer.Aki.Core.Model
 
                 var result = await task.RunAsync();
 
-                if (!result.Succeeded)
+                // critical: error - stop installer
+                if (!result.Succeeded && !result.NonCritical)
                 {
                     task.SetStatus($"[red]{result.Message.EscapeMarkup()}[/]");
                     return (false, task);
                 }
 
+                // non-critical: warning - continue
+                if (!result.Succeeded && result.NonCritical)
+                {
+                    task.SetStatus($"[yellow]{result.Message.EscapeMarkup()}[/]");
+                    continue;
+                }
+
+                //suceeded: continue
                 task.SetStatus($"[green]{(result.Message == "" ? "Complete" : $"{result.Message.EscapeMarkup()}")}[/]");
             }
 
