@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:cc="using:SPTInstaller.CustomControls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SPTInstaller.Views.InstallView">
+
+	<Grid ColumnDefinitions="*, 2*">
+		<cc:ProgressableTaskList Tasks="{Binding MyTasks}"
+								 Padding="20" 
+								 Background="{StaticResource AKI_Background_Dark}"
+								 PendingColor="Gray"
+								 RunningColor="DodgerBlue"
+								 CompletedColor="{StaticResource AKI_Brush_Yellow}"
+								 />
+		<cc:TaskDetails Grid.Column="1"
+			            Message="{Binding CurrentTask.StatusMessage}"
+						Details="{Binding CurrentTask.StatusDetails}"
+						Progress="{Binding CurrentTask.Progress}"
+						ShowProgress="{Binding CurrentTask.ShowProgress}"
+						/>
+	</Grid>
+</UserControl>

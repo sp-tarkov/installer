@@ -1,0 +1,187 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:cc="using:SPTInstaller.CustomControls"
+        xmlns:rxui="using:Avalonia.ReactiveUI"
+        >
+	<Design.PreviewWith>
+		<StackPanel Spacing="5" Background="{StaticResource AKI_Background_Dark}">
+			<Button Content="Blah"/>
+			<TextBox Text="Some cool text here" Margin="5"/>
+			<TextBox Watermark="This is a watermark" Margin="5"/>
+		</StackPanel>
+	</Design.PreviewWith>
+
+	<!-- Add Styles Here -->
+
+	<!-- TitleBar Styles -->
+	<Style Selector="cc|TitleBar">
+		<Setter Property="Background" Value="{StaticResource AKI_Background_Dark}"/>
+		<Setter Property="Foreground" Value="{StaticResource AKI_Foreground_Light}"/>
+		<Setter Property="ButtonForeground" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
+	</Style>
+
+	<Style Selector="cc|TitleBar.versiontag">
+		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_Yellow}"/>
+		<Setter Property="BorderThickness" Value="0 0 0 2"/>
+	</Style>
+
+	<!-- TextBox Styles -->
+	<!-- SourceRef: https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Themes.Fluent/Controls/TextBox.xaml -->
+	<Style Selector="TextBox">
+		<Setter Property="Background" Value="{StaticResource AKI_Background_Light}"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+		<Setter Property="Foreground" Value="{StaticResource AKI_Brush_Lighter}"/>
+	</Style>
+
+	<Style Selector="TextBox:focus">
+		<Setter Property="Foreground" Value="{StaticResource AKI_Brush_Lighter}"/>
+	</Style>
+
+	<Style Selector="TextBox:pointerover">
+		<Setter Property="Foreground" Value="{StaticResource AKI_Brush_Lighter}"/>
+	</Style>
+
+	<Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="DimGray"/>
+	</Style>
+
+	<Style Selector="TextBox:pointerover /template/ TextBlock#PART_Watermark, TextBox:focus /template/ TextBlock#PART_FloatingWatermark">
+		<Setter Property="Foreground" Value="DimGray"/>
+	</Style>
+
+	<Style Selector="TextBox:focus /template/ TextBlock#PART_Watermark, TextBox:focus /template/ TextBlock#PART_FloatingWatermark">
+		<Setter Property="Foreground" Value="DimGray"/>
+	</Style>
+
+	<Style Selector="TextBox /template/ TextBlock#PART_Watermark, TextBox:focus /template/ TextBlock#PART_FloatingWatermark">
+		<Setter Property="Foreground" Value="White"/>
+	</Style>
+
+	<Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_Yellow}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+	</Style>
+
+	<!-- Label Styles -->
+	<!-- SourceRef: https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Themes.Fluent/Controls/Label.xaml -->
+	<Style Selector="Label">
+		<Setter Property="Foreground" Value="{StaticResource AKI_Foreground_Light}"/>
+	</Style>
+
+	<Style Selector="Label.yellow">
+		<Setter Property="Foreground" Value="{StaticResource AKI_Brush_Yellow}"/>
+	</Style>
+
+	<Style Selector="Label.dark">
+		<Setter Property="Foreground" Value="DimGray"/>
+	</Style>
+
+	<Style Selector="Label.versionMismatch">
+		<Setter Property="Foreground" Value="OrangeRed"/>
+	</Style>
+
+	<!-- ProgressBar Styles -->
+	<!-- SourceRef: https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Themes.Fluent/Controls/ProgressBar.xaml -->
+	<Style Selector="ProgressBar">
+		<Setter Property="Foreground" Value="{StaticResource AKI_Brush_Yellow}"/>
+		<Setter Property="Background" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
+	</Style>
+
+	<Style Selector="ProgressBar.error">
+		<Setter Property="Foreground" Value="Red"/>
+		<Style.Animations>
+			<Animation Duration="0:0:0.5" FillMode="Forward">
+				<KeyFrame Cue="0%">
+					<Setter Property="Foreground" Value="{StaticResource AKI_Brush_Yellow}"/>
+					<Setter Property="Value" Value="0"/>
+				</KeyFrame>
+				<KeyFrame Cue="100%">
+					<Setter Property="Foreground" Value="Red"/>
+					<Setter Property="Value" Value="100"/>
+				</KeyFrame>
+			</Animation>
+		</Style.Animations>
+	</Style>
+
+	<!-- Seperator Styles -->
+	<!-- SourceRef: https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Themes.Fluent/Controls/Separator.xaml -->
+	<Style Selector="Separator">
+		<Setter Property="Background" Value="{StaticResource AKI_Background_Dark}"/>
+	</Style>
+
+	<!-- Button Styles -->
+	<!-- SourceRef: https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Themes.Fluent/Controls/Button.xaml -->
+	<Style Selector="Button">
+		<Setter Property="Background" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
+		<Setter Property="Foreground" Value="{StaticResource AKI_Background_Dark}"/>
+	</Style>
+
+	<Style Selector="Button:pointerover">
+		<Setter Property="FontWeight" Value="SemiBold"/>
+	</Style>
+
+	<Style Selector="Button:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{StaticResource AKI_Background_Light}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_Yellow}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+	</Style>
+
+	<Style Selector="Button:pressed /template/ ContentPresenter">
+		<Setter Property="Background" Value="{StaticResource AKI_Brush_Yellow}"/>
+	</Style>
+
+	<Style Selector="Button:disabled /template/ ContentPresenter">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
+	</Style>
+
+	<!-- Button yellow -->
+	<Style Selector="Button.yellow">
+		<Setter Property="Background" Value="{StaticResource AKI_Brush_Yellow}"/>
+		<Setter Property="Foreground" Value="{StaticResource AKI_Background_Dark}"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+	</Style>
+
+	<Style Selector="Button.yellow:pointerover">
+		<Setter Property="FontWeight" Value="SemiBold"/>
+	</Style>
+
+	<Style Selector="Button.yellow:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="Gold"/>
+		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+	</Style>
+
+	<Style Selector="Button.yellow:pressed /template/ ContentPresenter">
+		<Setter Property="Background" Value="{StaticResource AKI_Brush_Lighter}"/>
+	</Style>
+
+	<Style Selector="Button.yellow:disabled /template/ ContentPresenter">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
+	</Style>
+
+	<!-- Button Link Style -->
+	<Style Selector="Button.link">
+		<Setter Property="Foreground" Value="{StaticResource AKI_Brush_Lighter}"/>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="Transparent"/>
+		<Setter Property="BorderThickness" Value="0"/>
+	</Style>
+
+	<Style Selector="Button.link:pointerover /template/ ContentPresenter">
+		<Setter Property="TextBlock.Foreground" Value="{StaticResource AKI_Brush_Yellow}"/>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="Transparent"/>
+		<Setter Property="BorderThickness" Value="0"/>
+	</Style>
+
+	<Style Selector="Button.link:pressed /template/ ContentPresenter">
+		<Setter Property="TextBlock.Foreground" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="Transparent"/>
+		<Setter Property="BorderThickness" Value="0"/>
+	</Style>
+</Styles>
