@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SPTInstaller.CustomControls.TaskDetails">
+	<Grid RowDefinitions="10,*,AUTO,10,AUTO,*,AUTO,10" ColumnDefinitions="10,*,10">
+		
+		<Label Grid.Column="1" Grid.Row="2"
+			   HorizontalAlignment="Center"
+			   FontSize="15"
+			   FontWeight="SemiBold"
+			   Content="{Binding Message, RelativeSource={RelativeSource AncestorType=UserControl}}"
+			   />
+
+		<TextBlock Grid.Column="1" Grid.Row="4"
+				   Foreground="Gainsboro"
+				   HorizontalAlignment="Center"
+				   FontSize="12"
+				   Text="{Binding Details, RelativeSource={RelativeSource AncestorType=UserControl}}"
+				   TextTrimming="CharacterEllipsis"
+				   TextWrapping="Wrap"
+				   MaxLines="3"
+			       />
+
+		<Grid Grid.Column="1" Grid.Row="6" ColumnDefinitions="*,AUTO">
+			
+			<ProgressBar IsVisible="{Binding ShowProgress, RelativeSource={RelativeSource AncestorType=UserControl}}"
+						 Value="{Binding Progress, RelativeSource={RelativeSource AncestorType=UserControl}}"
+						 HorizontalAlignment="Stretch"
+					 />
+
+			<Label Grid.Column="1"
+				   Content="{Binding Progress, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat='{}{0}%'}"
+				   IsVisible="{Binding ShowProgress, RelativeSource={RelativeSource AncestorType=UserControl}}"
+			       />
+		</Grid>
+	</Grid>
+</UserControl>

@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SPTInstaller.Views.MessageView">
+	<Grid ColumnDefinitions="*,AUTO,*" RowDefinitions="*,AUTO,*">
+		
+		<StackPanel Grid.Row="1" Grid.Column="1" Spacing="20">
+
+			<Label Content="{Binding Message}" FontSize="18"
+				   HorizontalAlignment="Center"
+			   />
+
+			<Button Content="Close" Command="{Binding CloseCommand}"
+					FontSize="15" FontWeight="SemiBold"
+					Classes="yellow"
+					HorizontalAlignment="Center"
+					VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+				    Padding="20 10"
+					/>
+			
+		</StackPanel>
+
+	</Grid>
+</UserControl>

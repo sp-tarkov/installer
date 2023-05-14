@@ -1,0 +1,37 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SPTInstaller.ViewModels"
+		xmlns:rxui="using:Avalonia.ReactiveUI"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:cc="using:SPTInstaller.CustomControls"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="SPTInstaller.Views.MainWindow"
+		Icon="/Assets/icon.ico"
+        Title="SPT Installer"
+        Height="450" Width="750"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        Background="{StaticResource AKI_Background_Light}"
+		>
+
+	<Window.Styles>
+		<StyleInclude Source="/Assets/Styles.axaml"/>
+	</Window.Styles>
+
+
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+	<Grid RowDefinitions="AUTO,*">
+		<cc:TitleBar Title="SPT Installer"
+			         XButtonCommand="{Binding CloseCommand}"
+			         MinButtonCommand="{Binding MinimizeCommand}"
+					 />
+
+		<rxui:RoutedViewHost Router="{Binding Router}" Grid.Row="1"/>
+	</Grid>
+</Window>
