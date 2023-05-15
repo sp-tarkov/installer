@@ -18,6 +18,7 @@
 			            Message="{Binding CurrentTask.StatusMessage}"
 						Details="{Binding CurrentTask.StatusDetails}"
 						Progress="{Binding CurrentTask.Progress}"
+						IndeterminateProgress="{Binding CurrentTask.IndeterminateProgress}"
 						ShowProgress="{Binding CurrentTask.ShowProgress}"
 						/>
 	</Grid>

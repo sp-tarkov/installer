@@ -30,7 +30,8 @@ namespace SPTInstaller.ViewModels
 
             if(data == null || installer == null)
             {
-                // TODO: abort to message view
+                NavigateTo(new MessageViewModel(HostScreen, "Failed to get required service for prechecks"));
+                return;
             }
 
             data.TargetInstallPath = Environment.CurrentDirectory;
@@ -45,8 +46,13 @@ namespace SPTInstaller.ViewModels
 
             Task.Run(async () =>
             {
-                // TODO: if a required precheck fails, abort to message view
                 var result = await installer.RunPreChecks();
+
+                if(!result.Succeeded)
+                {
+                    //if a required precheck fails, abort to message view
+                    NavigateTo(new MessageViewModel(HostScreen ,result.Message));
+                }
             });
         }
     }

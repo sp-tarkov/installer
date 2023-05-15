@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
+using Serilog;
 using Splat;
 using SPTInstaller.Controllers;
 using SPTInstaller.Helpers;
@@ -9,6 +10,7 @@ using SPTInstaller.Installer_Tasks.PreChecks;
 using SPTInstaller.Interfaces;
 using SPTInstaller.Models;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -34,13 +36,23 @@ namespace SPTInstaller
             ServiceHelper.Register<PreCheckBase, NetFramework472PreCheck>();
             ServiceHelper.Register<PreCheckBase, NetCore6PreCheck>();
 #if !TEST
+            string logPath = Path.Join(Environment.CurrentDirectory, "spt-aki-installer_.log");
+
+            Log.Logger = new LoggerConfiguration()
+                         .MinimumLevel.Debug()
+                         .WriteTo
+                         .File(path: logPath,
+                               restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug, 
+                               rollingInterval: RollingInterval.Day)
+                         .CreateLogger();
+
             ServiceHelper.Register<InstallerTaskBase, InitializationTask>();
             ServiceHelper.Register<InstallerTaskBase, ReleaseCheckTask>();
             ServiceHelper.Register<InstallerTaskBase, DownloadTask>();
             ServiceHelper.Register<InstallerTaskBase, CopyClientTask>();
             ServiceHelper.Register<InstallerTaskBase, SetupClientTask>();
 #else
-            for(int i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 Locator.CurrentMutable.RegisterConstant<InstallerTaskBase>(TestTask.FromRandomName());
             }

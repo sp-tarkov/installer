@@ -28,11 +28,12 @@
 			<ProgressBar IsVisible="{Binding ShowProgress, RelativeSource={RelativeSource AncestorType=UserControl}}"
 						 Value="{Binding Progress, RelativeSource={RelativeSource AncestorType=UserControl}}"
 						 HorizontalAlignment="Stretch"
+						 IsIndeterminate="{Binding IndeterminateProgress, RelativeSource={RelativeSource AncestorType=UserControl}}"
 					 />
 
 			<Label Grid.Column="1"
 				   Content="{Binding Progress, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat='{}{0}%'}"
-				   IsVisible="{Binding ShowProgress, RelativeSource={RelativeSource AncestorType=UserControl}}"
+				   IsVisible="{Binding !IndeterminateProgress, RelativeSource={RelativeSource AncestorType=UserControl}}"
 			       />
 		</Grid>
 	</Grid>

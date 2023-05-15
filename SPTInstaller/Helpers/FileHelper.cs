@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Serilog;
 using SPTInstaller.Models;
 using System;
 using System.IO;
@@ -19,6 +20,7 @@ namespace SPTInstaller.Aki.Helper
             }
             catch (Exception ex) 
             {
+                Log.Error(ex, "Error while creating directories");
                 return Result.FromError(ex.Message);
             }
         }
@@ -42,6 +44,7 @@ namespace SPTInstaller.Aki.Helper
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Error while copying files");
                 return Result.FromError(ex.Message);
             }
         }
@@ -65,6 +68,7 @@ namespace SPTInstaller.Aki.Helper
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Error during directory copy");
                 return Result.FromError(ex.Message);
             }
         }

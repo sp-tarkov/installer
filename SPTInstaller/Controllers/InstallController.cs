@@ -1,4 +1,5 @@
-﻿using SharpCompress;
+﻿using Serilog;
+using SharpCompress;
 using SPTInstaller.Interfaces;
 using SPTInstaller.Models;
 using System;
@@ -22,6 +23,7 @@ namespace SPTInstaller.Controllers
 
         public async Task<IResult> RunPreChecks()
         {
+            Log.Information("-<>--<>- Running PreChecks -<>--<>-");
             var requiredResults = new List<IResult>();
 
             _preChecks.ForEach(x => x.IsPending = true);
@@ -29,6 +31,8 @@ namespace SPTInstaller.Controllers
             foreach (var check in _preChecks)
             {
                 var result = await check.RunCheck();
+
+                Log.Information($"PreCheck: {check.Name} ({(check.IsRequired ? "Required" : "Optional")}) -> {(result.Succeeded ? "Passed" : "Failed")}");
 
                 if (check.IsRequired)
                 {
@@ -47,6 +51,8 @@ namespace SPTInstaller.Controllers
 
         public async Task<IResult> RunTasks()
         {
+            Log.Information("-<>--<>- Running Installer Tasks -<>--<>-");
+
             foreach (var task in _tasks)
             {
                 TaskChanged?.Invoke(null, task);

@@ -1,7 +1,10 @@
 ﻿using Avalonia.Threading;
 using ReactiveUI;
+using Serilog;
+using Splat;
 using SPTInstaller.Interfaces;
 using System;
+using System.Security;
 using System.Threading.Tasks;
 
 namespace SPTInstaller.Models
@@ -57,6 +60,13 @@ namespace SPTInstaller.Models
             private set => this.RaiseAndSetIfChanged(ref _showProgress, value);
         }
 
+        private bool _indeterminateProgress;
+        public bool IndeterminateProgress
+        {
+            get => _indeterminateProgress;
+            private set => this.RaiseAndSetIfChanged(ref _indeterminateProgress, value);
+        }
+
         private string _statusMessage;
         public string StatusMessage
         {
@@ -71,28 +81,65 @@ namespace SPTInstaller.Models
             private set => this.RaiseAndSetIfChanged(ref _statusDetails, value);
         }
 
-        /// <summary>
-        /// Update the status message and optionally a progress bar value
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="progress"></param>
-        /// <remarks>If message is empty, it isn't updated. If progress is null, the progress bar will be hidden. Details is not touched with this method</remarks>
-        public void SetStatus(string message, int? progress = null) => SetStatus(message, "", progress);
+        public enum ProgressStyle
+        {
+            Hidden = 0,
+            Shown,
+            Indeterminate,
+        }
 
         /// <summary>
-        /// Update the status message, status details, and optionlly a progress bar value
+        /// Update the status details of the task
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="progress"></param>
-        /// <remarks>If message or details are empty, it isn't updated. If progress is null, the progress bar will be hidden</remarks>
-        public void SetStatus(string message, string details, int? progress = null)
+        /// <param name="message">The main message to display. Not updated if empty</param>
+        /// <param name="details">The details of the task. Not updated if empty</param>
+        /// <param name="progress">Progress of the task. Not empty if null. Overrides progressStyle if a non-null value is supplied</param>
+        /// <param name="progressStyle">The style of the progress bar</param>
+        public void SetStatus(string message, string details, int? progress = null, ProgressStyle? progressStyle = null, bool noLog = false)
         {
-            StatusMessage = String.IsNullOrWhiteSpace(message) ? StatusMessage : message;
-            StatusDetails = String.IsNullOrWhiteSpace(details) ? StatusDetails : details;
-            ShowProgress = progress != null;
+            if(!string.IsNullOrWhiteSpace(message) && message != StatusMessage)
+            {
+                if (!noLog)
+                {
+                    Log.Information($" <===> {message} <===>");
+                }
+
+                StatusMessage = message;
+            }
+
+            if(!string.IsNullOrWhiteSpace(details) && details != StatusDetails)
+            {
+                if (!noLog)
+                {
+                    Log.Information(details);
+                }
+
+                StatusDetails = details;
+            }
+
+            if (progressStyle != null)
+            {
+                switch (progressStyle)
+                {
+                    case ProgressStyle.Hidden:
+                        ShowProgress = false;
+                        IndeterminateProgress = false;
+                        break;
+                    case ProgressStyle.Shown:
+                        ShowProgress = true;
+                        IndeterminateProgress = false;
+                        break;
+                    case ProgressStyle.Indeterminate:
+                        ShowProgress = true;
+                        IndeterminateProgress = true;
+                        break;
+                }
+            }
 
             if (progress != null)
             {
+                ShowProgress = true;
+                IndeterminateProgress = false;
                 Progress = progress.Value;
             }
         }
@@ -117,7 +164,9 @@ namespace SPTInstaller.Models
 
             if (!result.Succeeded)
             {
-                // TODO: handle error state
+                HasErrors = true;
+
+                return result;
             }
 
             IsCompleted = true;

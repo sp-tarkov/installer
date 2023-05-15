@@ -77,7 +77,7 @@ namespace SPTInstaller.CustomControls
 
                 for(; TaskProgress < progress;)
                 {
-                    TaskProgress += 2;
+                    TaskProgress += 1;
                     await Task.Delay(1);
                 }
             });

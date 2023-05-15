@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using ReactiveUI;
+using Serilog;
 using System.Windows.Input;
 
 namespace SPTInstaller.ViewModels
@@ -24,6 +25,7 @@ namespace SPTInstaller.ViewModels
         public MessageViewModel(IScreen Host, string message) : base(Host)
         {
             Message = message;
+            Log.Information(message);
         }
     }
 }

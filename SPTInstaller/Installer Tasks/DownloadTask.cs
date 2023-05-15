@@ -21,7 +21,7 @@ namespace SPTInstaller.Installer_Tasks
 
         private async Task<IResult> BuildMirrorList()
         {
-            var progress = new Progress<double>((d) => { SetStatus("Downloading Mirror List", (int)Math.Floor(d));});
+            var progress = new Progress<double>((d) => { SetStatus("Downloading Mirror List", "", (int)Math.Floor(d));});
 
             var file = await DownloadCacheHelper.GetOrDownloadFileAsync("mirrors.json", _data.PatcherMirrorsLink, progress);
 
@@ -46,7 +46,7 @@ namespace SPTInstaller.Installer_Tasks
         {
             foreach (var mirror in _data.PatcherReleaseMirrors)
             {
-                SetStatus($"Downloading Patcher: {mirror.Link}");
+                SetStatus($"Downloading Patcher", mirror.Link);
 
                 // mega is a little weird since they use encryption, but thankfully there is a great library for their api :)
                 if (mirror.Link.StartsWith("https://mega"))
@@ -90,7 +90,7 @@ namespace SPTInstaller.Installer_Tasks
 
         public override async Task<IResult> TaskOperation()
         {
-            var progress = new Progress<double>((d) => { SetStatus("", (int)Math.Floor(d)); });
+            var progress = new Progress<double>((d) => { SetStatus("", "", (int)Math.Floor(d)); });
 
             if (_data.PatchNeeded)
             {
@@ -101,7 +101,7 @@ namespace SPTInstaller.Installer_Tasks
                     return buildResult;
                 }
 
-                SetStatus("", 0);
+                SetStatus("", "", 0);
 
                 var patcherDownloadRresult = await DownloadPatcherFromMirrors(progress);
 
@@ -111,7 +111,7 @@ namespace SPTInstaller.Installer_Tasks
                 }
             }
 
-            SetStatus("Downloading SPT-AKI", 0);
+            SetStatus("Downloading SPT-AKI", "", 0);
 
             _data.AkiZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("sptaki.zip", _data.AkiReleaseDownloadLink, progress, _data.AkiReleaseHash);
 
