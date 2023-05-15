@@ -45,5 +45,14 @@ namespace SPTInstaller.CustomControls
 
         public static readonly StyledProperty<bool> ShowProgressProperty =
             AvaloniaProperty.Register<TaskDetails, bool>(nameof(ShowProgress));
+
+        public bool IndeterminateProgress
+        {
+            get => GetValue(IndeterminateProgressProperty);
+            set => SetValue(IndeterminateProgressProperty, value);
+        }
+
+        public static readonly StyledProperty<bool> IndeterminateProgressProperty =
+            AvaloniaProperty.Register<TaskDetails, bool>(nameof(IndeterminateProgress));
     }
 }

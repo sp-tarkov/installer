@@ -1,4 +1,5 @@
-﻿using SPTInstaller.Aki.Helper;
+﻿using Serilog;
+using SPTInstaller.Aki.Helper;
 using SPTInstaller.Interfaces;
 using SPTInstaller.Models;
 using System;
@@ -18,12 +19,12 @@ namespace SPTInstaller.Installer_Tasks
 
         public override async Task<IResult> TaskOperation()
         {
-            SetStatus("Copying Client Files", 0);
+            SetStatus("Copying Client Files", "", 0);
 
             var originalGameDirInfo = new DirectoryInfo(_data.OriginalGamePath);
             var targetInstallDirInfo = new DirectoryInfo(_data.TargetInstallPath);
 
-            return FileHelper.CopyDirectoryWithProgress(originalGameDirInfo, targetInstallDirInfo, (message, progress) => { SetStatus($"Copying Client Files", message, progress); });
+            return FileHelper.CopyDirectoryWithProgress(originalGameDirInfo, targetInstallDirInfo, (message, progress) => { SetStatus($"Copying Client Files", message, progress, null, true); });
         }
     }
 }

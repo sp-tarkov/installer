@@ -25,13 +25,13 @@ namespace SPTInstaller.Installer_Tasks
 
             var patcherEXE = new FileInfo(Path.Join(_data.TargetInstallPath, "patcher.exe"));
 
-            var progress = new Progress<double>((d) => { SetStatus("", (int)Math.Floor(d)); });
+            var progress = new Progress<double>((d) => { SetStatus("", "", (int)Math.Floor(d)); });
 
 
             if (_data.PatchNeeded)
             {
                 // extract patcher files
-                SetStatus("Extrating Patcher", 0);
+                SetStatus("Extrating Patcher", "", 0);
 
                 var extractPatcherResult = ZipHelper.Decompress(_data.PatcherZipInfo, patcherOutputDir, progress);
 
@@ -41,7 +41,7 @@ namespace SPTInstaller.Installer_Tasks
                 }
 
                 // copy patcher files to install directory
-                SetStatus("Copying Patcher", 0);
+                SetStatus("Copying Patcher", "", 0);
 
                 var patcherDirInfo = patcherOutputDir.GetDirectories("Patcher*", SearchOption.TopDirectoryOnly).First();
 
@@ -53,10 +53,7 @@ namespace SPTInstaller.Installer_Tasks
                 }
 
                 // run patcher
-                SetStatus("Running Patcher");
-
-                // TODO: indeterminate progress indicator
-                //StartDrawingIndeterminateProgress();
+                SetStatus("Running Patcher", "", null, ProgressStyle.Indeterminate);
 
                 var patchingResult = ProcessHelper.PatchClientFiles(patcherEXE, targetInstallDirInfo);
 
@@ -67,7 +64,7 @@ namespace SPTInstaller.Installer_Tasks
             }
 
             // extract release files
-            SetStatus("Extracting Release", 0);
+            SetStatus("Extracting Release", "", 0);
 
             var extractReleaseResult = ZipHelper.Decompress(_data.AkiZipInfo, targetInstallDirInfo, progress);
 
@@ -77,10 +74,7 @@ namespace SPTInstaller.Installer_Tasks
             }
 
             // cleanup temp files
-            SetStatus("Cleanup");
-
-            // TODO: indeterminate progress indicator
-            //StartDrawingIndeterminateProgress();
+            SetStatus("Cleanup", "almost done :)", null, ProgressStyle.Indeterminate);
 
             if(_data.PatchNeeded)
             {

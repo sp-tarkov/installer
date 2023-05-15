@@ -1,5 +1,7 @@
 ﻿using Avalonia;
 using ReactiveUI;
+using Serilog;
+using System;
 
 namespace SPTInstaller.ViewModels
 {
@@ -10,6 +12,9 @@ namespace SPTInstaller.ViewModels
 
         public MainWindowViewModel()
         {
+            Log.Information("========= LAUNCHER STARTED =========");
+            Log.Information(Environment.OSVersion.VersionString);
+
             Router.Navigate.Execute(new PreChecksViewModel(this));
         }
 

@@ -25,11 +25,11 @@ namespace SPTInstaller.Installer_Tasks
 
                 var repo = new RepositoryApi(Configuration.Default);
 
-                SetStatus("Checking SPT Releases");
+                SetStatus("Checking SPT Releases", "", null, ProgressStyle.Indeterminate);
 
                 var akiRepoReleases = await repo.RepoListReleasesAsync("SPT-AKI", "Stable-releases");
 
-                SetStatus("Checking for Patches");
+                SetStatus("Checking for Patches", "", null, ProgressStyle.Indeterminate);
 
                 var patchRepoReleases = await repo.RepoListReleasesAsync("SPT-AKI", "Downgrade-Patches");
 
@@ -74,6 +74,8 @@ namespace SPTInstaller.Installer_Tasks
                 {
                     status += " - Patch Available";
                 }
+
+                SetStatus("", status);
 
                 return Result.FromSuccess(status);
             }
