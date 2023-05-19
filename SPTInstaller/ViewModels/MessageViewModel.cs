@@ -1,12 +1,20 @@
 ﻿using Avalonia;
 using ReactiveUI;
 using Serilog;
+using SPTInstaller.Interfaces;
 using System.Windows.Input;
 
 namespace SPTInstaller.ViewModels
 {
     public class MessageViewModel : ViewModelBase
     {
+        private bool _HasErrors;
+        public bool HasErrors
+        {
+            get => _HasErrors;
+            set => this.RaiseAndSetIfChanged(ref _HasErrors, value);
+        }
+
         private string _Message;
         public string Message
         {
@@ -22,10 +30,18 @@ namespace SPTInstaller.ViewModels
             }
         });
 
-        public MessageViewModel(IScreen Host, string message) : base(Host)
+        public MessageViewModel(IScreen Host, IResult result) : base(Host)
         {
-            Message = message;
-            Log.Information(message);
+            Message = result.Message;
+
+            if(result.Succeeded)
+            {
+                Log.Information(Message);
+                return;
+            }
+
+            HasErrors = true;
+            Log.Error(Message);
         }
     }
 }

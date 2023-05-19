@@ -17,6 +17,8 @@ namespace SPTInstaller.Installer_Tasks
 
         public override async Task<IResult> TaskOperation()
         {
+            SetStatus("Initializing", "");
+
             _data.OriginalGamePath = PreCheckHelper.DetectOriginalGamePath();
 
             if (_data.OriginalGamePath == null)
@@ -35,7 +37,7 @@ namespace SPTInstaller.Installer_Tasks
 
             if (_data.OriginalGamePath == null)
             {
-                return Result.FromError("Unable to find EFT OG directory, please make sure EFT is installed. Please also run EFT once");
+                return Result.FromError("Unable to find original EFT directory, please make sure EFT is installed. Please also run EFT once");
             }
 
             if (_data.OriginalGamePath == _data.TargetInstallPath)
@@ -45,9 +47,8 @@ namespace SPTInstaller.Installer_Tasks
 
             if (File.Exists(Path.Join(_data.TargetInstallPath, "EscapeFromTarkov.exe")))
             {
-                return Result.FromError("Installer is located in a Folder that has existing Game Files. Please make sure the installer is in a fresh folder as per the guide");
+                return Result.FromError("Installer is located in a folder that has existing game files. Please make sure the installer is in a fresh folder as per the guide");
             }
-
 
             return Result.FromSuccess($"Current Game Version: {_data.OriginalGameVersion}");
         }

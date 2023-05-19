@@ -75,7 +75,7 @@ namespace SPTInstaller.Installer_Tasks
                     status += " - Patch Available";
                 }
 
-                SetStatus("", status);
+                SetStatus(null, status);
 
                 return Result.FromSuccess(status);
             }

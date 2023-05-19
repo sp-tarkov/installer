@@ -25,7 +25,7 @@ namespace SPTInstaller.Installer_Tasks
 
             var patcherEXE = new FileInfo(Path.Join(_data.TargetInstallPath, "patcher.exe"));
 
-            var progress = new Progress<double>((d) => { SetStatus("", "", (int)Math.Floor(d)); });
+            var progress = new Progress<double>((d) => { SetStatus(null, null, (int)Math.Floor(d)); });
 
 
             if (_data.PatchNeeded)

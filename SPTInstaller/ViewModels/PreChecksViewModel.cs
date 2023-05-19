@@ -30,7 +30,7 @@ namespace SPTInstaller.ViewModels
 
             if(data == null || installer == null)
             {
-                NavigateTo(new MessageViewModel(HostScreen, "Failed to get required service for prechecks"));
+                NavigateTo(new MessageViewModel(HostScreen, Result.FromError("Failed to get required service for prechecks")));
                 return;
             }
 
@@ -51,7 +51,7 @@ namespace SPTInstaller.ViewModels
                 if(!result.Succeeded)
                 {
                     //if a required precheck fails, abort to message view
-                    NavigateTo(new MessageViewModel(HostScreen ,result.Message));
+                    NavigateTo(new MessageViewModel(HostScreen ,result));
                 }
             });
         }
