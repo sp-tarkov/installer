@@ -31,7 +31,7 @@ namespace SPTInstaller.ViewModels
             {
                 var result = await installer.RunTasks();
 
-                NavigateTo(new MessageViewModel(HostScreen, result.Message));
+                NavigateTo(new MessageViewModel(HostScreen, result));
             });
         }
     }

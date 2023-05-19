@@ -90,7 +90,7 @@ namespace SPTInstaller.Installer_Tasks
 
         public override async Task<IResult> TaskOperation()
         {
-            var progress = new Progress<double>((d) => { SetStatus("", "", (int)Math.Floor(d)); });
+            var progress = new Progress<double>((d) => { SetStatus(null, null, (int)Math.Floor(d)); });
 
             if (_data.PatchNeeded)
             {
@@ -101,7 +101,7 @@ namespace SPTInstaller.Installer_Tasks
                     return buildResult;
                 }
 
-                SetStatus("", "", 0);
+                SetStatus(null, null, 0);
 
                 var patcherDownloadRresult = await DownloadPatcherFromMirrors(progress);
 
@@ -111,7 +111,7 @@ namespace SPTInstaller.Installer_Tasks
                 }
             }
 
-            SetStatus("Downloading SPT-AKI", "", 0);
+            SetStatus("Downloading SPT-AKI", _data.AkiReleaseDownloadLink, 0);
 
             _data.AkiZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("sptaki.zip", _data.AkiReleaseDownloadLink, progress, _data.AkiReleaseHash);
 

@@ -3,24 +3,37 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SPTInstaller.Views.MessageView">
-	<Grid ColumnDefinitions="*,AUTO,*" RowDefinitions="*,AUTO,*">
+             x:Class="SPTInstaller.Views.MessageView"
+			 >
+	<UserControl.Styles>
+		<Style Selector="Grid.error">
+			<Setter Property="Background" Value="#330000"/>
+		</Style>
+		<Style Selector="Label.error">
+			<Setter Property="Foreground" Value="Crimson"/>
+		</Style>
 		
-		<StackPanel Grid.Row="1" Grid.Column="1" Spacing="20">
+	</UserControl.Styles>
 
-			<Label Content="{Binding Message}" FontSize="18"
-				   HorizontalAlignment="Center"
+	<Grid ColumnDefinitions="*,AUTO,*" RowDefinitions="*,AUTO,20,AUTO,*"
+		  Classes.error="{Binding HasErrors}">
+
+		<Label Grid.Column="1" Grid.Row="1"
+			   Classes.error="{Binding HasErrors}">
+			<TextBlock Text="{Binding Message}" FontSize="18"
+					   TextWrapping="Wrap"
+					   MaxWidth="500"
+				       HorizontalAlignment="Center"
 			   />
+		</Label>
 
-			<Button Content="Close" Command="{Binding CloseCommand}"
+			<Button Grid.Column="1" Grid.Row="3"
+				    Content="Close" Command="{Binding CloseCommand}"
 					FontSize="15" FontWeight="SemiBold"
-					Classes="yellow"
+					Classes.yellow="{Binding !HasErrors}"
 					HorizontalAlignment="Center"
 					VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
 				    Padding="20 10"
 					/>
-			
-		</StackPanel>
-
 	</Grid>
 </UserControl>

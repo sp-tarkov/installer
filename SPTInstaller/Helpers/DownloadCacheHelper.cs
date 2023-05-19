@@ -1,4 +1,5 @@
 ﻿using HttpClientProgress;
+using Serilog;
 using SPTInstaller.Models;
 using System;
 using System.IO;
@@ -24,6 +25,7 @@ namespace SPTInstaller.Aki.Helper
                 {
                     if (expectedHash != null && FileHashHelper.CheckHash(cacheFile, expectedHash))
                     {
+                        Log.Information($"Using cached file: {cacheFile.Name}");
                         return true;
                     }
 

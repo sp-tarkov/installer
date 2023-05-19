@@ -91,15 +91,15 @@ namespace SPTInstaller.Models
         /// <summary>
         /// Update the status details of the task
         /// </summary>
-        /// <param name="message">The main message to display. Not updated if empty</param>
-        /// <param name="details">The details of the task. Not updated if empty</param>
-        /// <param name="progress">Progress of the task. Not empty if null. Overrides progressStyle if a non-null value is supplied</param>
+        /// <param name="message">The main message to display. Not updated if null</param>
+        /// <param name="details">The details of the task. Not updated if null</param>
+        /// <param name="progress">Progress of the task. Overrides progressStyle if a non-null value is supplied</param>
         /// <param name="progressStyle">The style of the progress bar</param>
-        public void SetStatus(string message, string details, int? progress = null, ProgressStyle? progressStyle = null, bool noLog = false)
+        public void SetStatus(string? message, string? details, int? progress = null, ProgressStyle? progressStyle = null, bool noLog = false)
         {
-            if(!string.IsNullOrWhiteSpace(message) && message != StatusMessage)
+            if(message != null && message != StatusMessage)
             {
-                if (!noLog)
+                if (!noLog && !string.IsNullOrWhiteSpace(message))
                 {
                     Log.Information($" <===> {message} <===>");
                 }
@@ -107,9 +107,9 @@ namespace SPTInstaller.Models
                 StatusMessage = message;
             }
 
-            if(!string.IsNullOrWhiteSpace(details) && details != StatusDetails)
+            if(details != null && details != StatusDetails)
             {
-                if (!noLog)
+                if (!noLog && !string.IsNullOrWhiteSpace(details))
                 {
                     Log.Information(details);
                 }

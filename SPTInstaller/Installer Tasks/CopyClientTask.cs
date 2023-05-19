@@ -24,7 +24,7 @@ namespace SPTInstaller.Installer_Tasks
             var originalGameDirInfo = new DirectoryInfo(_data.OriginalGamePath);
             var targetInstallDirInfo = new DirectoryInfo(_data.TargetInstallPath);
 
-            return FileHelper.CopyDirectoryWithProgress(originalGameDirInfo, targetInstallDirInfo, (message, progress) => { SetStatus($"Copying Client Files", message, progress, null, true); });
+            return FileHelper.CopyDirectoryWithProgress(originalGameDirInfo, targetInstallDirInfo, (message, progress) => { SetStatus(null, message, progress, null, true); });
         }
     }
 }
