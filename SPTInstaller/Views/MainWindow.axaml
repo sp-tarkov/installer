@@ -27,7 +27,7 @@
 	</Design.DataContext>
 
 	<Grid RowDefinitions="AUTO,*">
-		<cc:TitleBar Title="SPT Installer"
+		<cc:TitleBar Title="{Binding Title}"
 			         XButtonCommand="{Binding CloseCommand}"
 			         MinButtonCommand="{Binding MinimizeCommand}"
 					 />

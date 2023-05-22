@@ -2,6 +2,7 @@
 using ReactiveUI;
 using Serilog;
 using System;
+using System.Reflection;
 
 namespace SPTInstaller.ViewModels
 {
@@ -10,9 +11,20 @@ namespace SPTInstaller.ViewModels
         public RoutingState Router { get; } = new RoutingState();
         public ViewModelActivator Activator { get; } = new ViewModelActivator();
 
+        private string _title;
+        public string Title
+        {
+            get => _title;
+            set => this.RaiseAndSetIfChanged(ref _title, value);
+        }
+
         public MainWindowViewModel()
         {
-            Log.Information("========= LAUNCHER STARTED =========");
+            string? version = Assembly.GetExecutingAssembly().GetName()?.Version?.ToString();
+
+            Title = $"SPT Installer {"v" + version ?? "--unknown version--"}";
+
+            Log.Information($"========= {Title} Started =========");
             Log.Information(Environment.OSVersion.VersionString);
 
             Router.Navigate.Execute(new PreChecksViewModel(this));
