@@ -3,6 +3,7 @@ using Serilog;
 using SPTInstaller.Models;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace SPTInstaller.Aki.Helper
 {
@@ -47,6 +48,19 @@ namespace SPTInstaller.Aki.Helper
                 Log.Error(ex, "Error while copying files");
                 return Result.FromError(ex.Message);
             }
+        }
+
+        public static string GetRedactedPath(string path)
+        {
+            var nameMatched = Regex.Match(path, @".:\\[uU]sers\\(?<NAME>[^\\]+)");
+
+            if (nameMatched.Success)
+            {
+                var name = nameMatched.Groups["NAME"].Value;
+                return path.Replace(name, "-REDACTED-");
+            }
+
+            return path;
         }
 
         public static Result CopyDirectoryWithProgress(DirectoryInfo sourceDir, DirectoryInfo targetDir, IProgress<double> progress = null) =>

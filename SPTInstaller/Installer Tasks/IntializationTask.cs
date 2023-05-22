@@ -17,7 +17,7 @@ namespace SPTInstaller.Installer_Tasks
 
         public override async Task<IResult> TaskOperation()
         {
-            SetStatus("Initializing", "");
+            SetStatus("Initializing", $"Target Install Path: {FileHelper.GetRedactedPath(_data.TargetInstallPath)}");
 
             _data.OriginalGamePath = PreCheckHelper.DetectOriginalGamePath();
 
@@ -25,6 +25,8 @@ namespace SPTInstaller.Installer_Tasks
             {
                 return Result.FromError("EFT IS NOT INSTALLED!");
             }
+
+            SetStatus(null, $"Installed EFT Game Path: {FileHelper.GetRedactedPath(_data.OriginalGamePath)}");
 
             var result = PreCheckHelper.DetectOriginalGameVersion(_data.OriginalGamePath);
 
@@ -34,6 +36,8 @@ namespace SPTInstaller.Installer_Tasks
             }
 
             _data.OriginalGameVersion = result.Message;
+
+            SetStatus(null, $"Installed EFT Game Version: {_data.OriginalGameVersion}");
 
             if (_data.OriginalGamePath == null)
             {
