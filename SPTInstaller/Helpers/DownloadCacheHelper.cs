@@ -25,7 +25,7 @@ namespace SPTInstaller.Aki.Helper
                 {
                     if (expectedHash != null && FileHashHelper.CheckHash(cacheFile, expectedHash))
                     {
-                        Log.Information($"Using cached file: {cacheFile.Name}");
+                        Log.Information($"Using cached file: {cacheFile.Name} - Hash: {expectedHash}");
                         return true;
                     }
 
@@ -119,8 +119,9 @@ namespace SPTInstaller.Aki.Helper
 
                 return result.Succeeded ? cacheFile : null;
             }
-            catch
+            catch(Exception ex)
             {
+                Log.Error(ex, $"Error while getting file: {fileName}");
                 return null;
             }
         }
@@ -135,8 +136,9 @@ namespace SPTInstaller.Aki.Helper
 
                 return result.Succeeded ? cacheFile : null;
             }
-            catch
+            catch(Exception ex)
             {
+                Log.Error(ex, $"Error while getting file: {fileName}");
                 return null;
             }
         }

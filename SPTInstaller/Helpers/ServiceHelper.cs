@@ -1,4 +1,5 @@
-﻿using Splat;
+﻿using Serilog;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,7 +77,11 @@ namespace SPTInstaller.Helpers
             var service = Locator.Current.GetService(type);
 
             if (service == null)
-                throw new InvalidOperationException($"Could not locate service of type '{type.Name}'");
+            {
+                var message = $"Could not locate service of type '{type.Name}'";
+                Log.Error(message);
+                throw new InvalidOperationException(message);
+            }
 
             return service;
         }
@@ -92,7 +97,11 @@ namespace SPTInstaller.Helpers
             var service = Locator.Current.GetService<T>();
 
             if (service == null)
-                throw new InvalidOperationException($"Could not locate service of type '{nameof(T)}'");
+            {
+                var message = $"Could not locate service of type '{nameof(T)}'";
+                Log.Error(message);
+                throw new InvalidOperationException(message);
+            }
 
             return service;
         }
@@ -108,7 +117,11 @@ namespace SPTInstaller.Helpers
             var services = Locator.Current.GetServices<T>().ToArray();
 
             if (services == null || services.Count() == 0)
-                throw new InvalidOperationException($"Could not locate service of type '{nameof(T)}'");
+            {
+                var message = $"Could not locate service of type '{nameof(T)}'";
+                Log.Error(message);
+                throw new InvalidOperationException(message);
+            }
 
             return services;
         }
