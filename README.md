@@ -6,6 +6,7 @@
 - Checks if .net 4.7.2 (or higher) is installed
 - Checks if .net 6 desktop runtime is installed
 - Checks if EFT is installed,
+- Checks if there is enough space before install,
 - Checks installer is not in OG game directory,
 - Checks install folder does not have game files already in it,
 - Checks if gameversion matches aki version, if so skip patcher process,
