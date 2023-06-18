@@ -3,6 +3,7 @@ using SPTInstaller.Interfaces;
 using SPTInstaller.Models;
 using System.IO;
 using System.Threading.Tasks;
+using SPTInstaller.Helpers;
 
 namespace SPTInstaller.Installer_Tasks
 {
@@ -28,6 +29,12 @@ namespace SPTInstaller.Installer_Tasks
 
             SetStatus(null, $"Installed EFT Game Path: {FileHelper.GetRedactedPath(_data.OriginalGamePath)}");
 
+            var directorySizeCheckResult = DirectorySizeHelper.CheckAvailableSize(_data.OriginalGamePath, _data.TargetInstallPath);
+            if (!directorySizeCheckResult.Succeeded)
+            {
+                return Result.FromError(directorySizeCheckResult.Message);
+            }
+            
             var result = PreCheckHelper.DetectOriginalGameVersion(_data.OriginalGamePath);
 
             if (!result.Succeeded)
