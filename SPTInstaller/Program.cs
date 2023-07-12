@@ -9,8 +9,6 @@ using SPTInstaller.Installer_Tasks;
 using SPTInstaller.Installer_Tasks.PreChecks;
 using SPTInstaller.Interfaces;
 using SPTInstaller.Models;
-using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -35,8 +33,9 @@ namespace SPTInstaller
             ServiceHelper.Register<InternalData>();
             ServiceHelper.Register<PreCheckBase, NetFramework472PreCheck>();
             ServiceHelper.Register<PreCheckBase, NetCore6PreCheck>();
+            ServiceHelper.Register<PreCheckBase, FreeSpacePreCheck>();
 #if !TEST
-            string logPath = Path.Join(Environment.CurrentDirectory, "spt-aki-installer_.log");
+            var logPath = Path.Join(Environment.CurrentDirectory, "spt-aki-installer_.log");
 
             Log.Logger = new LoggerConfiguration()
                          .MinimumLevel.Debug()

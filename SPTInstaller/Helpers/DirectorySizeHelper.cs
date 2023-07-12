@@ -1,46 +1,29 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using Serilog;
-using SPTInstaller.Models;
 
-namespace SPTInstaller.Helpers
+namespace SPTInstaller.Helpers;
+
+public static class DirectorySizeHelper
 {
-    public static class DirectorySizeHelper
+    public static bool CheckAvailableSize(string eftSourceDirPath, string installTargetDirPath)
     {
-        public static Result CheckAvailableSize(string eftSourceDirPath, string installTargetDirPath)
+        try
         {
-            try
-            {
-                var eftSourceDirectoryInfo = new DirectoryInfo(eftSourceDirPath);
-                var installTargetDirectoryInfo = new DirectoryInfo(installTargetDirPath);
+            var eftSourceDirectoryInfo = new DirectoryInfo(eftSourceDirPath);
+            var installTargetDirectoryInfo = new DirectoryInfo(installTargetDirPath);
                 
-                var eftSourceDirSize = GetSizeOfDirectory(eftSourceDirectoryInfo);
-                var availableSize = DriveInfo.GetDrives().FirstOrDefault(d => d.Name == installTargetDirectoryInfo.Root.Name)?.AvailableFreeSpace ?? 0;
+            var eftSourceDirSize = GetSizeOfDirectory(eftSourceDirectoryInfo);
+            var availableSize = DriveInfo.GetDrives().FirstOrDefault(d => d.Name == installTargetDirectoryInfo.Root.Name)?.AvailableFreeSpace ?? 0;
 
-                if (eftSourceDirSize > availableSize)
-                {
-                    return Result.FromError($"Not enough space on drive {installTargetDirectoryInfo.Root.Name}.\n\nRequired: {FormatFileSize(eftSourceDirSize)}\nAvailable: {FormatFileSize(availableSize)}");
-                }
-
-                return Result.FromSuccess();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error while checking available size");
-
-                return Result.FromError(ex.Message);
-            }
+            return eftSourceDirSize < availableSize;
         }
-        
-        private static long GetSizeOfDirectory(DirectoryInfo sourceDir) => sourceDir.EnumerateFiles("*", SearchOption.AllDirectories).Sum(fi => fi.Length);
-
-        private static string FormatFileSize(long bytes)
+        catch (Exception ex)
         {
-            const int unit = 1024;
-            var exp = (int)(Math.Log(bytes) / Math.Log(unit));
+            Log.Error(ex, "Error while checking available size");
 
-            return $"{bytes / Math.Pow(unit, exp):F2} {"KMGTPE"[exp - 1]}B";
+            return false;
         }
     }
+        
+    private static long GetSizeOfDirectory(DirectoryInfo sourceDir) => sourceDir.EnumerateFiles("*", SearchOption.AllDirectories).Sum(fi => fi.Length);
 }
