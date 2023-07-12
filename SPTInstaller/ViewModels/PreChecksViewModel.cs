@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ReactiveUI;
-using SPTInstaller.Aki.Helper;
 using SPTInstaller.Controllers;
 using SPTInstaller.Helpers;
 using SPTInstaller.Models;
@@ -12,14 +11,20 @@ namespace SPTInstaller.ViewModels;
 public class PreChecksViewModel : ViewModelBase
 {
     private string _installPath;
+    private bool _preCheckSucceeded;
 
     public ObservableCollection<PreCheckBase> PreChecks { get; set; } = new(ServiceHelper.GetAll<PreCheckBase>());
     public ICommand StartInstallCommand { get; set; }
-    public bool PreCheckSucceeded { get; set; }
     public string InstallPath
     {
         get => _installPath;
         set => this.RaiseAndSetIfChanged(ref _installPath, value);
+    }
+    
+    public bool PreCheckSucceeded
+    {
+        get => _preCheckSucceeded;
+        set => this.RaiseAndSetIfChanged(ref _preCheckSucceeded, value);
     }
 
     public PreChecksViewModel(IScreen host) : base(host)
