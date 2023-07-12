@@ -2,67 +2,65 @@
 using SharpCompress;
 using SPTInstaller.Interfaces;
 using SPTInstaller.Models;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace SPTInstaller.Controllers
+namespace SPTInstaller.Controllers;
+
+public class InstallController
 {
-    public class InstallController
+    public event EventHandler<IProgressableTask> TaskChanged = delegate { };
+
+    private IPreCheck[] _preChecks { get; set; }
+    private IProgressableTask[] _tasks { get; set; }
+
+    public InstallController(IProgressableTask[] tasks, IPreCheck[] preChecks = null)
     {
-        public event EventHandler<IProgressableTask> TaskChanged = delegate { };
+        _tasks = tasks;
+        _preChecks = preChecks;
+    }
 
-        private IPreCheck[] _preChecks { get; set; }
-        private IProgressableTask[] _tasks { get; set; }
+    public async Task<IResult> RunPreChecks()
+    {
+        Log.Information("-<>--<>- Running PreChecks -<>--<>-");
+        var requiredResults = new List<IResult>();
 
-        public InstallController(IProgressableTask[] tasks, IPreCheck[] preChecks = null)
+        _preChecks.ForEach(x => x.IsPending = true);
+
+        foreach (var check in _preChecks)
         {
-            _tasks = tasks;
-            _preChecks = preChecks;
+            var result = await check.RunCheck();
+
+            Log.Information($"PreCheck: {check.Name} ({(check.IsRequired ? "Required" : "Optional")}) -> {(result.Succeeded ? "Passed" : "Failed")}");
+            
+            if (check.IsRequired)
+            {
+                requiredResults.Add(result);
+            }
         }
 
-        public async Task<IResult> RunPreChecks()
+        if (requiredResults.Any(result => !result.Succeeded))
         {
-            Log.Information("-<>--<>- Running PreChecks -<>--<>-");
-            var requiredResults = new List<IResult>();
-
-            _preChecks.ForEach(x => x.IsPending = true);
-
-            foreach (var check in _preChecks)
-            {
-                var result = await check.RunCheck();
-
-                Log.Information($"PreCheck: {check.Name} ({(check.IsRequired ? "Required" : "Optional")}) -> {(result.Succeeded ? "Passed" : "Failed")}");
-
-                if (check.IsRequired)
-                {
-                    requiredResults.Add(result);
-                }
-            }
-
-            foreach(var result in requiredResults)
-            {
-                if (!result.Succeeded)
-                    return Result.FromError("Some required checks have failed");
-            }
-
-            return Result.FromSuccess();
+            return Result.FromError("Some required checks have failed");
         }
 
-        public async Task<IResult> RunTasks()
+        return Result.FromSuccess();
+    }
+
+    public async Task<IResult> RunTasks()
+    {
+        Log.Information("-<>--<>- Running Installer Tasks -<>--<>-");
+
+        foreach (var task in _tasks)
         {
-            Log.Information("-<>--<>- Running Installer Tasks -<>--<>-");
+            TaskChanged?.Invoke(null, task);
 
-            foreach (var task in _tasks)
-            {
-                TaskChanged?.Invoke(null, task);
+            var result = await task.RunAsync();
 
-                var result = await task.RunAsync();
-
-                if (!result.Succeeded) return result;
-            }
-
-            return Result.FromSuccess("Install Complete. Happy Playing!");
+            if (!result.Succeeded) return result;
         }
+
+        return Result.FromSuccess("Install Complete. Happy Playing!");
     }
 }

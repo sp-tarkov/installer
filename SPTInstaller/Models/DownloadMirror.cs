@@ -1,8 +1,7 @@
-﻿namespace SPTInstaller.Models
+﻿namespace SPTInstaller.Models;
+
+public class DownloadMirror
 {
-    public class DownloadMirror
-    {
-        public string Link { get; set; }
-        public string Hash { get; set; }
-    }
+    public string Link { get; set; }
+    public string Hash { get; set; }
 }
