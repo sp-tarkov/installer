@@ -23,7 +23,7 @@
 				Margin="10"
 				FontSize="15" FontWeight="SemiBold"
 				Classes="yellow"
-				IsVisible="{Binding PreCheckSucceeded}"
+				IsEnabled="{Binding AllowInstall}"
 				Command="{Binding StartInstallCommand}"
 				/>
 
