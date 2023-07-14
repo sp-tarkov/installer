@@ -8,12 +8,12 @@ namespace SPTInstaller.Models
         /// <summary>
         /// The folder to install SPT into
         /// </summary>
-        public string TargetInstallPath { get; set; }
+        public string? TargetInstallPath { get; set; }
 
         /// <summary>
         /// The orginal EFT game path
         /// </summary>
-        public string OriginalGamePath { get; set; }
+        public string? OriginalGamePath { get; set; }
 
         /// <summary>
         /// The original EFT game version

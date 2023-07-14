@@ -1,7 +1,6 @@
 ﻿using SPTInstaller.Aki.Helper;
 using SPTInstaller.Interfaces;
 using SPTInstaller.Models;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace SPTInstaller.Installer_Tasks
