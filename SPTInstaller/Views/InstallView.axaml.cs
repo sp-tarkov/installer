@@ -1,14 +1,12 @@
-using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using SPTInstaller.ViewModels;
 
-namespace SPTInstaller.Views
+namespace SPTInstaller.Views;
+
+public partial class InstallView : ReactiveUserControl<InstallViewModel>
 {
-    public partial class InstallView : ReactiveUserControl<InstallViewModel>
+    public InstallView()
     {
-        public InstallView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

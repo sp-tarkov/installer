@@ -1,38 +1,34 @@
-﻿using Gitea.Model;
-using System;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using Gitea.Model;
 
-namespace SPTInstaller.Aki.Helper
+namespace SPTInstaller.Helpers;
+
+public static class FileHashHelper
 {
-    public static class FileHashHelper
+    public static string? GetGiteaReleaseHash(Release release)
     {
-        public static string GetGiteaReleaseHash(Release release)
+        var regex = Regex.Match(release.Body, @"Release Hash: (?<hash>\S+)");
+
+        if (regex.Success)
         {
-            var regex = Regex.Match(release.Body, @"Release Hash: (?<hash>\S+)");
-
-            if (regex.Success)
-            {
-                return regex.Groups["hash"].Value;
-            }
-
-            return null;
+            return regex.Groups["hash"].Value;
         }
 
-        public static bool CheckHash(FileInfo file, string expectedHash)
-        {
-            using (MD5 md5Service = MD5.Create())
-            using (var sourceStream = file.OpenRead())
-            {
-                byte[] sourceHash = md5Service.ComputeHash(sourceStream);
-                byte[] expectedHashBytes = Convert.FromBase64String(expectedHash);
+        return null;
+    }
 
-                bool matched = Enumerable.SequenceEqual(sourceHash, expectedHashBytes);
+    public static bool CheckHash(FileInfo file, string expectedHash)
+    {
+        using var md5Service = MD5.Create();
+        using var sourceStream = file.OpenRead();
+        
+        var sourceHash = md5Service.ComputeHash(sourceStream);
+        var expectedHashBytes = Convert.FromBase64String(expectedHash);
 
-                return matched;
-            }
-        }
+        var matched = Enumerable.SequenceEqual(sourceHash, expectedHashBytes);
+
+        return matched;
     }
 }

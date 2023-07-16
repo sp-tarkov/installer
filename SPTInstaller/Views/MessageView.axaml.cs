@@ -1,14 +1,12 @@
-using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using SPTInstaller.ViewModels;
 
-namespace SPTInstaller.Views
+namespace SPTInstaller.Views;
+
+public partial class MessageView : ReactiveUserControl<MessageViewModel>
 {
-    public partial class MessageView : ReactiveUserControl<MessageViewModel>
+    public MessageView()
     {
-        public MessageView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ReactiveUI;
-using SPTInstaller.Aki.Helper;
 using SPTInstaller.Controllers;
 using SPTInstaller.Helpers;
 using SPTInstaller.Models;

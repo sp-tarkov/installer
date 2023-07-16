@@ -1,13 +1,12 @@
 using Avalonia.ReactiveUI;
 using SPTInstaller.ViewModels;
 
-namespace SPTInstaller.Views
+namespace SPTInstaller.Views;
+
+public partial class PreChecksView : ReactiveUserControl<PreChecksViewModel>
 {
-    public partial class PreChecksView : ReactiveUserControl<PreChecksViewModel>
+    public PreChecksView()
     {
-        public PreChecksView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }
