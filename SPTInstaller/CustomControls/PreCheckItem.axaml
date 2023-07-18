@@ -4,6 +4,98 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SPTInstaller.CustomControls.PreCheckItem">
+    <UserControl.Styles>
+        <Style Selector="Expander">
+            <Setter Property="Background" Value="{StaticResource AKI_Brush_DarkGrayBlue}" />
+            <Setter Property="IsEnabled" Value="{Binding !Passed}" />
+        </Style>
+        
+        <Style Selector="Arc.running">
+            <Setter Property="Stroke" Value="DodgerBlue" />
+        </Style>
+        
+        <Style Selector="Arc">
+            <Setter Property="Stroke" Value="Gray" />
+            <Setter Property="IsVisible" Value="{Binding IsPending, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            <Style.Animations>
+                <Animation Duration="0:0:1" RepeatCount="infinite">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="RotateTransform.Angle" Value="0" />
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="RotateTransform.Angle" Value="360" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+
+        <Style Selector="Label.bold">
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+
+        <Style Selector="Path.passed">
+            <Setter Property="Data" Value="{StaticResource CircledCheck}" />
+            <Setter Property="Fill" Value="Green" />
+        </Style>
+
+        <Style Selector="Path.failed">
+            <Setter Property="Data" Value="{StaticResource CircledX}" />
+            <Setter Property="Fill" Value="Red" />
+            <Setter Property="ToolTip.Tip" Value="A required dependency could not be found" />
+        </Style>
+
+        <Style Selector="Path.warning">
+            <Setter Property="Data" Value="{StaticResource CircledWarn}" />
+            <Setter Property="Fill" Value="Goldenrod" />
+            <Setter Property="ToolTip.Tip" Value="This dependency could not be found" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid ColumnDefinitions="*, AUTO" Margin="3">
+        <Expander VerticalAlignment="Stretch">
+            <Expander.Header>
+                <WrapPanel Grid.Column="1">
+                    <Label Content="{Binding PreCheckName, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                           Classes.bold="{Binding IsRunning, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                    <Canvas Margin="0 3 0 0" IsVisible="{Binding !IsPending, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        <Ellipse Fill="White" Height="15" Width="15" Canvas.Top="3" Canvas.Left="3" />
+                        <Path Name="iconPath" StrokeThickness="2"
+                              Classes.passed="{Binding Passed, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                            <Classes.failed>
+                                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                    <Binding Path="IsRequired" />
+                                    <Binding Path="!Passed" />
+                                </MultiBinding>
+                            </Classes.failed>
+                            <Classes.warning>
+                                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                    <Binding Path="!IsRequired" />
+                                    <Binding Path="!Passed" />
+                                </MultiBinding>
+                            </Classes.warning>
+                        </Path>
+                    </Canvas>
+                    <Arc StartAngle="280" SweepAngle="80" Margin="0 3 0 0" StrokeThickness="3"
+                         Width="20" Height="20" VerticalAlignment="Top"
+                         Classes.running="{Binding IsRunning, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                </WrapPanel>
+            </Expander.Header>
+            <Grid RowDefinitions="*,*" ColumnDefinitions="150,*">
+                <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                    Search
+                </TextBlock>
+                <TextBox Grid.Row="0" Grid.Column="1" Watermark="Search text" Width="200" />
+                <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">
+                    Case sensitive?
+                </TextBlock>
+                <CheckBox Grid.Row="1" Grid.Column="1" />
+            </Grid>
+        </Expander>
+    </Grid>
+</UserControl>
+
+
+<!--
 	
 	<UserControl.Styles>
 		
@@ -50,8 +142,7 @@
 	
 	
 	<Grid ColumnDefinitions="22, AUTO" Margin="3">
-		<Canvas Margin="0 3 0 0"
-				IsVisible="{Binding !IsPending, RelativeSource={RelativeSource AncestorType=UserControl}}">
+		<Canvas Margin="0 3 0 0" IsVisible="{Binding !IsPending, RelativeSource={RelativeSource AncestorType=UserControl}}">
 			<Ellipse Fill="White" Height="15" Width="15" Canvas.Top="3" Canvas.Left="3"
 					 />
 			<Path Name="iconPath" StrokeThickness="2"
@@ -81,4 +172,5 @@
 			   Classes.bold="{Binding IsRunning, RelativeSource={RelativeSource AncestorType=UserControl}}"
 			   />
 	</Grid>
-</UserControl>
+
+-->

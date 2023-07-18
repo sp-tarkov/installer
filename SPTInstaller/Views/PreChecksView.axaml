@@ -2,47 +2,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:cc="using:SPTInstaller.CustomControls"
+             xmlns:cc="using:SPTInstaller.CustomControls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SPTInstaller.Views.PreChecksView">
-	<Grid ColumnDefinitions="10,*,AUTO,*,10"
-		  RowDefinitions="10,*,AUTO,AUTO,AUTO,*,10">
-		<StackPanel Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2" HorizontalAlignment="Center">
-			<Label Content="SPT will be installed into this folder:"
-				   HorizontalAlignment="Center"
-				   />
-			<Label Foreground="DodgerBlue"
-				   Content="{Binding InstallPath}"
-				   HorizontalAlignment="Center"
-			   />
-			<Label Content="Move the installer into the folder you want it to install into if this is wrong"
-				   HorizontalAlignment="Center"
-				   />
-		</StackPanel>
-		<Button Grid.Column="2" Grid.Row="3" Content="Start Install" Padding="20 10"
-				Margin="10"
-				FontSize="15" FontWeight="SemiBold"
-				Classes="yellow"
-				IsEnabled="{Binding AllowInstall}"
-				Command="{Binding StartInstallCommand}"
-				/>
+    <Grid ColumnDefinitions="10,*,AUTO,*,10" RowDefinitions="10,*,AUTO,AUTO,AUTO,*,10">
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2" HorizontalAlignment="Center">
+            <Label Content="SPT will be installed into this folder:" HorizontalAlignment="Center" />
+            <Label Foreground="DodgerBlue" Content="{Binding InstallPath}" HorizontalAlignment="Center" />
+            <Label Content="Move the installer into the folder you want it to install into if this is wrong" HorizontalAlignment="Center" />
+        </StackPanel>
+        
+        <Button Grid.Column="2" Grid.Row="3" Content="Start Install" Padding="20 10"
+                Margin="10"
+                FontSize="15" FontWeight="SemiBold"
+                Classes="yellow"
+                IsEnabled="{Binding AllowInstall}"
+                Command="{Binding StartInstallCommand}" />
 
-		<ItemsControl Items="{Binding PreChecks}" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4" HorizontalAlignment="Center">
-			<ItemsControl.ItemsPanel>
-				<ItemsPanelTemplate>
-					<WrapPanel/>
-				</ItemsPanelTemplate>
-			</ItemsControl.ItemsPanel>
-			<ItemsControl.ItemTemplate>
-				<DataTemplate>
-					<cc:PreCheckItem PreCheckName="{Binding Name}"
-									 IsRunning="{Binding IsRunning}"
-									 IsPending="{Binding IsPending}"
-									 IsRequired="{Binding IsRequired}"
-									 Passed="{Binding Passed}"
-									 />
-				</DataTemplate>
-			</ItemsControl.ItemTemplate>
-		</ItemsControl>
-	</Grid>
+        <ItemsControl Items="{Binding PreChecks}" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4" HorizontalAlignment="Stretch">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <cc:PreCheckItem PreCheckName="{Binding Name}"
+                                     IsRunning="{Binding IsRunning}"
+                                     IsPending="{Binding IsPending}"
+                                     IsRequired="{Binding IsRequired}"
+                                     Passed="{Binding Passed}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
 </UserControl>
