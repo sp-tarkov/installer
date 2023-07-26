@@ -1,0 +1,36 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cc="using:SPTInstaller.CustomControls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SPTInstaller.Views.DetailedPreChecksView">
+    <Grid RowDefinitions="10,AUTO,AUTO,AUTO,10">
+        <Label Grid.Row="1" HorizontalAlignment="Center"
+               Content="Placeholder for install location info because I'm lazy"
+               />
+        
+        <Separator Grid.Row="2" Margin="10 5" Height="2"/>
+        
+        <ScrollViewer Grid.Row="3">
+            <ItemsControl Items="{Binding PreChecks}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel HorizontalAlignment="Stretch" Spacing="10" Margin="10"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <cc:DetailedPreCheckItem PreCheckName="{Binding Name}"
+                                                 IsRunning="{Binding IsRunning}"
+                                                 IsPending="{Binding IsPending}"
+                                                 IsRequired="{Binding IsRequired}"
+                                                 Passed="{Binding Passed}"
+                                                 PreCheckDetails="Placeholder for details"
+									     />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -184,4 +184,20 @@
 		<Setter Property="BorderBrush" Value="Transparent"/>
 		<Setter Property="BorderThickness" Value="0"/>
 	</Style>
+    
+    <!-- PreCheck Path Styles -->
+    <Style Selector="Path.passed">
+        <Setter Property="Data" Value="{StaticResource CircledCheck}"/>
+        <Setter Property="Fill" Value="Green"/>
+    </Style>
+
+    <Style Selector="Path.failed">
+        <Setter Property="Data" Value="{StaticResource CircledX}"/>
+        <Setter Property="Fill" Value="Red"/>
+    </Style>
+
+    <Style Selector="Path.warning">
+        <Setter Property="Data" Value="{StaticResource CircledWarn}"/>
+        <Setter Property="Fill" Value="Goldenrod"/>
+    </Style>
 </Styles>

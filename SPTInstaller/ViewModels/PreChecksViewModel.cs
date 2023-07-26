@@ -15,6 +15,8 @@ public class PreChecksViewModel : ViewModelBase
 
     public ObservableCollection<PreCheckBase> PreChecks { get; set; } = new(ServiceHelper.GetAll<PreCheckBase>());
     public ICommand StartInstallCommand { get; set; }
+    public ICommand ShowDetailedViewCommand { get; set; }
+
     public string InstallPath
     {
         get => _installPath;
@@ -43,6 +45,7 @@ public class PreChecksViewModel : ViewModelBase
         InstallPath = data.TargetInstallPath;
 
         StartInstallCommand = ReactiveCommand.Create(() => NavigateTo(new InstallViewModel(HostScreen)));
+        ShowDetailedViewCommand = ReactiveCommand.Create(() => NavigateTo(new DetailedPreChecksViewModel(HostScreen)));
 
         Task.Run(async () =>
         {
