@@ -13,7 +13,7 @@ public static class DirectorySizeHelper
             var installTargetDirectoryInfo = new DirectoryInfo(installTargetDirPath);
                 
             var eftSourceDirSize = GetSizeOfDirectory(eftSourceDirectoryInfo);
-            var availableSize = DriveInfo.GetDrives().FirstOrDefault(d => d.Name == installTargetDirectoryInfo.Root.Name)?.AvailableFreeSpace ?? 0;
+            var availableSize = DriveInfo.GetDrives().FirstOrDefault(d => d.Name.ToLower() == installTargetDirectoryInfo.Root.Name.ToLower())?.AvailableFreeSpace ?? 0;
 
             return eftSourceDirSize < availableSize;
         }
