@@ -39,6 +39,12 @@ public class PreChecksViewModel : ViewModelBase
         }
 
         data.OriginalGamePath = PreCheckHelper.DetectOriginalGamePath();
+
+        if (data.OriginalGamePath == null)
+        {
+            NavigateTo(new MessageViewModel(HostScreen, Result.FromError("Could not find EFT install.\n\nDo you own and have the game installed?")));
+        }
+
         data.TargetInstallPath = Environment.CurrentDirectory;
         InstallPath = data.TargetInstallPath;
 
