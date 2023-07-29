@@ -5,7 +5,7 @@
         >
 	<Design.PreviewWith>
 		<StackPanel Spacing="5" Background="{StaticResource AKI_Background_Dark}">
-			<Button Content="Blah"/>
+			<Button Content="Blah" Classes="outlinedTLCorner"/>
 			<TextBox Text="Some cool text here" Margin="5"/>
 			<TextBox Watermark="This is a watermark" Margin="5"/>
 		</StackPanel>
@@ -63,6 +63,11 @@
 		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_Yellow}"/>
 		<Setter Property="BorderThickness" Value="1"/>
 	</Style>
+
+    <!-- TextBlock Styles -->
+    <Style Selector="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource AKI_Foreground_Light}"/>
+    </Style>
 
 	<!-- Label Styles -->
 	<!-- SourceRef: https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Themes.Fluent/Controls/Label.xaml -->
@@ -163,25 +168,41 @@
 		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
 	</Style>
 
-	<!-- Button Link Style -->
-	<Style Selector="Button.link">
+	<!-- Button outlined Style -->
+	<Style Selector="Button.outlinedTLCorner">
 		<Setter Property="Foreground" Value="{StaticResource AKI_Brush_Lighter}"/>
 		<Setter Property="Background" Value="Transparent"/>
-		<Setter Property="BorderBrush" Value="Transparent"/>
-		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
+		<Setter Property="BorderThickness" Value="2 2 0 0"/>
 	</Style>
 
-	<Style Selector="Button.link:pointerover /template/ ContentPresenter">
+	<Style Selector="Button.outlinedTLCorner:pointerover /template/ ContentPresenter">
 		<Setter Property="TextBlock.Foreground" Value="{StaticResource AKI_Brush_Yellow}"/>
 		<Setter Property="Background" Value="Transparent"/>
-		<Setter Property="BorderBrush" Value="Transparent"/>
-		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_Yellow}"/>
+		<Setter Property="BorderThickness" Value="1 1 0 0"/>
 	</Style>
 
-	<Style Selector="Button.link:pressed /template/ ContentPresenter">
+	<Style Selector="Button.outlinedTLCorner:pressed /template/ ContentPresenter">
 		<Setter Property="TextBlock.Foreground" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="BorderBrush" Value="Transparent"/>
 		<Setter Property="BorderThickness" Value="0"/>
 	</Style>
+    
+    <!-- PreCheck Path Styles -->
+    <Style Selector="Path.passed">
+        <Setter Property="Data" Value="{StaticResource CircledCheck}"/>
+        <Setter Property="Fill" Value="Green"/>
+    </Style>
+
+    <Style Selector="Path.failed">
+        <Setter Property="Data" Value="{StaticResource CircledX}"/>
+        <Setter Property="Fill" Value="Red"/>
+    </Style>
+
+    <Style Selector="Path.warning">
+        <Setter Property="Data" Value="{StaticResource CircledWarn}"/>
+        <Setter Property="Fill" Value="Goldenrod"/>
+    </Style>
 </Styles>

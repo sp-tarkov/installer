@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using SPTInstaller.Models;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace SPTInstaller.Installer_Tasks.PreChecks;
@@ -10,7 +11,7 @@ public class NetFramework472PreCheck : PreCheckBase
     {
     }
 
-    public override async Task<bool> CheckOperation()
+    public override async Task<PreCheckResult> CheckOperation()
     {
         try
         {
@@ -18,27 +19,45 @@ public class NetFramework472PreCheck : PreCheckBase
 
             var key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full");
 
+            var failedButtonText = "Download .Net Framework 4.7.2";
+
+            var failedButtonAction = () =>
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    UseShellExecute = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    ArgumentList = { "/C", "start", "https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net472-developer-pack-offline-installer" }
+                });
+            };
+
             if (key == null)
             {
-                return false;
+                return PreCheckResult.FromError("Could not find .Net Framework on system.\n\nThis is required to play SPT, but you can install it later and shouldn't affect the SPT install process.", failedButtonText, failedButtonAction);
             }
 
             var value = key.GetValue("Version");
 
-            if (value != null && value is string versionString)
+            if (value == null || value is not string versionString)
             {
-                var installedVersion = new Version(versionString);
-
-                return installedVersion > minRequiredVersion;
+                return PreCheckResult.FromError("Something went wrong. This precheck failed for an unknown reason.  :(");
             }
 
-            return false;
+            var installedVersion = new Version(versionString);
+
+            if (installedVersion < minRequiredVersion)
+            {
+                return PreCheckResult.FromError($".Net Framework {versionString} is installed, but {minRequiredVersion} or higher is required.\n\nYou can install it later and shouldn't affect the SPT install process.", failedButtonText, failedButtonAction);
+            }
+
+            return PreCheckResult.FromSuccess($".Net Framework {minRequiredVersion} or higher is installed.\n\nInstalled Version: {installedVersion}");
         }
         catch (Exception ex)
         {
             // TODO: log exceptions
 
-            return false;
+            return PreCheckResult.FromException(ex);
         }
     }
 }
