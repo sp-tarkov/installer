@@ -32,7 +32,7 @@ public class InstallController
         {
             var result = await check.RunCheck();
 
-            Log.Information($"PreCheck: {check.Name} ({(check.IsRequired ? "Required" : "Optional")}) -> {(result.Succeeded ? "Passed" : "Failed")}");
+            Log.Information($"PreCheck: {check.Name} ({(check.IsRequired ? "Required" : "Optional")}) -> {(result.Succeeded ? "Passed" : "Failed")}\nDetail: {check.PreCheckDetails.ReplaceLineEndings(" ")}");
             
             if (check.IsRequired)
             {

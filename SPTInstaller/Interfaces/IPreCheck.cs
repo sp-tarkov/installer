@@ -12,5 +12,7 @@ public interface IPreCheck
         
     public bool Passed { get; }
 
+    public string PreCheckDetails { get; }
+
     public Task<IResult> RunCheck();
 }
