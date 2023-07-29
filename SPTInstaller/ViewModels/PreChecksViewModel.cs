@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ReactiveUI;
+using Serilog;
 using SPTInstaller.Controllers;
 using SPTInstaller.Helpers;
 using SPTInstaller.Models;
@@ -51,7 +52,11 @@ public class PreChecksViewModel : ViewModelBase
         InstallPath = data.TargetInstallPath;
 
         StartInstallCommand = ReactiveCommand.Create(() => NavigateTo(new InstallViewModel(HostScreen)));
-        ShowDetailedViewCommand = ReactiveCommand.Create(() => NavigateTo(new DetailedPreChecksViewModel(HostScreen)));
+        ShowDetailedViewCommand = ReactiveCommand.Create(() => 
+        {
+            Log.Logger.Information("Opening Detailed PreCheck View");
+            NavigateTo(new DetailedPreChecksViewModel(HostScreen));
+        });
 
         Task.Run(async () =>
         {

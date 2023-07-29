@@ -26,7 +26,7 @@
         </Style>
     </UserControl.Styles>
     
-    <Grid RowDefinitions="3,AUTO,3,*,3" ColumnDefinitions="3,*,3" Margin="10">
+    <Grid RowDefinitions="3,AUTO,3,*,30,3" ColumnDefinitions="3,*,AUTO,3" Margin="10">
         <Border Grid.RowSpan="5" Grid.ColumnSpan="3"
                 Background="{StaticResource AKI_Background_Light}" CornerRadius="8"
                 BoxShadow="3 3 10 .1 black"
@@ -68,8 +68,16 @@
 			   />
         </Grid>
 
-        <Label Grid.Row="3" Grid.Column="1"
-               Content="{Binding PreCheckDetails, RelativeSource={RelativeSource AncestorType=UserControl}}"
-			   />
+        <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" TextWrapping="Wrap"
+                   Margin="10"
+                   Text="{Binding PreCheckDetails, RelativeSource={RelativeSource AncestorType=UserControl}}"
+			       />
+        
+        <Button Grid.Row="4" Grid.Column="2"
+                CornerRadius="8 0 8 0" Classes="outlinedTLCorner"
+                Content="{Binding ActionButtonText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                Command="{Binding ActionButtonCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                IsVisible="{Binding ActionButtonIsVisible, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                />
     </Grid>
 </UserControl>

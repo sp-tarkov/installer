@@ -5,18 +5,35 @@
              xmlns:cc="using:SPTInstaller.CustomControls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SPTInstaller.Views.DetailedPreChecksView">
-    <Grid RowDefinitions="10,AUTO,AUTO,AUTO,10">
-        <Label Grid.Row="1" HorizontalAlignment="Center"
-               Content="Placeholder for install location info because I'm lazy"
+    <Grid RowDefinitions="10,AUTO,AUTO,AUTO,*,10" ColumnDefinitions="10,AUTO,*,AUTO,10">
+        
+        
+        <Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"
+               Content="SPT will be installed into:"
+               FontSize="16"
+               FontWeight="SemiBold"
                />
         
-        <Separator Grid.Row="2" Margin="10 5" Height="2"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
+                   Foreground="DodgerBlue" FontWeight="SemiBold" FontSize="16"
+                   Text="{Binding InstallPath}" TextWrapping="Wrap"
+                   Margin="5"
+                   />
         
-        <ScrollViewer Grid.Row="3">
+        <Button Grid.Row="1" Grid.RowSpan="3" Grid.Column="3"
+                Content="Start Install" Padding="20 10"
+                VerticalAlignment="Top"
+				FontSize="15" FontWeight="SemiBold"
+				Classes="yellow"
+				IsEnabled="{Binding AllowInstall}"
+				Command="{Binding StartInstallCommand}"
+                />
+        
+        <ScrollViewer Grid.Row="4" Grid.ColumnSpan="5">
             <ItemsControl Items="{Binding PreChecks}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel HorizontalAlignment="Stretch" Spacing="10" Margin="10"/>
+                        <StackPanel HorizontalAlignment="Stretch" Margin="10 0"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -26,11 +43,19 @@
                                                  IsPending="{Binding IsPending}"
                                                  IsRequired="{Binding IsRequired}"
                                                  Passed="{Binding Passed}"
-                                                 PreCheckDetails="Placeholder for details"
+                                                 PreCheckDetails="{Binding PreCheckDetails}"
+                                                 ActionButtonCommand="{Binding ActionButtonCommand}"
+                                                 ActionButtonText="{Binding ActionButtonText}"
+                                                 ActionButtonIsVisible="{Binding ActionButtonIsVisible}"
 									     />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+
+        <Border Grid.Row="3" Grid.ColumnSpan="5"
+                BorderThickness="1" BorderBrush="Black" Height="2" Background="Black"
+                BoxShadow="0 3 10 2 black"
+                />
     </Grid>
 </UserControl>
