@@ -17,6 +17,11 @@
     <AvaloniaResource Include="Assets\**" />
     <None Remove=".gitignore" />
     <None Remove="Assets\icon.ico" />
+    <None Remove="Resources\update.ps1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\update.ps1" />
   </ItemGroup>
 
   <ItemGroup>

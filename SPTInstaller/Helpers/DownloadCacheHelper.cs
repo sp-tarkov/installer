@@ -9,14 +9,14 @@ public static class DownloadCacheHelper
 {
     private static HttpClient _httpClient = new() { Timeout = TimeSpan.FromHours(1) };
 
-    private static string _cachePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "spt-installer/cache");
+    public static string CachePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "spt-installer/cache");
 
     private static bool CheckCache(FileInfo cacheFile, string expectedHash = null)
     {
         try
         {
             cacheFile.Refresh();
-            Directory.CreateDirectory(_cachePath);
+            Directory.CreateDirectory(CachePath);
 
             if (cacheFile.Exists)
             {
@@ -108,7 +108,7 @@ public static class DownloadCacheHelper
 
     public static async Task<FileInfo?> GetOrDownloadFileAsync(string fileName, string targetLink, IProgress<double> progress, string expectedHash = null)
     {
-        var cacheFile = new FileInfo(Path.Join(_cachePath, fileName));
+        var cacheFile = new FileInfo(Path.Join(CachePath, fileName));
 
         try
         {
@@ -125,7 +125,7 @@ public static class DownloadCacheHelper
 
     public static async Task<FileInfo?> GetOrDownloadFileAsync(string fileName, Stream fileDownloadStream, string expectedHash = null)
     {
-        var cacheFile = new FileInfo(Path.Join(_cachePath, fileName));
+        var cacheFile = new FileInfo(Path.Join(CachePath, fileName));
 
         try
         {

@@ -12,6 +12,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
 {
     public RoutingState Router { get; } = new();
     public ViewModelActivator Activator { get; } = new();
+    public InstallerUpdateInfo UpdateInfo { get; } = new();
 
     private string _title;
     public string Title
@@ -31,14 +32,12 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
         Log.Information($"========= {Title} Started =========");
         Log.Information(Environment.OSVersion.VersionString);
 
-        var updateInfo = new InstallerUpdateInfo(version);
-
         Task.Run(async () =>
         {
-            await updateInfo.CheckForUpdates();
+            await UpdateInfo.CheckForUpdates(version);
         });
 
-        Router.Navigate.Execute(new PreChecksViewModel(this));
+        Router.Navigate.Execute(new PreChecksViewModel(this, DismissUpdateCommand));
     }
 
     public void CloseCommand()
@@ -57,4 +56,14 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
         }
     }
 
+    public void DismissUpdateCommand()
+    {
+        UpdateInfo.UpdateAvailable = false;
+    }
+
+    public async Task UpdateInstallerCommand()
+    {
+        Router.Navigate.Execute(new MessageViewModel(this, Result.FromSuccess("Please wait while the update is installed"), false));
+        await UpdateInfo.UpdateInstaller();
+    }
 }

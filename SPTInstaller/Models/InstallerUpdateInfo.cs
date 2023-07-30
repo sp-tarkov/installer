@@ -2,12 +2,24 @@
 using Gitea.Client;
 using ReactiveUI;
 using Serilog;
+using SPTInstaller.Helpers;
+using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace SPTInstaller.Models;
 public class InstallerUpdateInfo : ReactiveObject
 {
+    private Version? _newVersion;
+
+    public string NewInstallerUrl = "";
+
+    private string _updateInfoText = "";
+    public string UpdateInfoText
+    {
+        get => _updateInfoText;
+        set => this.RaiseAndSetIfChanged(ref _updateInfoText, value);
+    }
+
     private bool _updateAvailable;
     public bool UpdateAvailable
     {
@@ -15,31 +27,67 @@ public class InstallerUpdateInfo : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _updateAvailable, value);
     }
 
-    private Version _currentVersion;
-    public Version CurrentVersion
+    private bool _updating;
+    public bool Updating
     {
-        get => _currentVersion;
-        set => this.RaiseAndSetIfChanged(ref _currentVersion, value);
+        get => _updating;
+        set => this.RaiseAndSetIfChanged(ref _updating, value);
     }
 
-    private Version _newVersion;
-    public Version NewVersion
+    private int _downloadProgress;
+    public int DownloadProgress
     {
-        get => _newVersion;
-        set => this.RaiseAndSetIfChanged(ref _newVersion, value);
+        get => _downloadProgress;
+        set => this.RaiseAndSetIfChanged(ref _downloadProgress, value);
     }
 
-
-    private bool _checkingForUpdates;
-    public bool CheckingForUpdates
+    public async Task UpdateInstaller()
     {
-        get => _checkingForUpdates;
-        set => this.RaiseAndSetIfChanged(ref _checkingForUpdates, value);
+        Updating = true;
+        
+        var updater = new FileInfo(Path.Join(DownloadCacheHelper.CachePath, "update.ps1"));
+        FileHelper.StreamAssemblyResourceOut("update.ps1", updater.FullName);
+
+
+        if (!updater.Exists)
+        {
+            UpdateInfoText = "Failed to get updater from resources :(";
+            return;
+        }
+
+        var newInstallerPath = await DownloadNewInstaller();
+
+        if(string.IsNullOrWhiteSpace(newInstallerPath))
+            return;
+
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = "powershell.exe",
+            ArgumentList = { "-ExecutionPolicy", "Bypass", "-File", $"{updater.FullName}", $"{newInstallerPath}", $"{Path.Join(Environment.CurrentDirectory, "SPTInstaller.exe")}" }
+        });
     }
 
-    public async Task<bool> CheckForUpdates()
+    private async Task<string> DownloadNewInstaller()
     {
-        CheckingForUpdates = true;
+        UpdateInfoText = $"Downloading new installer v{_newVersion}";
+
+        var progress = new Progress<double>(x => DownloadProgress = (int)x);
+
+        var file = await DownloadCacheHelper.GetOrDownloadFileAsync("SPTInstller.exe", NewInstallerUrl, progress);
+
+        if (file == null || !file.Exists)
+        {
+            UpdateInfoText = "Failed to download new installer :(";
+            return "";
+        }
+
+        return file.FullName;
+    }
+
+    public async Task CheckForUpdates(Version? currentVersion)
+    {
+        if (currentVersion == null)
+            return;
 
         try
         {
@@ -48,45 +96,33 @@ public class InstallerUpdateInfo : ReactiveObject
             var releases = await repo.RepoListReleasesAsync("CWX", "SPT-AKI-Installer");
 
             if (releases == null || releases.Count == 0)
-                return false;
+                return;
 
             var latest = releases.FindAll(x => !x.Prerelease)[0];
 
             if (latest == null)
-                return false;
+                return;
 
             var latestVersion = new Version(latest.TagName);
 
-            if (latestVersion == null || latestVersion <= CurrentVersion)
-                return false;
+            if (latestVersion == null || latestVersion <= currentVersion)
+                return;
 
-            NewVersion = latestVersion;
             UpdateAvailable = true;
-            CheckingForUpdates = false;
 
-            return true;
+            _newVersion = latestVersion;
+
+            UpdateInfoText = $"A newer installer is available, version {latestVersion}";
+
+            NewInstallerUrl = latest.Assets[0].BrowserDownloadUrl;
+
+            return;
         }
         catch (Exception ex)
         {
             Log.Logger.Error(ex, "Failed to check for updates");
         }
 
-        CheckingForUpdates = false;
-        return false;
-    }
-
-    public ICommand UpdateInstaller { get; set; }
-
-    public InstallerUpdateInfo(Version? currentVersion)
-    {
-        if (currentVersion == null)
-            return;
-
-        CurrentVersion = currentVersion;
-
-        UpdateInstaller = ReactiveCommand.Create(() =>
-        {
-            // TODO: update installer here
-        });
+        return;
     }
 }
