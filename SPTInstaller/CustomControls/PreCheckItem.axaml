@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,7 +6,6 @@
              x:Class="SPTInstaller.CustomControls.PreCheckItem">
 	
 	<UserControl.Styles>
-		
 		<Style Selector="Arc.running">
 			<Setter Property="Stroke" Value="DodgerBlue"/>
 		</Style>
@@ -28,23 +27,6 @@
 		
 		<Style Selector="Label.bold">
 			<Setter Property="FontWeight" Value="Bold"/>
-		</Style>
-		
-		<Style Selector="Path.passed">
-			<Setter Property="Data" Value="{StaticResource CircledCheck}"/>
-			<Setter Property="Fill" Value="Green"/>
-		</Style>
-		
-		<Style Selector="Path.failed">
-			<Setter Property="Data" Value="{StaticResource CircledX}"/>
-			<Setter Property="Fill" Value="Red"/>
-			<Setter Property="ToolTip.Tip" Value="A required dependency could not be found"/>
-		</Style>
-		
-		<Style Selector="Path.warning">
-			<Setter Property="Data" Value="{StaticResource CircledWarn}"/>
-			<Setter Property="Fill" Value="Goldenrod"/>
-			<Setter Property="ToolTip.Tip" Value="This dependency could not be found"/>
 		</Style>
 	</UserControl.Styles>
 	

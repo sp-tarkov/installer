@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ReactiveUI;
+using Serilog;
 using SPTInstaller.Controllers;
 using SPTInstaller.Helpers;
 using SPTInstaller.Models;
@@ -15,6 +16,8 @@ public class PreChecksViewModel : ViewModelBase
 
     public ObservableCollection<PreCheckBase> PreChecks { get; set; } = new(ServiceHelper.GetAll<PreCheckBase>());
     public ICommand StartInstallCommand { get; set; }
+    public ICommand ShowDetailedViewCommand { get; set; }
+
     public string InstallPath
     {
         get => _installPath;
@@ -39,10 +42,21 @@ public class PreChecksViewModel : ViewModelBase
         }
 
         data.OriginalGamePath = PreCheckHelper.DetectOriginalGamePath();
+
+        if (data.OriginalGamePath == null)
+        {
+            NavigateTo(new MessageViewModel(HostScreen, Result.FromError("Could not find EFT install.\n\nDo you own and have the game installed?")));
+        }
+
         data.TargetInstallPath = Environment.CurrentDirectory;
         InstallPath = data.TargetInstallPath;
 
         StartInstallCommand = ReactiveCommand.Create(() => NavigateTo(new InstallViewModel(HostScreen)));
+        ShowDetailedViewCommand = ReactiveCommand.Create(() => 
+        {
+            Log.Logger.Information("Opening Detailed PreCheck View");
+            NavigateTo(new DetailedPreChecksViewModel(HostScreen));
+        });
 
         Task.Run(async () =>
         {

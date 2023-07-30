@@ -16,16 +16,7 @@ public class InitializationTask : InstallerTaskBase
 
     public override async Task<IResult> TaskOperation()
     {
-        SetStatus("Initializing", $"Target Install Path: {FileHelper.GetRedactedPath(_data.TargetInstallPath)}");
-
-        _data.OriginalGamePath = PreCheckHelper.DetectOriginalGamePath();
-
-        if (_data.OriginalGamePath == null)
-        {
-            return Result.FromError("EFT IS NOT INSTALLED!");
-        }
-
-        SetStatus(null, $"Installed EFT Game Path: {FileHelper.GetRedactedPath(_data.OriginalGamePath)}");
+        SetStatus("Initializing", $"Installed EFT Game Path: {FileHelper.GetRedactedPath(_data.OriginalGamePath)}");
 
         var result = PreCheckHelper.DetectOriginalGameVersion(_data.OriginalGamePath);
 

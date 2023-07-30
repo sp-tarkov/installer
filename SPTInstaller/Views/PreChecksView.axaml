@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,7 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SPTInstaller.Views.PreChecksView">
 	<Grid ColumnDefinitions="10,*,AUTO,*,10"
-		  RowDefinitions="10,*,AUTO,AUTO,AUTO,*,10">
+		  RowDefinitions="10,*,AUTO,AUTO,AUTO,AUTO,*,10">
 		<StackPanel Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2" HorizontalAlignment="Center">
 			<Label Content="SPT will be installed into this folder:"
 				   HorizontalAlignment="Center"
@@ -44,5 +44,9 @@
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
+        <Button Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" HorizontalAlignment="Center"
+                Content="Detailed View"
+                Command="{Binding ShowDetailedViewCommand}"
+                />
 	</Grid>
 </UserControl>

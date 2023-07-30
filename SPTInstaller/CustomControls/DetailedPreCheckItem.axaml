@@ -1,0 +1,83 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SPTInstaller.CustomControls.DetailedPreCheckItem"
+             Background="Transparent" MinHeight="100">
+    <UserControl.Styles>
+        <Style Selector="Arc.running">
+            <Setter Property="Stroke" Value="DodgerBlue"/>
+        </Style>
+
+        <Style Selector="Arc">
+            <Setter Property="Stroke" Value="Gray"/>
+            <Setter Property="IsVisible" Value="{Binding IsPending, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+            <Style.Animations>
+                <Animation Duration="0:0:1" RepeatCount="infinite">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="RotateTransform.Angle" Value="0"/>
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="RotateTransform.Angle" Value="360"/>
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+    </UserControl.Styles>
+    
+    <Grid RowDefinitions="3,AUTO,3,*,30,3" ColumnDefinitions="3,*,AUTO,3" Margin="10">
+        <Border Grid.RowSpan="5" Grid.ColumnSpan="3"
+                Background="{StaticResource AKI_Background_Light}" CornerRadius="8"
+                BoxShadow="3 3 10 .1 black"
+                />
+        <Border Grid.RowSpan="3" Grid.ColumnSpan="3"
+                Background="{StaticResource AKI_Brush_DarkGrayBlue}" CornerRadius="8 8 0 0"
+                />
+
+        <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="22, AUTO" Margin="3">
+            <Canvas Margin="0 3 0 0"
+                    IsVisible="{Binding !IsPending, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <Ellipse Fill="White" Height="15" Width="15" Canvas.Top="3" Canvas.Left="3"
+					 />
+                <Path Name="iconPath" StrokeThickness="2"
+                      Classes.passed="{Binding Passed, RelativeSource={RelativeSource AncestorType=UserControl}}"
+				  >
+                    <Classes.failed>
+                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                            <Binding Path="IsRequired"/>
+                            <Binding Path="!Passed"/>
+                        </MultiBinding>
+                    </Classes.failed>
+                    <Classes.warning>
+                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                            <Binding Path="!IsRequired"/>
+                            <Binding Path="!Passed"/>
+                        </MultiBinding>
+                    </Classes.warning>
+                </Path>
+            </Canvas>
+
+            <Arc StartAngle="280" SweepAngle="80" Margin="0 3 0 0" StrokeThickness="3"
+                 Width="20" Height="20" VerticalAlignment="Top"
+                 Classes.running="{Binding IsRunning, RelativeSource={RelativeSource AncestorType=UserControl}}"
+			 />
+            <Label Grid.Column="1"
+                   Content="{Binding PreCheckName, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                   Classes.bold="{Binding IsRunning, RelativeSource={RelativeSource AncestorType=UserControl}}"
+			   />
+        </Grid>
+
+        <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" TextWrapping="Wrap"
+                   Margin="10"
+                   Text="{Binding PreCheckDetails, RelativeSource={RelativeSource AncestorType=UserControl}}"
+			       />
+        
+        <Button Grid.Row="4" Grid.Column="2"
+                CornerRadius="8 0 8 0" Classes="outlinedTLCorner"
+                Content="{Binding ActionButtonText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                Command="{Binding ActionButtonCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                IsVisible="{Binding ActionButtonIsVisible, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                />
+    </Grid>
+</UserControl>
