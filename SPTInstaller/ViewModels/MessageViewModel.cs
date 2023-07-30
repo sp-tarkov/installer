@@ -22,6 +22,13 @@ public class MessageViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _Message, value);
     }
 
+    private bool _showCloseButton;
+    public bool ShowCloseButton
+    {
+        get => _showCloseButton;
+        set => this.RaiseAndSetIfChanged(ref _showCloseButton, value);
+    }
+
     public ICommand CloseCommand { get; set; } = ReactiveCommand.Create(() =>
     {
         if (Application.Current.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktopApp)
@@ -30,8 +37,9 @@ public class MessageViewModel : ViewModelBase
         }
     });
 
-    public MessageViewModel(IScreen Host, IResult result) : base(Host)
+    public MessageViewModel(IScreen Host, IResult result, bool showCloseButton = true) : base(Host)
     {
+        ShowCloseButton = showCloseButton;
         Message = result.Message;
 
         if(result.Succeeded)

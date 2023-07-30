@@ -1,0 +1,53 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SPTInstaller.CustomControls.UpdateInfoCard"
+             MinHeight="100" MinWidth="300">
+    
+    <UserControl.Styles>
+        <Style Selector="Grid">
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="Transitions">
+                <Setter.Value>
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.2"/>
+                    </Transitions>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style Selector="Grid.show">
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+    </UserControl.Styles>
+    
+    <Grid ColumnDefinitions="10,*,AUTO,AUTO,10" RowDefinitions="10,AUTO,AUTO,10"
+          Classes.show="{Binding ShowUpdateCard, RelativeSource={RelativeSource AncestorType=UserControl}}">
+        <Border Grid.ColumnSpan="5" Grid.RowSpan="4"  Background="{StaticResource AKI_Background_Light}"
+                BoxShadow="2 2 10 .1 black" CornerRadius="8"
+                />
+        
+        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" MaxWidth="400"
+                   Text="{Binding InfoText, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                   TextWrapping="Wrap" Margin="0 10"
+                   />
+        
+        <Button Grid.Column="2" Grid.Row="2" Content="Not now"
+                Classes="outlined"
+                IsVisible="{Binding !Updating, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                Command="{Binding NotNowCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                />
+        <Button Grid.Column="3" Grid.Row="2" Content="Update"
+                Classes="yellow" Margin="10 0 0 0"
+                IsVisible="{Binding !Updating, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                Command="{Binding UpdateInstallerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                />
+        
+        <ProgressBar Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
+                     Value="{Binding DownloadProgress, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                     IsVisible="{Binding Updating, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                     />
+
+    </Grid>
+</UserControl>

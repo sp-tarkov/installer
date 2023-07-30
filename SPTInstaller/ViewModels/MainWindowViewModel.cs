@@ -1,7 +1,10 @@
 ﻿using Avalonia;
+using Gitea.Client;
 using ReactiveUI;
 using Serilog;
+using SPTInstaller.Models;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SPTInstaller.ViewModels;
 
@@ -9,6 +12,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
 {
     public RoutingState Router { get; } = new();
     public ViewModelActivator Activator { get; } = new();
+    public InstallerUpdateInfo UpdateInfo { get; } = new();
 
     private string _title;
     public string Title
@@ -19,14 +23,21 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
 
     public MainWindowViewModel()
     {
-        string? version = Assembly.GetExecutingAssembly().GetName()?.Version?.ToString();
+        Configuration.Default.BasePath = "https://dev.sp-tarkov.com/api/v1";
 
-        Title = $"SPT Installer {"v" + version ?? "--unknown version--"}";
+        Version? version = Assembly.GetExecutingAssembly().GetName()?.Version;
+
+        Title = $"SPT Installer {"v" + version?.ToString() ?? "--unknown version--"}";
 
         Log.Information($"========= {Title} Started =========");
         Log.Information(Environment.OSVersion.VersionString);
 
-        Router.Navigate.Execute(new PreChecksViewModel(this));
+        Task.Run(async () =>
+        {
+            await UpdateInfo.CheckForUpdates(version);
+        });
+
+        Router.Navigate.Execute(new PreChecksViewModel(this, DismissUpdateCommand));
     }
 
     public void CloseCommand()
@@ -45,4 +56,14 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
         }
     }
 
+    public void DismissUpdateCommand()
+    {
+        UpdateInfo.UpdateAvailable = false;
+    }
+
+    public async Task UpdateInstallerCommand()
+    {
+        Router.Navigate.Execute(new MessageViewModel(this, Result.FromSuccess("Please wait while the update is installed"), false));
+        await UpdateInfo.UpdateInstaller();
+    }
 }

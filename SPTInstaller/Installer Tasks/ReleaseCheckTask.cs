@@ -20,8 +20,6 @@ public class ReleaseCheckTask : InstallerTaskBase
     {
         try
         {
-            Configuration.Default.BasePath = "https://dev.sp-tarkov.com/api/v1";
-
             var repo = new RepositoryApi(Configuration.Default);
 
             SetStatus("Checking SPT Releases", "", null, ProgressStyle.Indeterminate);

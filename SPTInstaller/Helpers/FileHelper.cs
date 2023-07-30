@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using Serilog;
 using SPTInstaller.Models;
 
@@ -83,4 +85,30 @@ public static class FileHelper
             return Result.FromError(ex.Message);
         }
     }
+
+    public static void StreamAssemblyResourceOut(string resourceName, string outputFilePath)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+
+        FileInfo outputFile = new FileInfo(outputFilePath);
+
+        if (outputFile.Exists)
+        {
+            outputFile.Delete();
+        }
+
+        if (!outputFile.Directory.Exists)
+        {
+            Directory.CreateDirectory(outputFile.Directory.FullName);
+        }
+
+        var resName = assembly.GetManifestResourceNames().First(x => x.EndsWith(resourceName));
+
+        using (FileStream fs = File.Create(outputFilePath))
+        using (Stream s = assembly.GetManifestResourceStream(resName))
+        {
+            s.CopyTo(fs);
+        }
+    }
+
 }
