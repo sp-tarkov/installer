@@ -168,7 +168,29 @@
 		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
 	</Style>
 
-	<!-- Button outlined Style -->
+    <!-- Button outlined Style -->
+    <Style Selector="Button.outlined">
+        <Setter Property="Foreground" Value="{StaticResource AKI_Brush_Lighter}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+
+    <Style Selector="Button.outlined:pointerover /template/ ContentPresenter">
+        <Setter Property="TextBlock.Foreground" Value="{StaticResource AKI_Brush_Yellow}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_Yellow}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+
+    <Style Selector="Button.outlined:pressed /template/ ContentPresenter">
+        <Setter Property="TextBlock.Foreground" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+	<!-- Button outlinedTLCorner Style -->
 	<Style Selector="Button.outlinedTLCorner">
 		<Setter Property="Foreground" Value="{StaticResource AKI_Brush_Lighter}"/>
 		<Setter Property="Background" Value="Transparent"/>
@@ -180,7 +202,7 @@
 		<Setter Property="TextBlock.Foreground" Value="{StaticResource AKI_Brush_Yellow}"/>
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_Yellow}"/>
-		<Setter Property="BorderThickness" Value="1 1 0 0"/>
+		<Setter Property="BorderThickness" Value="2 2 0 0"/>
 	</Style>
 
 	<Style Selector="Button.outlinedTLCorner:pressed /template/ ContentPresenter">
