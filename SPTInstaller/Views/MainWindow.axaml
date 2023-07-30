@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:SPTInstaller.ViewModels"
 		xmlns:rxui="using:Avalonia.ReactiveUI"
@@ -16,7 +16,7 @@
         ExtendClientAreaTitleBarHeightHint="-1"
         Background="{StaticResource AKI_Background_Light}"
 		>
-
+    
 	<Window.Styles>
 		<StyleInclude Source="/Assets/Styles.axaml"/>
 	</Window.Styles>

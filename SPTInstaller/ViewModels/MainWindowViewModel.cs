@@ -1,7 +1,10 @@
 ﻿using Avalonia;
+using Gitea.Client;
 using ReactiveUI;
 using Serilog;
+using SPTInstaller.Models;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SPTInstaller.ViewModels;
 
@@ -19,12 +22,21 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
 
     public MainWindowViewModel()
     {
-        string? version = Assembly.GetExecutingAssembly().GetName()?.Version?.ToString();
+        Configuration.Default.BasePath = "https://dev.sp-tarkov.com/api/v1";
 
-        Title = $"SPT Installer {"v" + version ?? "--unknown version--"}";
+        Version? version = Assembly.GetExecutingAssembly().GetName()?.Version;
+
+        Title = $"SPT Installer {"v" + version?.ToString() ?? "--unknown version--"}";
 
         Log.Information($"========= {Title} Started =========");
         Log.Information(Environment.OSVersion.VersionString);
+
+        var updateInfo = new InstallerUpdateInfo(version);
+
+        Task.Run(async () =>
+        {
+            await updateInfo.CheckForUpdates();
+        });
 
         Router.Navigate.Execute(new PreChecksViewModel(this));
     }
