@@ -26,6 +26,22 @@ public partial class UpdateInfoCard : UserControl
     public static readonly StyledProperty<bool> UpdatingProperty =
         AvaloniaProperty.Register<UpdateInfoCard, bool>(nameof(Updating));
 
+    public bool UpdateAvailable
+    {
+        get => GetValue(UpdateAvailableProperty);
+        set => SetValue(UpdateAvailableProperty, value);
+    }
+    public static readonly StyledProperty<bool> UpdateAvailableProperty =
+        AvaloniaProperty.Register<UpdateInfoCard, bool>(nameof(UpdateAvailable));
+
+    public bool IndeterminateProgress
+    {
+        get => GetValue(IndeterminateProgressProperty);
+        set => SetValue(IndeterminateProgressProperty, value);
+    }
+    public static readonly StyledProperty<bool> IndeterminateProgressProperty =
+        AvaloniaProperty.Register<UpdateInfoCard, bool>(nameof(IndeterminateProgress));
+
     public string InfoText
     {
         get => GetValue(InfoTextProperty);
