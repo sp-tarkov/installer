@@ -2,10 +2,8 @@
 using Gitea.Client;
 using ReactiveUI;
 using Serilog;
-using SPTInstaller.Models;
 using System.Globalization;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace SPTInstaller.ViewModels;
 
@@ -13,7 +11,6 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
 {
     public RoutingState Router { get; } = new();
     public ViewModelActivator Activator { get; } = new();
-    public InstallerUpdateInfo UpdateInfo { get; } = new();
 
     private string _title;
     public string Title
@@ -26,9 +23,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
     {
         Configuration.Default.BasePath = "https://dev.sp-tarkov.com/api/v1";
 
-        Version? version = Assembly.GetExecutingAssembly().GetName()?.Version;
-
-        Title = $"SPT Installer {"v" + version?.ToString() ?? "--unknown version--"}";
+        Title = $"SPT Installer {"v" + Assembly.GetExecutingAssembly().GetName()?.Version?.ToString() ?? "--unknown version--"}";
 
         Log.Information($"========= {Title} Started =========");
         Log.Information(Environment.OSVersion.VersionString);
@@ -37,12 +32,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
 
         Log.Information("System Language: {iso} - {name}", uiCulture.TwoLetterISOLanguageName, uiCulture.DisplayName);
 
-        Task.Run(async () =>
-        {
-            await UpdateInfo.CheckForUpdates(version);
-        });
-
-        Router.Navigate.Execute(new PreChecksViewModel(this, DismissUpdateCommand));
+        Router.Navigate.Execute(new PreChecksViewModel(this));
     }
 
     public void CloseCommand()
@@ -59,16 +49,5 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
         {
             desktopApp.MainWindow.WindowState = Avalonia.Controls.WindowState.Minimized;
         }
-    }
-
-    public void DismissUpdateCommand()
-    {
-        UpdateInfo.UpdateAvailable = false;
-    }
-
-    public async Task UpdateInstallerCommand()
-    {
-        Router.Navigate.Execute(new MessageViewModel(this, Result.FromSuccess("Please wait while the update is installed"), false));
-        await UpdateInfo.UpdateInstaller();
     }
 }
