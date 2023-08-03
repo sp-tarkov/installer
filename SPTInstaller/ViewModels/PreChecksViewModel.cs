@@ -51,6 +51,8 @@ public class PreChecksViewModel : ViewModelBase
         data.TargetInstallPath = Environment.CurrentDirectory;
         InstallPath = data.TargetInstallPath;
 
+        Log.Information($"Install Path: {FileHelper.GetRedactedPath(InstallPath)}");
+
         StartInstallCommand = ReactiveCommand.Create(() =>
         {
             dismissUpdateCard?.Invoke();

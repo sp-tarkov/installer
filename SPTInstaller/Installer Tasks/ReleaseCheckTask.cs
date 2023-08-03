@@ -65,12 +65,7 @@ public class ReleaseCheckTask : InstallerTaskBase
 
             _data.PatchNeeded = patchNeedCheck;
 
-            string status = $"Current Release: {latestAkiVersion}";
-
-            if (_data.PatchNeeded)
-            {
-                status += " - Patch Available";
-            }
+            string status = $"Current Release: {latestAkiVersion} - {(_data.PatchNeeded ? "Patch Available" : "No Patch Needed")}";
 
             SetStatus(null, status);
 
