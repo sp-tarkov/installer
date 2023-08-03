@@ -3,6 +3,7 @@ using Gitea.Client;
 using ReactiveUI;
 using Serilog;
 using SPTInstaller.Models;
+using System.Globalization;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -31,6 +32,10 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
 
         Log.Information($"========= {Title} Started =========");
         Log.Information(Environment.OSVersion.VersionString);
+
+        var uiCulture= CultureInfo.InstalledUICulture;
+
+        Log.Information("System Language: {iso} - {name}", uiCulture.TwoLetterISOLanguageName, uiCulture.DisplayName);
 
         Task.Run(async () =>
         {

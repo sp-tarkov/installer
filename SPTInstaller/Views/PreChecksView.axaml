@@ -11,10 +11,10 @@
 			<Label Content="SPT will be installed into this folder:"
 				   HorizontalAlignment="Center"
 				   />
-			<Label Foreground="DodgerBlue"
-				   Content="{Binding InstallPath}"
-				   HorizontalAlignment="Center"
-			   />
+            <TextBlock Text="{Binding InstallPath}" TextWrapping="Wrap"
+                       Foreground="DodgerBlue" HorizontalAlignment="Center"
+                       />
+            
 			<Label Content="Move the installer into the folder you want it to install into if this is wrong"
 				   HorizontalAlignment="Center"
 				   />
