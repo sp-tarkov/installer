@@ -46,7 +46,20 @@
 		</ItemsControl>
         <Button Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" HorizontalAlignment="Center"
                 Content="Detailed View"
+                IsEnabled="{Binding AllowDetailsButton}"
                 Command="{Binding ShowDetailedViewCommand}"
                 />
+
+        <cc:UpdateInfoCard Grid.Row="1" Grid.RowSpan="4" Padding="10"
+                           VerticalAlignment="Top" HorizontalAlignment="Left"
+                           InfoText="{Binding UpdateInfo.UpdateInfoText}"
+                           ShowUpdateCard="{Binding UpdateInfo.ShowCard}"
+                           NotNowCommand="{Binding DismissUpdateCommand}"
+                           UpdateInstallerCommand="{Binding UpdateInstallerCommand}"
+                           Updating="{Binding UpdateInfo.Updating}"
+                           DownloadProgress="{Binding UpdateInfo.DownloadProgress}"
+                           IndeterminateProgress="{Binding UpdateInfo.CheckingForUpdates}"
+                           UpdateAvailable="{Binding UpdateInfo.UpdateAvailable}"
+                           />
 	</Grid>
 </UserControl>

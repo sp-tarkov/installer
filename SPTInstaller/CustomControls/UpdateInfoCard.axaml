@@ -20,6 +20,17 @@
         <Style Selector="Grid.show">
             <Setter Property="Opacity" Value="1"/>
         </Style>
+        <Style Selector="ProgressBar">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        <Style Selector="ProgressBar.checking">
+            <Setter Property="IsIndeterminate" Value="True"/>
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
+        <Style Selector="ProgressBar.updating">
+            <Setter Property="IsIndeterminate" Value="false"/>
+            <Setter Property="IsVisible" Value="True"/>
+        </Style>
     </UserControl.Styles>
     
     <Grid ColumnDefinitions="10,*,AUTO,AUTO,10" RowDefinitions="10,AUTO,AUTO,10"
@@ -35,18 +46,19 @@
         
         <Button Grid.Column="2" Grid.Row="2" Content="Not now"
                 Classes="outlined"
-                IsVisible="{Binding !Updating, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                IsVisible="{Binding UpdateAvailable, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 Command="{Binding NotNowCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 />
         <Button Grid.Column="3" Grid.Row="2" Content="Update"
                 Classes="yellow" Margin="10 0 0 0"
-                IsVisible="{Binding !Updating, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                IsVisible="{Binding UpdateAvailable, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 Command="{Binding UpdateInstallerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 />
         
         <ProgressBar Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3"
                      Value="{Binding DownloadProgress, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                     IsVisible="{Binding Updating, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                     Classes.updating="{Binding Updating, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                     Classes.checking="{Binding IndeterminateProgress, RelativeSource={RelativeSource AncestorType=UserControl}}"
                      />
 
     </Grid>

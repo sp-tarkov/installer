@@ -33,15 +33,5 @@
 					 />
         
 		<rxui:RoutedViewHost Router="{Binding Router}" Grid.Row="1"/>
-
-        <cc:UpdateInfoCard Grid.Row="1" Padding="10"
-                           VerticalAlignment="Top" HorizontalAlignment="Left"
-                           InfoText="{Binding UpdateInfo.UpdateInfoText}"
-                           ShowUpdateCard="{Binding UpdateInfo.UpdateAvailable}"
-                           NotNowCommand="{Binding DismissUpdateCommand}"
-                           UpdateInstallerCommand="{Binding UpdateInstallerCommand}"
-                           Updating="{Binding UpdateInfo.Updating}"
-                           DownloadProgress="{Binding UpdateInfo.DownloadProgress}"
-                           />
 	</Grid>
 </Window>
