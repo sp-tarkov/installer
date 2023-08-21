@@ -27,7 +27,7 @@
 				Command="{Binding StartInstallCommand}"
 				/>
 
-		<ItemsControl Items="{Binding PreChecks}" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4" HorizontalAlignment="Center">
+		<ItemsControl ItemsSource="{Binding PreChecks}" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4" HorizontalAlignment="Center">
 			<ItemsControl.ItemsPanel>
 				<ItemsPanelTemplate>
 					<WrapPanel/>

@@ -14,7 +14,7 @@
             <Setter Property="Stroke" Value="Gray"/>
             <Setter Property="IsVisible" Value="{Binding IsPending, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
             <Style.Animations>
-                <Animation Duration="0:0:1" RepeatCount="infinite">
+                <Animation Duration="0:0:1" IterationCount="Infinite">
                     <KeyFrame Cue="0%">
                         <Setter Property="RotateTransform.Angle" Value="0"/>
                     </KeyFrame>
