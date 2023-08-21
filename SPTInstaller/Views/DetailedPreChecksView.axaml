@@ -30,7 +30,7 @@
                 />
         
         <ScrollViewer Grid.Row="4" Grid.ColumnSpan="5">
-            <ItemsControl Items="{Binding PreChecks}">
+            <ItemsControl ItemsSource="{Binding PreChecks}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel HorizontalAlignment="Stretch" Margin="10 0"/>
