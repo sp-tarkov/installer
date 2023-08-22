@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:SPTInstaller"
              x:Class="SPTInstaller.App"
+             xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
              RequestedThemeVariant="Light">
     <Application.DataTemplates>
         <local:ViewLocator/>
@@ -9,6 +10,7 @@
 
     <Application.Styles>
         <FluentTheme />
+        <dialogHostAvalonia:DialogHostStyles />
     </Application.Styles>
 
 	<Application.Resources>

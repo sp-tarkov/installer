@@ -1,11 +1,12 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics.Metrics;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DialogHostAvalonia;
 using ReactiveUI;
 using Serilog;
 using SPTInstaller.Controllers;
+using SPTInstaller.CustomControls.Dialogs;
 using SPTInstaller.Helpers;
 using SPTInstaller.Models;
 
@@ -58,18 +59,30 @@ public class PreChecksViewModel : ViewModelBase
 
         data.OriginalGamePath = PreCheckHelper.DetectOriginalGamePath();
 
+#if !TEST
         if (data.OriginalGamePath == null)
         {
             NavigateTo(new MessageViewModel(HostScreen, Result.FromError("Could not find EFT install.\n\nDo you own and have the game installed?")));
         }
+#endif
 
         data.TargetInstallPath = Environment.CurrentDirectory;
         InstallPath = data.TargetInstallPath;
 
         Log.Information($"Install Path: {FileHelper.GetRedactedPath(InstallPath)}");
 
-        StartInstallCommand = ReactiveCommand.Create(() =>
+        StartInstallCommand = ReactiveCommand.Create(async () =>
         {
+            if(FileHelper.CheckPathForProblemLocations(InstallPath))
+            {
+                var confirmation = await DialogHost.Show(new ConfirmationDialog($"We suspect you may be installing to your desktop or a cloud synced folder.\nYou might want to considering installing somewhere else to avoid issues.\n\nAre you sure you want to install to this path?\n{InstallPath}"));
+
+                if (confirmation == null || !bool.TryParse(confirmation.ToString(), out var confirm) || !confirm)
+                {
+                    return;
+                }
+            }
+
             UpdateInfo.ShowCard = false;
             NavigateTo(new InstallViewModel(HostScreen));
         });

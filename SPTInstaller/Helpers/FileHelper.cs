@@ -111,4 +111,13 @@ public static class FileHelper
         }
     }
 
+    public static bool CheckPathForProblemLocations(string path)
+    {
+        if (path.EndsWith("Desktop")) return false;
+
+        var problemNames = new string[] {"OneDrive", "NextCloud", "DropBox", "Google" };
+
+        return problemNames.Where(x => path.Contains(x)).Count() > 0;
+    }
+
 }
