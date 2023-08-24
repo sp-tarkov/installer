@@ -1,11 +1,13 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics.Metrics;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Threading;
+using DialogHostAvalonia;
 using ReactiveUI;
 using Serilog;
 using SPTInstaller.Controllers;
+using SPTInstaller.CustomControls.Dialogs;
 using SPTInstaller.Helpers;
 using SPTInstaller.Models;
 
@@ -58,17 +60,39 @@ public class PreChecksViewModel : ViewModelBase
 
         data.OriginalGamePath = PreCheckHelper.DetectOriginalGamePath();
 
+#if !TEST
         if (data.OriginalGamePath == null)
         {
             NavigateTo(new MessageViewModel(HostScreen, Result.FromError("Could not find EFT install.\n\nDo you own and have the game installed?")));
         }
+#endif
 
         data.TargetInstallPath = Environment.CurrentDirectory;
         InstallPath = data.TargetInstallPath;
 
         Log.Information($"Install Path: {FileHelper.GetRedactedPath(InstallPath)}");
 
-        StartInstallCommand = ReactiveCommand.Create(() =>
+        Task.Run(async () =>
+        {
+            if (FileHelper.CheckPathForProblemLocations(InstallPath))
+            {
+                await Dispatcher.UIThread.InvokeAsync(async () =>
+                {
+                    Log.Warning("Problem folder detected, confirming install path ...");
+                    var confirmation = await DialogHost.Show(new ConfirmationDialog($"We suspect you may be installing to your desktop or a cloud synced folder.\nYou might want to consider installing somewhere else to avoid issues.\n\nAre you sure you want to install to this path?\n{InstallPath}"));
+
+                    if (confirmation == null || !bool.TryParse(confirmation.ToString(), out var confirm) || !confirm)
+                    {
+                        Log.Information("User declined install path, exiting");
+                        Environment.Exit(0);
+                    }
+                });
+
+                Log.Information("User accepted install path");
+            }
+        });
+
+        StartInstallCommand = ReactiveCommand.Create(async () =>
         {
             UpdateInfo.ShowCard = false;
             NavigateTo(new InstallViewModel(HostScreen));

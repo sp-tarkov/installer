@@ -33,8 +33,9 @@ internal class Program
         ServiceHelper.Register<InternalData>();
         ServiceHelper.Register<PreCheckBase, NetFramework472PreCheck>();
         ServiceHelper.Register<PreCheckBase, NetCore6PreCheck>();
-        ServiceHelper.Register<PreCheckBase, FreeSpacePreCheck>();
+
 #if !TEST
+        ServiceHelper.Register<PreCheckBase, FreeSpacePreCheck>();
         var logPath = Path.Join(Environment.CurrentDirectory, "spt-aki-installer_.log");
 
         Log.Logger = new LoggerConfiguration()
