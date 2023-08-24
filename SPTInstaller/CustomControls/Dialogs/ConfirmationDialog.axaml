@@ -1,0 +1,28 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+             x:Class="SPTInstaller.CustomControls.Dialogs.ConfirmationDialog"
+             MinWidth="300" MinHeight="100" 
+             MaxWidth="600" MaxHeight="300">
+    <Grid RowDefinitions="10,AUTO,*,AUTO,10" ColumnDefinitions="10,*,AUTO,10,AUTO,10"
+          Background="{StaticResource AKI_Background_Light}">
+        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" 
+                   Text="{Binding Message, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                   TextWrapping="Wrap"
+                   />
+        <Button Content="No" Grid.Row="3" Grid.Column="2"
+                Width="50" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
+                CommandParameter="False"
+                Classes="yellow"
+                />
+        <Button Content="Yes" Grid.Row="3" Grid.Column="4"
+                Width="50" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
+                CommandParameter="True"
+                />
+    </Grid>
+</UserControl>
