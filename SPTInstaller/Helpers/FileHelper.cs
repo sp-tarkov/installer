@@ -113,11 +113,11 @@ public static class FileHelper
 
     public static bool CheckPathForProblemLocations(string path)
     {
-        if (path.EndsWith("Desktop")) return false;
+        if (path.ToLower().EndsWith("desktop")) return true;
 
-        var problemNames = new string[] {"OneDrive", "NextCloud", "DropBox", "Google" };
+        var problemNames = new string[] {"onedrive", "nextcloud", "dropbox", "google" };
 
-        return problemNames.Where(x => path.Contains(x)).Count() > 0;
+        return problemNames.Where(x => path.ToLower().Contains(x)).Count() > 0;
     }
 
 }
