@@ -36,10 +36,8 @@
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
 					<cc:PreCheckItem PreCheckName="{Binding Name}"
-									 IsRunning="{Binding IsRunning}"
-									 IsPending="{Binding IsPending}"
 									 IsRequired="{Binding IsRequired}"
-									 Passed="{Binding Passed}"
+                                     State="{Binding State}"
 									 />
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>

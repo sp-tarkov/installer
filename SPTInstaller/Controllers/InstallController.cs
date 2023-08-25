@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using SharpCompress;
+using SPTInstaller.CustomControls;
 using SPTInstaller.Interfaces;
 using SPTInstaller.Models;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ public class InstallController
         Log.Information("-<>--<>- Running PreChecks -<>--<>-");
         var requiredResults = new List<IResult>();
 
-        _preChecks.ForEach(x => x.IsPending = true);
+        _preChecks.ForEach(x => x.State = StatusSpinner.SpinnerState.Pending);
 
         foreach (var check in _preChecks)
         {

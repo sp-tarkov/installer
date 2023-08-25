@@ -39,14 +39,12 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <cc:DetailedPreCheckItem PreCheckName="{Binding Name}"
-                                                 IsRunning="{Binding IsRunning}"
-                                                 IsPending="{Binding IsPending}"
                                                  IsRequired="{Binding IsRequired}"
-                                                 Passed="{Binding Passed}"
                                                  PreCheckDetails="{Binding PreCheckDetails}"
                                                  ActionButtonCommand="{Binding ActionButtonCommand}"
                                                  ActionButtonText="{Binding ActionButtonText}"
                                                  ActionButtonIsVisible="{Binding ActionButtonIsVisible}"
+                                                 State="{Binding State}"
 									     />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
