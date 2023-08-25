@@ -26,7 +26,7 @@
 				IsEnabled="{Binding AllowInstall}"
 				Command="{Binding StartInstallCommand}"
 				/>
-
+        
 		<ItemsControl ItemsSource="{Binding PreChecks}" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4" HorizontalAlignment="Center">
 			<ItemsControl.ItemsPanel>
 				<ItemsPanelTemplate>
@@ -44,6 +44,7 @@
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
+        
         <Button Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" HorizontalAlignment="Center"
                 Content="Detailed View"
                 IsEnabled="{Binding AllowDetailsButton}"

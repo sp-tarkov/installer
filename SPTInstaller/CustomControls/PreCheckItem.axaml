@@ -36,7 +36,7 @@
 				IsVisible="{Binding !IsPending, RelativeSource={RelativeSource AncestorType=UserControl}}">
 			<Ellipse Fill="White" Height="15" Width="15" Canvas.Top="3" Canvas.Left="3"
 					 />
-			<Path Name="iconPath" StrokeThickness="2"
+			<Path StrokeThickness="2"
 				  Classes.passed="{Binding Passed, RelativeSource={RelativeSource AncestorType=UserControl}}"
 				  >
 				<Classes.failed>
