@@ -11,6 +11,21 @@ public static class DownloadCacheHelper
 
     public static string CachePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "spt-installer/cache");
 
+    public static string GetCacheSizeText()
+    {
+        if (!Directory.Exists(CachePath))
+            return "No cache folder";
+
+        var cacheDir = new DirectoryInfo(CachePath);
+
+        var cacheSize = DirectorySizeHelper.GetSizeOfDirectory(cacheDir);
+
+        if (cacheSize == 0)
+            return "Empty";
+
+        return DirectorySizeHelper.SizeSuffix(cacheSize);
+    }
+
     private static bool CheckCache(FileInfo cacheFile, string expectedHash = null)
     {
         try
