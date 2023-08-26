@@ -1,8 +1,31 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cc="using:SPTInstaller.CustomControls"
+             xmlns:convt="using:SPTInstaller.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SPTInstaller.CustomControls.CacheInfo">
-  Welcome to Avalonia!
+    <UserControl.Resources>
+        <convt:StatusSpinnerIsProcessingConverter x:Key="IsInProcessingStateConverter"/>
+    </UserControl.Resources>
+    
+    <Grid ColumnDefinitions="AUTO,10,AUTO,10,AUTO">
+        <cc:StatusSpinner State="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          IsVisible="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl},
+                                        Converter={StaticResource IsInProcessingStateConverter}}"
+                          />
+        
+        <Path Data="{StaticResource Cache}" Fill="DodgerBlue" Margin="0 6 0 0"
+              IsVisible="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl},
+                                        Converter={StaticResource IsInProcessingStateConverter},
+                                        ConverterParameter=invert}"
+              />
+        
+        <Label Grid.Column="2" Content="{Binding InfoText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+               Margin="0 2 0 0"
+               />
+        <Button Grid.Column="4" Content="What's this?" Classes="link"
+                Command="{Binding ShowCacheDialogCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+    </Grid>
 </UserControl>

@@ -34,7 +34,7 @@
 			         MinButtonCommand="{Binding MinimizeCommand}"
 					 />
 
-        <dialogHost:DialogHost  Grid.Row="1" Background="Transparent">
+        <dialogHost:DialogHost  Grid.Row="1" Background="{StaticResource AKI_Background_Light}">
             <rxui:RoutedViewHost Router="{Binding Router}"/>
         </dialogHost:DialogHost>
 	</Grid>

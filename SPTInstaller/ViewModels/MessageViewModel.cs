@@ -1,7 +1,10 @@
 ﻿using Avalonia;
 using ReactiveUI;
 using Serilog;
+using SPTInstaller.CustomControls;
+using SPTInstaller.Helpers;
 using SPTInstaller.Interfaces;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace SPTInstaller.ViewModels;
@@ -29,6 +32,20 @@ public class MessageViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _showCloseButton, value);
     }
 
+    private string _cacheInfoText;
+    public string CacheInfoText
+    {
+        get => _cacheInfoText;
+        set => this.RaiseAndSetIfChanged(ref _cacheInfoText, value);
+    }
+
+    private StatusSpinner.SpinnerState _cacheCheckState;
+    public StatusSpinner.SpinnerState CacheCheckState
+    {
+        get => _cacheCheckState;
+        set => this.RaiseAndSetIfChanged(ref _cacheCheckState, value);
+    }
+
     public ICommand CloseCommand { get; set; } = ReactiveCommand.Create(() =>
     {
         if (Application.Current.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktopApp)
@@ -42,7 +59,16 @@ public class MessageViewModel : ViewModelBase
         ShowCloseButton = showCloseButton;
         Message = result.Message;
 
-        if(result.Succeeded)
+        Task.Run(() =>
+        {
+            CacheInfoText = "Getting cache size ...";
+            CacheCheckState = StatusSpinner.SpinnerState.Running;
+
+            CacheInfoText = $"Cache Size: {DownloadCacheHelper.GetCacheSizeText()}";
+            CacheCheckState = StatusSpinner.SpinnerState.OK;
+        });
+
+        if (result.Succeeded)
         {
             Log.Information(Message);
             return;

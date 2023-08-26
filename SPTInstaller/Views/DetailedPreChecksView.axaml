@@ -13,6 +13,10 @@
                FontSize="16"
                FontWeight="SemiBold"
                />
+
+        <cc:CacheInfo Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Padding="0 0 10 0"
+              InfoText="{Binding CacheInfoText}" State="{Binding CacheCheckState}"
+              />
         
         <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
                    Foreground="DodgerBlue" FontWeight="SemiBold" FontSize="16"

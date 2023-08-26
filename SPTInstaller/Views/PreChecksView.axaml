@@ -60,5 +60,10 @@
                            IndeterminateProgress="{Binding UpdateInfo.CheckingForUpdates}"
                            UpdateAvailable="{Binding UpdateInfo.UpdateAvailable}"
                            />
+        
+        <cc:CacheInfo Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3" Padding="10"
+                      VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                      InfoText="{Binding CacheInfoText}" State="{Binding CacheCheckState}"
+                      />
 	</Grid>
 </UserControl>
