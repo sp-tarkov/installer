@@ -4,6 +4,7 @@ using ReactiveUI;
 using Serilog;
 using Splat;
 using SPTInstaller.Controllers;
+using SPTInstaller.CustomControls;
 using SPTInstaller.Helpers;
 using SPTInstaller.Installer_Tasks;
 using SPTInstaller.Installer_Tasks.PreChecks;
@@ -31,10 +32,11 @@ internal class Program
         // Register all the things
         // Regestering as base classes so ReactiveUI works correctly. Doesn't seem to like the interfaces :(
         ServiceHelper.Register<InternalData>();
+
+#if !TEST
         ServiceHelper.Register<PreCheckBase, NetFramework472PreCheck>();
         ServiceHelper.Register<PreCheckBase, NetCore6PreCheck>();
 
-#if !TEST
         ServiceHelper.Register<PreCheckBase, FreeSpacePreCheck>();
         var logPath = Path.Join(Environment.CurrentDirectory, "spt-aki-installer_.log");
 
@@ -52,10 +54,14 @@ internal class Program
         ServiceHelper.Register<InstallerTaskBase, CopyClientTask>();
         ServiceHelper.Register<InstallerTaskBase, SetupClientTask>();
 #else
-            for (int i = 0; i < 5; i++)
-            {
-                Locator.CurrentMutable.RegisterConstant<InstallerTaskBase>(TestTask.FromRandomName());
-            }
+        for (int i = 0; i < 5; i++)
+        {
+            Locator.CurrentMutable.RegisterConstant<InstallerTaskBase>(TestTask.FromRandomName());
+        }
+
+        Locator.CurrentMutable.RegisterConstant<PreCheckBase>(TestPreCheck.FromRandomName(StatusSpinner.SpinnerState.OK));
+        Locator.CurrentMutable.RegisterConstant<PreCheckBase>(TestPreCheck.FromRandomName(StatusSpinner.SpinnerState.Warning));
+        Locator.CurrentMutable.RegisterConstant<PreCheckBase>(TestPreCheck.FromRandomName(StatusSpinner.SpinnerState.Error));
 #endif
 
         // need the interfaces for the controller and splat won't resolve them since we need to base classes in avalonia (what a mess), so doing it manually here

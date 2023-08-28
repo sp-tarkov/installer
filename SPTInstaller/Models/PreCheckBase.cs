@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using SPTInstaller.CustomControls;
 using SPTInstaller.Interfaces;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -28,25 +29,11 @@ public abstract class PreCheckBase : ReactiveObject, IPreCheck
         set => this.RaiseAndSetIfChanged(ref _required, value);
     }
 
-    private bool _passed;
-    public bool Passed
+    private StatusSpinner.SpinnerState _state;
+    public StatusSpinner.SpinnerState State
     {
-        get => _passed;
-        set => this.RaiseAndSetIfChanged(ref _passed, value);
-    }
-
-    private bool _isPending;
-    public bool IsPending
-    {
-        get => _isPending;
-        set => this.RaiseAndSetIfChanged(ref _isPending, value);
-    }
-
-    private bool _isRunning;
-    public bool IsRunning
-    {
-        get => _isRunning;
-        set => this.RaiseAndSetIfChanged(ref _isRunning, value);
+        get => _state;
+        set => this.RaiseAndSetIfChanged(ref _state, value);
     }
 
     private string _preCheckDetails;
@@ -89,12 +76,19 @@ public abstract class PreCheckBase : ReactiveObject, IPreCheck
         Id = Guid.NewGuid().ToString();
     }
 
+    private StatusSpinner.SpinnerState ProcessResult(PreCheckResult result) =>
+        (result.Succeeded, IsRequired) switch
+        {
+            (true, _)      => StatusSpinner.SpinnerState.OK,
+            (false, false) => StatusSpinner.SpinnerState.Warning,
+            (_, _)         => StatusSpinner.SpinnerState.Error
+        };
+
     public async Task<IResult> RunCheck()
     {
-        IsRunning = true;
+        State = StatusSpinner.SpinnerState.Running;
 
         var result = await CheckOperation();
-        Passed = result.Succeeded;
 
         PreCheckDetails = !string.IsNullOrWhiteSpace(result.Message)
             ? result.Message
@@ -104,10 +98,9 @@ public abstract class PreCheckBase : ReactiveObject, IPreCheck
         ActionButtonCommand = result.ButtonPressedCommand;
         ActionButtonIsVisible = result.ActionButtonIsVisible;
 
-        IsRunning = false;
-        IsPending = false;
+        State = ProcessResult(result);
 
-        return Passed ? Result.FromSuccess() : Result.FromError($"PreCheck Failed: {Name}");
+        return State == StatusSpinner.SpinnerState.OK ? Result.FromSuccess() : Result.FromError($"PreCheck Failed: {Name}");
     }
 
     public abstract Task<PreCheckResult> CheckOperation();

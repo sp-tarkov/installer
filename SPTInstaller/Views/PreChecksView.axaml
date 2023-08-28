@@ -26,7 +26,7 @@
 				IsEnabled="{Binding AllowInstall}"
 				Command="{Binding StartInstallCommand}"
 				/>
-
+        
 		<ItemsControl ItemsSource="{Binding PreChecks}" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4" HorizontalAlignment="Center">
 			<ItemsControl.ItemsPanel>
 				<ItemsPanelTemplate>
@@ -36,14 +36,13 @@
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
 					<cc:PreCheckItem PreCheckName="{Binding Name}"
-									 IsRunning="{Binding IsRunning}"
-									 IsPending="{Binding IsPending}"
 									 IsRequired="{Binding IsRequired}"
-									 Passed="{Binding Passed}"
+                                     State="{Binding State}"
 									 />
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
+        
         <Button Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3" HorizontalAlignment="Center"
                 Content="Detailed View"
                 IsEnabled="{Binding AllowDetailsButton}"
@@ -61,5 +60,10 @@
                            IndeterminateProgress="{Binding UpdateInfo.CheckingForUpdates}"
                            UpdateAvailable="{Binding UpdateInfo.UpdateAvailable}"
                            />
+        
+        <cc:CacheInfo Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3" Padding="10"
+                      VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                      InfoText="{Binding CacheInfoText}" State="{Binding CacheCheckState}"
+                      />
 	</Grid>
 </UserControl>

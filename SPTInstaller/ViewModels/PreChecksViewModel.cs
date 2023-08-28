@@ -7,6 +7,7 @@ using DialogHostAvalonia;
 using ReactiveUI;
 using Serilog;
 using SPTInstaller.Controllers;
+using SPTInstaller.CustomControls;
 using SPTInstaller.CustomControls.Dialogs;
 using SPTInstaller.Helpers;
 using SPTInstaller.Models;
@@ -15,7 +16,6 @@ namespace SPTInstaller.ViewModels;
 
 public class PreChecksViewModel : ViewModelBase
 {
-
     public ObservableCollection<PreCheckBase> PreChecks { get; set; } = new(ServiceHelper.GetAll<PreCheckBase>());
     public ICommand StartInstallCommand { get; set; }
     public ICommand ShowDetailedViewCommand { get; set; }
@@ -45,6 +45,20 @@ public class PreChecksViewModel : ViewModelBase
     {
         get => _allowDetailsButton;
         set => this.RaiseAndSetIfChanged(ref _allowDetailsButton, value);
+    }
+
+    private string _cacheInfoText;
+    public string CacheInfoText
+    {
+        get => _cacheInfoText;
+        set => this.RaiseAndSetIfChanged(ref _cacheInfoText, value);
+    }
+
+    private StatusSpinner.SpinnerState _cacheCheckState;
+    public StatusSpinner.SpinnerState CacheCheckState
+    {
+        get => _cacheCheckState;
+        set => this.RaiseAndSetIfChanged(ref _cacheCheckState, value);
     }
 
     public PreChecksViewModel(IScreen host) : base(host)
@@ -126,6 +140,15 @@ public class PreChecksViewModel : ViewModelBase
 
             AllowDetailsButton = true;
             AllowInstall = result.Succeeded;
+        });
+
+        Task.Run(() =>
+        {
+            CacheInfoText = "Getting cache size ...";
+            CacheCheckState = StatusSpinner.SpinnerState.Running;
+
+            CacheInfoText = $"Cache Size: {DownloadCacheHelper.GetCacheSizeText()}";
+            CacheCheckState = StatusSpinner.SpinnerState.OK;
         });
     }
 }

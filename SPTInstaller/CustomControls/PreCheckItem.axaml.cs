@@ -1,4 +1,4 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 
 namespace SPTInstaller.CustomControls;
@@ -19,33 +19,6 @@ public partial class PreCheckItem : UserControl
     public static readonly StyledProperty<string> PreCheckNameProperty =
         AvaloniaProperty.Register<PreCheckItem, string>(nameof(PreCheckName));
 
-    public bool IsRunning
-    {
-        get => GetValue(IsRunningProperty);
-        set => SetValue(IsRunningProperty, value);    
-    }
-
-    public static readonly StyledProperty<bool> IsRunningProperty =
-        AvaloniaProperty.Register<PreCheckItem, bool>(nameof(IsRunning));
-
-    public bool IsPending
-    {
-        get => GetValue(IsPendingProperty);
-        set => SetValue(IsPendingProperty, value);
-    }
-
-    public static readonly StyledProperty<bool> IsPendingProperty =
-        AvaloniaProperty.Register<PreCheckItem, bool>(nameof(IsPending));
-
-    public bool Passed
-    {
-        get => GetValue(PassedProperty);
-        set => SetValue(PassedProperty, value);
-    }
-
-    public static readonly StyledProperty<bool> PassedProperty =
-        AvaloniaProperty.Register<PreCheckItem, bool>(nameof(Passed));
-
     public bool IsRequired
     {
         get => GetValue(IsRequiredProperty);
@@ -54,4 +27,13 @@ public partial class PreCheckItem : UserControl
 
     public static readonly StyledProperty<bool> IsRequiredProperty =
         AvaloniaProperty.Register<PreCheckItem, bool>(nameof(IsRequired));
+
+    public StatusSpinner.SpinnerState State
+    {
+        get => GetValue(StateProperty);
+        set => SetValue(StateProperty, value);
+    }
+
+    public static readonly StyledProperty<StatusSpinner.SpinnerState> StateProperty =
+        AvaloniaProperty.Register<PreCheckItem, StatusSpinner.SpinnerState>(nameof(State));
 }
