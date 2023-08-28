@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Serilog;
 using SPTInstaller.Models;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -55,8 +56,7 @@ public class NetFramework472PreCheck : PreCheckBase
         }
         catch (Exception ex)
         {
-            // TODO: log exceptions
-
+            Log.Error(ex, $"PreCheck::{Name}::Exception");
             return PreCheckResult.FromException(ex);
         }
     }
