@@ -1,5 +1,7 @@
-﻿using SPTInstaller.Models;
+﻿using Serilog;
+using SPTInstaller.Models;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SPTInstaller.Installer_Tasks.PreChecks;
@@ -44,7 +46,7 @@ public class NetCore6PreCheck : PreCheckBase
         }
         catch (Exception ex)
         {
-            // TODO: logging
+            Log.Error(ex, $"PreCheck::{Name}::Exception");
             return PreCheckResult.FromException(ex);
         }
 
@@ -52,20 +54,21 @@ public class NetCore6PreCheck : PreCheckBase
 
         foreach (var lineVersion in output)
         {
-            if (lineVersion.StartsWith("Microsoft.WindowsDesktop.App") && lineVersion.Split(" ").Length > 1)
+            var regex = Regex.Match(lineVersion, @"Microsoft.WindowsDesktop.App (\d\.\d\.\d)");
+
+            if (!regex.Success || regex.Groups.Count < 1)
+                continue;
+
+            var stringVersion = regex.Groups[1].Value;
+
+            var foundVersion = new Version(stringVersion);
+
+            if (foundVersion >= minRequiredVersion)
             {
-                string stringVerion = lineVersion.Split(" ")[1];
-
-                var foundVersion = new Version(stringVerion);
-
-                // waffle: not fully sure if we should only check for 6.x.x versions or if higher major versions are ok
-                if (foundVersion >= minRequiredVersion)
-                {
-                    return PreCheckResult.FromSuccess($".Net Core {minRequiredVersion} Desktop Runtime or higher is installed.\n\nInstalled Version: {foundVersion}");
-                }
-
-                highestFoundVersion = foundVersion > highestFoundVersion ? foundVersion : highestFoundVersion;
+                return PreCheckResult.FromSuccess($".Net Core {minRequiredVersion} Desktop Runtime or higher is installed.\n\nInstalled Version: {foundVersion}");
             }
+
+            highestFoundVersion = foundVersion > highestFoundVersion ? foundVersion : highestFoundVersion;
         }
 
         return PreCheckResult.FromError($".Net Core Desktop Runtime version {minRequiredVersion} or higher is required.\n\nHighest Version Found: {(highestFoundVersion > new Version("0.0.0") ? highestFoundVersion : "Not Found")}\n\nThis is required to play SPT, but you can install it later if and shouldn't affect the SPT install process.", failedButtonText, failedButtonAction);
