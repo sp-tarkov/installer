@@ -9,8 +9,8 @@
     <PackageIcon>icon.ico</PackageIcon>
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     <Configurations>Debug;Release;TEST</Configurations>
-    <AssemblyVersion>2.10</AssemblyVersion>
-    <FileVersion>2.10</FileVersion>
+    <AssemblyVersion>2.11</AssemblyVersion>
+    <FileVersion>2.11</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
