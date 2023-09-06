@@ -15,6 +15,16 @@ public partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
 
+        var logPath = Path.Join(Environment.CurrentDirectory, "spt-aki-installer_.log");
+
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo
+            .File(path: logPath,
+                restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug,
+                rollingInterval: RollingInterval.Day)
+            .CreateLogger();
+
         RxApp.DefaultExceptionHandler = Observer.Create<Exception>((exception) =>
         {
             Log.Error(exception, "An application exception occurred");
