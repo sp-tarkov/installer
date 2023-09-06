@@ -4,7 +4,6 @@ using ReactiveUI;
 using Serilog;
 using Splat;
 using SPTInstaller.Controllers;
-using SPTInstaller.CustomControls;
 using SPTInstaller.Helpers;
 using SPTInstaller.Installer_Tasks;
 using SPTInstaller.Installer_Tasks.PreChecks;
