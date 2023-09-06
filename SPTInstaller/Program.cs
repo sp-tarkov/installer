@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
-using Serilog;
 using Splat;
 using SPTInstaller.Controllers;
 using SPTInstaller.Helpers;
@@ -37,15 +36,6 @@ internal class Program
         ServiceHelper.Register<PreCheckBase, NetCore6PreCheck>();
 
         ServiceHelper.Register<PreCheckBase, FreeSpacePreCheck>();
-        var logPath = Path.Join(Environment.CurrentDirectory, "spt-aki-installer_.log");
-
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .WriteTo
-            .File(path: logPath,
-                restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug, 
-                rollingInterval: RollingInterval.Day)
-            .CreateLogger();
 
         ServiceHelper.Register<InstallerTaskBase, InitializationTask>();
         ServiceHelper.Register<InstallerTaskBase, ReleaseCheckTask>();
