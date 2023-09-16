@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Serilog;
@@ -15,11 +14,21 @@ public static class FileHelper
         {
             foreach (var dir in sourceDir.GetDirectories("*", SearchOption.AllDirectories))
             {
-                if (exclusions.Contains(dir.FullName.Replace(sourceDir.FullName, "")))
+                var exclude = false;
+
+                foreach (var exclusion in exclusions)
                 {
-                    Log.Information($"Excluding Dir: {dir.FullName}");
-                    continue;
+                    var currentDirRelativePath = dir.FullName.Replace(sourceDir.FullName, "");
+
+                    if (currentDirRelativePath.StartsWith(exclusion) || currentDirRelativePath == exclusion)
+                    {
+                        exclude = true;
+                        break;
+                    }
                 }
+
+                if (exclude)
+                    continue;
 
                 Directory.CreateDirectory(dir.FullName.Replace(sourceDir.FullName, targetDir.FullName));
             }
@@ -41,6 +50,8 @@ public static class FileHelper
 
             foreach (var file in sourceDir.GetFiles("*.*", SearchOption.AllDirectories))
             {
+                var exclude = false;
+
                 updateCallback?.Invoke(file.Name, (int)Math.Floor(((double)processedFiles / totalFiles) * 100));
 
                 foreach (var exclusion in exclusions)
@@ -49,9 +60,13 @@ public static class FileHelper
 
                     if (currentFileRelativePath.StartsWith(exclusion) || currentFileRelativePath == exclusion)
                     {
-                        continue;
+                        exclude = true;
+                        break;
                     }
                 }
+
+                if (exclude)
+                    continue;
 
                 File.Copy(file.FullName, file.FullName.Replace(sourceDir.FullName, targetDir.FullName), true);
                 processedFiles++;
