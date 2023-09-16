@@ -21,6 +21,7 @@ public class CopyClientTask : InstallerTaskBase
         var originalGameDirInfo = new DirectoryInfo(_data.OriginalGamePath);
         var targetInstallDirInfo = new DirectoryInfo(_data.TargetInstallPath);
 
+        // relative path for exclusions
         var exclusions = new[] { "\\Logs" };
 
         return FileHelper.CopyDirectoryWithProgress(originalGameDirInfo, targetInstallDirInfo, (message, progress) => { SetStatus(null, message, progress, null, true); }, exclusions);
