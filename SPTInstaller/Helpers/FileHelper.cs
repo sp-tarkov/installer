@@ -8,24 +8,40 @@ namespace SPTInstaller.Helpers;
 
 public static class FileHelper
 {
-    private static Result IterateDirectories(DirectoryInfo sourceDir, DirectoryInfo targetDir)
+    private static Result IterateDirectories(DirectoryInfo sourceDir, DirectoryInfo targetDir, string[] exclusions)
     {
         try
         {
             foreach (var dir in sourceDir.GetDirectories("*", SearchOption.AllDirectories))
             {
+                var exclude = false;
+
+                foreach (var exclusion in exclusions)
+                {
+                    var currentDirRelativePath = dir.FullName.Replace(sourceDir.FullName, "");
+
+                    if (currentDirRelativePath.StartsWith(exclusion) || currentDirRelativePath == exclusion)
+                    {
+                        exclude = true;
+                        break;
+                    }
+                }
+
+                if (exclude)
+                    continue;
+
                 Directory.CreateDirectory(dir.FullName.Replace(sourceDir.FullName, targetDir.FullName));
             }
             return Result.FromSuccess();
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             Log.Error(ex, "Error while creating directories");
             return Result.FromError(ex.Message);
         }
     }
 
-    private static Result IterateFiles(DirectoryInfo sourceDir, DirectoryInfo targetDir, Action<string, int> updateCallback = null)
+    private static Result IterateFiles(DirectoryInfo sourceDir, DirectoryInfo targetDir, string[] exclusions, Action<string, int> updateCallback = null)
     {
         try
         {
@@ -34,7 +50,23 @@ public static class FileHelper
 
             foreach (var file in sourceDir.GetFiles("*.*", SearchOption.AllDirectories))
             {
+                var exclude = false;
+
                 updateCallback?.Invoke(file.Name, (int)Math.Floor(((double)processedFiles / totalFiles) * 100));
+
+                foreach (var exclusion in exclusions)
+                {
+                    var currentFileRelativePath = file.FullName.Replace(sourceDir.FullName, "");
+
+                    if (currentFileRelativePath.StartsWith(exclusion) || currentFileRelativePath == exclusion)
+                    {
+                        exclude = true;
+                        break;
+                    }
+                }
+
+                if (exclude)
+                    continue;
 
                 File.Copy(file.FullName, file.FullName.Replace(sourceDir.FullName, targetDir.FullName), true);
                 processedFiles++;
@@ -62,18 +94,18 @@ public static class FileHelper
         return path;
     }
 
-    public static Result CopyDirectoryWithProgress(DirectoryInfo sourceDir, DirectoryInfo targetDir, IProgress<double> progress = null) =>
-        CopyDirectoryWithProgress(sourceDir, targetDir, (msg, prog) => progress?.Report(prog));
+    public static Result CopyDirectoryWithProgress(DirectoryInfo sourceDir, DirectoryInfo targetDir, IProgress<double> progress = null, string[] exclusions = null) =>
+        CopyDirectoryWithProgress(sourceDir, targetDir, (msg, prog) => progress?.Report(prog), exclusions);
 
-    public static Result CopyDirectoryWithProgress(DirectoryInfo sourceDir, DirectoryInfo targetDir, Action<string, int> updateCallback = null)
+    public static Result CopyDirectoryWithProgress(DirectoryInfo sourceDir, DirectoryInfo targetDir, Action<string, int> updateCallback = null, string[] exclusions = null)
     {
         try
         {
-            var iterateDirectoriesResult = IterateDirectories(sourceDir, targetDir);
+            var iterateDirectoriesResult = IterateDirectories(sourceDir, targetDir, exclusions ??= new string[0]);
 
             if(!iterateDirectoriesResult.Succeeded) return iterateDirectoriesResult;
 
-            var iterateFilesResult = IterateFiles(sourceDir, targetDir, updateCallback);
+            var iterateFilesResult = IterateFiles(sourceDir, targetDir, exclusions ??= new string[0], updateCallback);
 
             if (!iterateFilesResult.Succeeded) return iterateDirectoriesResult;
 

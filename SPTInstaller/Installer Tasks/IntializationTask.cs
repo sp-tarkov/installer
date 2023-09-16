@@ -34,11 +34,6 @@ public class InitializationTask : InstallerTaskBase
             return Result.FromError("Unable to find original EFT directory, please make sure EFT is installed. Please also run EFT once");
         }
 
-        if (_data.OriginalGamePath == _data.TargetInstallPath)
-        {
-            return Result.FromError("Installer is located in EFT's original directory. Please move the installer to a seperate folder as per the guide");
-        }
-
         if (File.Exists(Path.Join(_data.TargetInstallPath, "EscapeFromTarkov.exe")))
         {
             return Result.FromError("Installer is located in a folder that has existing game files. Please make sure the installer is in a fresh folder as per the guide");
