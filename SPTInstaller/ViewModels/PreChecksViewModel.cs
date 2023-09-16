@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using DialogHostAvalonia;
 using ReactiveUI;
@@ -78,6 +79,7 @@ public class PreChecksViewModel : ViewModelBase
         if (data.OriginalGamePath == null)
         {
             NavigateTo(new MessageViewModel(HostScreen, Result.FromError("Could not find EFT install.\n\nDo you own and have the game installed?")));
+            return;
         }
 #endif
 
@@ -85,6 +87,26 @@ public class PreChecksViewModel : ViewModelBase
         InstallPath = data.TargetInstallPath;
 
         Log.Information($"Install Path: {FileHelper.GetRedactedPath(InstallPath)}");
+
+        if (data.OriginalGamePath == data.TargetInstallPath)
+        {
+            Log.CloseAndFlush();
+
+            var logFiles = Directory.GetFiles(InstallPath, "spt-aki-installer_*.log");
+
+            // remove log file from original game path if they exist
+            foreach (var file in logFiles)
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch { }
+            }
+
+            NavigateTo(new MessageViewModel(HostScreen, Result.FromError("Installer is located in EFT's original directory. Please move the installer to a seperate folder as per the guide"), noLog: true));
+            return;
+        }
 
         Task.Run(async () =>
         {
