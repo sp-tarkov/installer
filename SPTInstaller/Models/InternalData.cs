@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SPTInstaller.Models.Mirrors;
 
 namespace SPTInstaller.Models;
 
@@ -43,11 +44,6 @@ public class InternalData
     /// The release download link for the patcher mirror list
     /// </summary>
     public string PatcherMirrorsLink { get; set; }
-
-    /// <summary>
-    /// The release download mirrors for the patcher
-    /// </summary>
-    public List<DownloadMirror> PatcherReleaseMirrors { get; set; } = null;
 
     /// <summary>
     /// Whether or not a patch is needed to downgrade the client files
