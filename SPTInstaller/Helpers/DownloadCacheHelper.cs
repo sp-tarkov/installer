@@ -69,12 +69,16 @@ public static class DownloadCacheHelper
     /// <param name="targetLink">The url to download the file from</param>
     /// <param name="progress">A provider for progress updates</param>
     /// <returns>A <see cref="FileInfo"/> object of the cached file</returns>
+    /// <remarks>If the file exists, it is deleted before downloading</remarks>
     public static async Task<FileInfo?> DownloadFileAsync(string outputFileName, string targetLink, IProgress<double> progress)
     {
         var outputFile = new FileInfo(Path.Join(CachePath, outputFileName));
 
         try
         {
+            if (outputFile.Exists)
+                outputFile.Delete();
+
             // Use the provided extension method
             using (var file = new FileStream(outputFile.FullName, FileMode.Create, FileAccess.Write, FileShare.None))
                 await _httpClient.DownloadDataAsync(targetLink, file, progress);
@@ -102,12 +106,16 @@ public static class DownloadCacheHelper
     /// <param name="outputFileName">The file name to save the file as</param>
     /// <param name="downloadStream">The stream the download the file from</param>
     /// <returns>A <see cref="FileInfo"/> object of the cached file</returns>
+    /// <remarks>If the file exists, it is deleted before downloading</remarks>
     public static async Task<FileInfo?> DownloadFileAsync(string outputFileName, Stream downloadStream)
     {
         var outputFile = new FileInfo(Path.Join(CachePath, outputFileName));
 
         try
         {
+            if (outputFile.Exists)
+                outputFile.Delete();
+
             using var patcherFileStream = outputFile.Open(FileMode.Create);
             {
                 await downloadStream.CopyToAsync(patcherFileStream);

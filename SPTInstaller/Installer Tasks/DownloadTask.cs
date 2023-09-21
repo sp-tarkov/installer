@@ -1,5 +1,4 @@
-﻿using CG.Web.MegaApiClient;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SPTInstaller.Interfaces;
 using SPTInstaller.Models;
 using System.Collections.Generic;
@@ -7,7 +6,6 @@ using System.Threading.Tasks;
 using SPTInstaller.Helpers;
 using SPTInstaller.Models.Mirrors;
 using SPTInstaller.Models.Mirrors.Downloaders;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Serilog;
 
 namespace SPTInstaller.Installer_Tasks;
@@ -39,9 +37,10 @@ public class DownloadTask : InstallerTaskBase
         if (mirrorsList == null)
             return Result.FromError("Failed to deserialize mirrors list");
 
-
         foreach (var mirror in mirrorsList)
         {
+            _expectedPatcherHash = mirror.Hash;
+
             switch (mirror.Link)
             {
                 case string l when l.StartsWith("https://mega"):
@@ -58,7 +57,7 @@ public class DownloadTask : InstallerTaskBase
 
     private async Task<IResult> DownloadPatcherFromMirrors(IProgress<double> progress)
     {
-        SetStatus("Downloading Patcher", "Checking cache ...", progressStyle: ProgressStyle.Indeterminate);
+        SetStatus("Downloading Patcher", "Verifying cached patcher ...", progressStyle: ProgressStyle.Indeterminate);
 
         if (DownloadCacheHelper.CheckCache("patcher.zip", _expectedPatcherHash, out var cacheFile))
         {
