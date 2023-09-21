@@ -26,23 +26,32 @@ public static class DownloadCacheHelper
         return DirectorySizeHelper.SizeSuffix(cacheSize);
     }
 
-    private static bool CheckCache(FileInfo cacheFile, string expectedHash = null)
+    /// <summary>
+    /// Check if a file in the cache already exists
+    /// </summary>
+    /// <param name="fileName">The name of the file to check for</param>
+    /// <param name="expectedHash">The expected hash of the file in the cache</param>
+    /// <param name="cachedFile">The file found in the cache; null if no file is found</param>
+    /// <returns>True if the file is in the cache and its hash matches the expected hash, otherwise false</returns>
+    public static bool CheckCache(string fileName, string expectedHash, out FileInfo cachedFile) 
+        => CheckCache(new FileInfo(Path.Join(CachePath, fileName)), expectedHash, out cachedFile);
+
+    private static bool CheckCache(FileInfo cacheFile, string expectedHash, out FileInfo fileInCache)
     {
+        fileInCache = cacheFile;
+
         try
         {
             cacheFile.Refresh();
             Directory.CreateDirectory(CachePath);
 
-            if (cacheFile.Exists)
-            {
-                if (expectedHash != null && FileHashHelper.CheckHash(cacheFile, expectedHash))
-                {
-                    Log.Information($"Using cached file: {cacheFile.Name} - Hash: {expectedHash}");
-                    return true;
-                }
+            if (!cacheFile.Exists || expectedHash == null)
+                return false;
 
-                cacheFile.Delete();
-                cacheFile.Refresh();
+            if (FileHashHelper.CheckHash(cacheFile, expectedHash))
+            {
+                fileInCache = cacheFile;
+                return true;
             }
 
             return false;
@@ -53,8 +62,17 @@ public static class DownloadCacheHelper
         }
     }
 
-    private static async Task<Result> DownloadFile(FileInfo outputFile, string targetLink, IProgress<double> progress, string expectedHash = null)
+    /// <summary>
+    /// Download a file to the cache folder
+    /// </summary>
+    /// <param name="outputFileName">The file name to save the file as</param>
+    /// <param name="targetLink">The url to download the file from</param>
+    /// <param name="progress">A provider for progress updates</param>
+    /// <returns>A <see cref="FileInfo"/> object of the cached file</returns>
+    public static async Task<FileInfo?> DownloadFileAsync(string outputFileName, string targetLink, IProgress<double> progress)
     {
+        var outputFile = new FileInfo(Path.Join(CachePath, outputFileName));
+
         try
         {
             // Use the provided extension method
@@ -65,90 +83,96 @@ public static class DownloadCacheHelper
 
             if (!outputFile.Exists)
             {
-                return Result.FromError($"Failed to download {outputFile.Name}");
+                Log.Error("Failed to download file from url: {name} :: {url}", outputFileName, targetLink);
+                return null;
             }
 
-            if (expectedHash != null && !FileHashHelper.CheckHash(outputFile, expectedHash))
-            {
-                return Result.FromError("Hash mismatch");
-            }
-
-            return Result.FromSuccess();
+            return outputFile;
         }
         catch (Exception ex)
         {
-            return Result.FromError(ex.Message);
+            Log.Error(ex, "Failed to download file from url: {name} :: {url}", outputFileName, targetLink);
+            return null;
         }
     }
 
-    private static async Task<Result> ProcessInboundStreamAsync(FileInfo cacheFile, Stream downloadStream, string expectedHash = null)
+    /// <summary>
+    /// Download a file to the cache folder
+    /// </summary>
+    /// <param name="outputFileName">The file name to save the file as</param>
+    /// <param name="downloadStream">The stream the download the file from</param>
+    /// <returns>A <see cref="FileInfo"/> object of the cached file</returns>
+    public static async Task<FileInfo?> DownloadFileAsync(string outputFileName, Stream downloadStream)
     {
+        var outputFile = new FileInfo(Path.Join(CachePath, outputFileName));
+
         try
         {
-            if (CheckCache(cacheFile, expectedHash)) return Result.FromSuccess();
-
-            using var patcherFileStream = cacheFile.Open(FileMode.Create);
+            using var patcherFileStream = outputFile.Open(FileMode.Create);
             {
                 await downloadStream.CopyToAsync(patcherFileStream);
             }
 
             patcherFileStream.Close();
 
-            if (expectedHash != null && !FileHashHelper.CheckHash(cacheFile, expectedHash))
+            if (!outputFile.Exists)
             {
-                return Result.FromError("Hash mismatch");
+                Log.Error("Failed to download file from stream: {name}", outputFileName);
+                return null;
             }
 
-            return Result.FromSuccess();
+            return outputFile;
         }
         catch(Exception ex)
         {
-            return Result.FromError(ex.Message);
+            Log.Error(ex, "Failed to download file from stream: {fileName}", outputFileName);
+            return null;
         }
     }
 
-    private static async Task<Result> ProcessInboundFileAsync(FileInfo cacheFile, string targetLink, IProgress<double> progress, string expectedHash = null)
+    /// <summary>
+    /// Get the file from cache or download it
+    /// </summary>
+    /// <param name="fileName">The name of the file to check for in the cache</param>
+    /// <param name="targetLink">The url to download from if the file doesn't exist in the cache</param>
+    /// <param name="progress">A provider for progress updates</param>
+    /// <param name="expectedHash">The expected hash of the cached file</param>
+    /// <returns>A <see cref="FileInfo"/> object of the cached file</returns>
+    /// <remarks>Use <see cref="DownloadFileAsync(string, string, IProgress{double})"/> if you don't have an expected cache file hash</remarks>
+    public static async Task<FileInfo?> GetOrDownloadFileAsync(string fileName, string targetLink, IProgress<double> progress, string expectedHash)
     {
         try
         {
-            if (CheckCache(cacheFile, expectedHash)) return Result.FromSuccess();
+            if (CheckCache(fileName, expectedHash, out var cacheFile))
+                return cacheFile;
 
-            return await DownloadFile(cacheFile, targetLink, progress, expectedHash);
+            return await DownloadFileAsync(fileName, targetLink, progress);
         }
-        catch(Exception ex)
-        {
-            return Result.FromError(ex.Message);
-        }
-    }
-
-    public static async Task<FileInfo?> GetOrDownloadFileAsync(string fileName, string targetLink, IProgress<double> progress, string expectedHash = null)
-    {
-        var cacheFile = new FileInfo(Path.Join(CachePath, fileName));
-
-        try
-        {
-            var result = await ProcessInboundFileAsync(cacheFile, targetLink, progress, expectedHash);
-
-            return result.Succeeded ? cacheFile : null;
-        }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Log.Error(ex, $"Error while getting file: {fileName}");
             return null;
         }
     }
 
-    public static async Task<FileInfo?> GetOrDownloadFileAsync(string fileName, Stream fileDownloadStream, string expectedHash = null)
+    /// <summary>
+    /// Get the file from cache or download it
+    /// </summary>
+    /// <param name="fileName">The name of the file to check for in the cache</param>
+    /// <param name="fileDownloadStream">The stream to download from if the file doesn't exist in the cache</param>
+    /// <param name="expectedHash">The expected hash of the cached file</param>
+    /// <returns>A <see cref="FileInfo"/> object of the cached file</returns>
+    /// <remarks>Use <see cref="DownloadFileAsync(string, Stream)"/> if you don't have an expected cache file hash</remarks>
+    public static async Task<FileInfo?> GetOrDownloadFileAsync(string fileName, Stream fileDownloadStream, string expectedHash)
     {
-        var cacheFile = new FileInfo(Path.Join(CachePath, fileName));
-
         try
         {
-            var result = await ProcessInboundStreamAsync(cacheFile, fileDownloadStream, expectedHash);
+            if (CheckCache(fileName, expectedHash, out var cacheFile))
+                return cacheFile;
 
-            return result.Succeeded ? cacheFile : null;
+            return await DownloadFileAsync(fileName, fileDownloadStream);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Log.Error(ex, $"Error while getting file: {fileName}");
             return null;
