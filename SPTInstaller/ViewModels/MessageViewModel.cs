@@ -54,7 +54,7 @@ public class MessageViewModel : ViewModelBase
         }
     });
 
-    public MessageViewModel(IScreen Host, IResult result, bool showCloseButton = true) : base(Host)
+    public MessageViewModel(IScreen Host, IResult result, bool showCloseButton = true, bool noLog = false) : base(Host)
     {
         ShowCloseButton = showCloseButton;
         Message = result.Message;
@@ -75,6 +75,8 @@ public class MessageViewModel : ViewModelBase
         }
 
         HasErrors = true;
-        Log.Error(Message);
+
+        if (!noLog)
+            Log.Error(Message);
     }
 }
