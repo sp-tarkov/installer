@@ -5,12 +5,18 @@ using SPTInstaller.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SPTInstaller.Helpers;
+using SPTInstaller.Models.Mirrors;
+using SPTInstaller.Models.Mirrors.Downloaders;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Serilog;
 
 namespace SPTInstaller.Installer_Tasks;
 
 public class DownloadTask : InstallerTaskBase
 {
     private InternalData _data;
+    private List<IMirrorDownloader> _mirrors = new List<IMirrorDownloader>();
+    private string _expectedPatcherHash = "";
 
     public DownloadTask(InternalData data) : base("Download Files")
     {
@@ -19,9 +25,9 @@ public class DownloadTask : InstallerTaskBase
 
     private async Task<IResult> BuildMirrorList()
     {
-        var progress = new Progress<double>((d) => { SetStatus("Downloading Mirror List", "", (int)Math.Floor(d));});
+        var progress = new Progress<double>((d) => { SetStatus("Downloading Mirror List", "", (int)Math.Floor(d), ProgressStyle.Shown);});
 
-        var file = await DownloadCacheHelper.GetOrDownloadFileAsync("mirrors.json", _data.PatcherMirrorsLink, progress);
+        var file = await DownloadCacheHelper.DownloadFileAsync("mirrors.json", _data.PatcherMirrorsLink, progress);
 
         if (file == null)
         {
@@ -30,52 +36,42 @@ public class DownloadTask : InstallerTaskBase
 
         var mirrorsList = JsonConvert.DeserializeObject<List<DownloadMirror>>(File.ReadAllText(file.FullName));
 
-        if (mirrorsList is List<DownloadMirror> mirrors)
-        {
-            _data.PatcherReleaseMirrors = mirrors;
+        if (mirrorsList == null)
+            return Result.FromError("Failed to deserialize mirrors list");
 
-            return Result.FromSuccess();
+
+        foreach (var mirror in mirrorsList)
+        {
+            switch (mirror.Link)
+            {
+                case string l when l.StartsWith("https://mega"):
+                    _mirrors.Add(new MegaMirrorDownloader(mirror));
+                    break;
+                default:
+                    _mirrors.Add(new HttpMirrorDownloader(mirror));
+                    break;
+            }
         }
 
-        return Result.FromError("Failed to deserialize mirrors list");
+        return Result.FromSuccess("Mirrors list ready");
     }
 
     private async Task<IResult> DownloadPatcherFromMirrors(IProgress<double> progress)
     {
-        foreach (var mirror in _data.PatcherReleaseMirrors)
+        SetStatus("Downloading Patcher", "Checking cache ...", progressStyle: ProgressStyle.Indeterminate);
+
+        if (DownloadCacheHelper.CheckCache("patcher.zip", _expectedPatcherHash, out var cacheFile))
         {
-            SetStatus($"Downloading Patcher", mirror.Link);
+            _data.PatcherZipInfo = cacheFile;
+            Log.Information("Using cached file {fileName} - Hash: {hash}", _data.PatcherZipInfo.Name, _expectedPatcherHash);
+            return Result.FromSuccess();
+        }
 
-            // mega is a little weird since they use encryption, but thankfully there is a great library for their api :)
-            if (mirror.Link.StartsWith("https://mega"))
-            {
-                var megaClient = new MegaApiClient();
-                await megaClient.LoginAnonymousAsync();
+        foreach (var mirror in _mirrors)
+        {
+            SetStatus("Downloading Patcher", mirror.MirrorInfo.Link, progressStyle: ProgressStyle.Indeterminate);
 
-                // if mega fails to connect, try the next mirror
-                if (!megaClient.IsLoggedIn) continue;
-
-                try
-                {
-                    using var megaDownloadStream = await megaClient.DownloadAsync(new Uri(mirror.Link), progress);
-
-                    _data.PatcherZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("patcher.zip", megaDownloadStream, mirror.Hash);
-
-                    if(_data.PatcherZipInfo == null)
-                    {
-                        continue;
-                    }
-
-                    return Result.FromSuccess();
-                }
-                catch
-                {
-                    //most likely a 509 (Bandwidth limit exceeded) due to mega's user quotas.
-                    continue;
-                }
-            }
-
-            _data.PatcherZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("patcher.zip", mirror.Link, progress, mirror.Hash);
+            _data.PatcherZipInfo = await mirror.Download(progress);
 
             if (_data.PatcherZipInfo != null)
             {
