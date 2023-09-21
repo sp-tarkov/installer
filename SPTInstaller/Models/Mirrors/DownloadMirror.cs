@@ -1,4 +1,4 @@
-﻿namespace SPTInstaller.Models;
+﻿namespace SPTInstaller.Models.Mirrors;
 
 public class DownloadMirror
 {

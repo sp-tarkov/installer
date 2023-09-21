@@ -88,7 +88,7 @@ public class InstallerUpdateInfo : ReactiveObject
 
         var progress = new Progress<double>(x => DownloadProgress = (int)x);
 
-        var file = await DownloadCacheHelper.GetOrDownloadFileAsync("SPTInstller.exe", NewInstallerUrl, progress);
+        var file = await DownloadCacheHelper.DownloadFileAsync("SPTInstller.exe", NewInstallerUrl, progress);
 
         if (file == null || !file.Exists)
         {
