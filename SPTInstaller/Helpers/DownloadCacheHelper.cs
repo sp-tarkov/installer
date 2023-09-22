@@ -72,6 +72,7 @@ public static class DownloadCacheHelper
     /// <remarks>If the file exists, it is deleted before downloading</remarks>
     public static async Task<FileInfo?> DownloadFileAsync(string outputFileName, string targetLink, IProgress<double> progress)
     {
+        Directory.CreateDirectory(CachePath);
         var outputFile = new FileInfo(Path.Join(CachePath, outputFileName));
 
         try
@@ -109,6 +110,7 @@ public static class DownloadCacheHelper
     /// <remarks>If the file exists, it is deleted before downloading</remarks>
     public static async Task<FileInfo?> DownloadFileAsync(string outputFileName, Stream downloadStream)
     {
+        Directory.CreateDirectory(CachePath);
         var outputFile = new FileInfo(Path.Join(CachePath, outputFileName));
 
         try
