@@ -22,6 +22,9 @@ Start-BitsTransfer -Source $source -Destination $destination -DisplayName "Updat
 
 Remove-Module -Name BitsTransfer
 
+# remove the new installer from the cache folder after it is copied
+Remove-Item -Path $source
+
 Start-Process $destination
 
 Write-Host "Done"

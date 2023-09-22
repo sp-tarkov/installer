@@ -9,8 +9,8 @@
     <PackageIcon>icon.ico</PackageIcon>
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     <Configurations>Debug;Release;TEST</Configurations>
-    <AssemblyVersion>2.13</AssemblyVersion>
-    <FileVersion>2.13</FileVersion>
+    <AssemblyVersion>2.14</AssemblyVersion>
+    <FileVersion>2.14</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,12 +35,12 @@
     <PackageReference Include="Avalonia.Diagnostics" Version="11.0.4" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.4" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.4" />
-    <PackageReference Include="DialogHost.Avalonia" Version="0.7.6" />
+    <PackageReference Include="DialogHost.Avalonia" Version="0.7.7" />
     <PackageReference Include="FubarCoder.RestSharp.Portable.HttpClient" Version="4.0.8" />
     <PackageReference Include="MegaApiClient" Version="1.10.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="SharpCompress" Version="0.33.0" />
+    <PackageReference Include="SharpCompress" Version="0.34.0" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
   </ItemGroup>
 
