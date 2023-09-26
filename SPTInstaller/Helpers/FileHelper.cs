@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Serilog;
@@ -143,13 +144,50 @@ public static class FileHelper
         }
     }
 
-    public static bool CheckPathForProblemLocations(string path)
+    private enum PathCheckType
     {
-        if (path.ToLower().EndsWith("desktop")) return true;
+        EndsWith = 0,
+        Contains = 1,
+    }
 
-        var problemNames = new string[] {"onedrive", "nextcloud", "dropbox", "google" };
+    public static bool CheckPathForProblemLocations(string path, out string detectedName)
+    {
+        detectedName = "";
 
-        return problemNames.Where(x => path.ToLower().Contains(x)).Count() > 0;
+        var problemNames = new Dictionary<string, PathCheckType>()
+        {
+            { "Desktop", PathCheckType.EndsWith },
+            { "Downloads", PathCheckType.EndsWith },
+            { "OneDrive", PathCheckType.Contains },
+            { "NextCloud", PathCheckType.Contains },
+            { "DropBox", PathCheckType.Contains },
+            { "Google", PathCheckType.Contains },
+        };
+
+        foreach (var name in  problemNames)
+        {
+            switch (name.Value)
+            {
+                case PathCheckType.EndsWith:
+                    if (path.ToLower().EndsWith(name.Key.ToLower()))
+                    {
+                        detectedName = name.Key;
+                        return true;
+                    }
+                    break;
+                case PathCheckType.Contains:
+                    if (path.ToLower().Contains(name.Key.ToLower()))
+                    {
+                        detectedName = name.Key;
+                        return true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return false;
     }
 
 }

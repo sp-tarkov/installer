@@ -110,12 +110,12 @@ public class PreChecksViewModel : ViewModelBase
 
         Task.Run(async () =>
         {
-            if (FileHelper.CheckPathForProblemLocations(InstallPath))
+            if (FileHelper.CheckPathForProblemLocations(InstallPath, out var detectedName))
             {
                 await Dispatcher.UIThread.InvokeAsync(async () =>
                 {
                     Log.Warning("Problem folder detected, confirming install path ...");
-                    var confirmation = await DialogHost.Show(new ConfirmationDialog($"We suspect you may be installing to your desktop or a cloud synced folder.\nYou might want to consider installing somewhere else to avoid issues.\n\nAre you sure you want to install to this path?\n{InstallPath}"));
+                    var confirmation = await DialogHost.Show(new ConfirmationDialog($"We suspect you may be installing into a problematic folder: {detectedName}.\nYou might want to consider installing somewhere else to avoid issues.\n\nAre you sure you want to install to this path?\n{InstallPath}"));
 
                     if (confirmation == null || !bool.TryParse(confirmation.ToString(), out var confirm) || !confirm)
                     {
