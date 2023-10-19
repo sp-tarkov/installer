@@ -5,6 +5,8 @@ using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using DialogHostAvalonia;
+using Gitea.Api;
+using Gitea.Client;
 using ReactiveUI;
 using Serilog;
 using SPTInstaller.Controllers;
@@ -25,13 +27,21 @@ public class PreChecksViewModel : ViewModelBase
 
     public ICommand DismissUpdateCommand { get; set; }
 
-    public InstallerUpdateInfo UpdateInfo { get; set; } = new InstallerUpdateInfo();
+    public InstallerUpdateInfo UpdateInfo { get; set; } = new();
 
     private string _installPath;
     public string InstallPath
     {
         get => _installPath;
         set => this.RaiseAndSetIfChanged(ref _installPath, value);
+    }
+
+    private string _installButtonText;
+
+    public string InstallButtonText
+    {
+        get => _installButtonText;
+        set => this.RaiseAndSetIfChanged(ref _installButtonText, value);
     }
     
     private bool _allowInstall;
@@ -61,11 +71,21 @@ public class PreChecksViewModel : ViewModelBase
         get => _cacheCheckState;
         set => this.RaiseAndSetIfChanged(ref _cacheCheckState, value);
     }
+    
+    private StatusSpinner.SpinnerState _installButtonCheckState;
+    public StatusSpinner.SpinnerState InstallButtonCheckState
+    {
+        get => _installButtonCheckState;
+        set => this.RaiseAndSetIfChanged(ref _installButtonCheckState, value);
+    }
 
     public PreChecksViewModel(IScreen host) : base(host)
     {
         var data = ServiceHelper.Get<InternalData?>();
         var installer = ServiceHelper.Get<InstallController?>();
+
+        InstallButtonText = "Please wait ...";
+        InstallButtonCheckState = StatusSpinner.SpinnerState.Pending;
 
         if (data == null || installer == null)
         {
@@ -74,6 +94,11 @@ public class PreChecksViewModel : ViewModelBase
         }
 
         data.OriginalGamePath = PreCheckHelper.DetectOriginalGamePath();
+        
+        data.TargetInstallPath = Environment.CurrentDirectory;
+        InstallPath = data.TargetInstallPath;
+
+        Log.Information($"Install Path: {FileHelper.GetRedactedPath(InstallPath)}");
 
 #if !TEST
         if (data.OriginalGamePath == null)
@@ -82,11 +107,6 @@ public class PreChecksViewModel : ViewModelBase
             return;
         }
 #endif
-
-        data.TargetInstallPath = Environment.CurrentDirectory;
-        InstallPath = data.TargetInstallPath;
-
-        Log.Information($"Install Path: {FileHelper.GetRedactedPath(InstallPath)}");
 
         if (data.OriginalGamePath == data.TargetInstallPath)
         {
@@ -156,10 +176,38 @@ public class PreChecksViewModel : ViewModelBase
 
         Task.Run(async () =>
         {
+            // run prechecks
             var result = await installer.RunPreChecks();
 
+            // check for updates
             await UpdateInfo.CheckForUpdates(Assembly.GetExecutingAssembly().GetName()?.Version);
+            
+            // get latest spt version
+            InstallButtonText = "Getting latest release ...";
+            InstallButtonCheckState = StatusSpinner.SpinnerState.Running;
+            
+            var repo = new RepositoryApi(Configuration.Default);
+            var akiRepoReleases = await repo.RepoListReleasesAsync("SPT-AKI", "Stable-releases");
 
+            if (akiRepoReleases == null || akiRepoReleases.Count == 0)
+            {
+                InstallButtonText = "Could not get SPT releases from repo";
+                InstallButtonCheckState = StatusSpinner.SpinnerState.Error;
+                return;
+            }
+            
+            var latestAkiRelease = akiRepoReleases.FindAll(x => !x.Prerelease)[0];
+
+            if (latestAkiRelease == null)
+            {
+                InstallButtonText = "Could not find the latest SPT release";
+                InstallButtonCheckState = StatusSpinner.SpinnerState.Error;
+                return;
+            }
+            
+            InstallButtonText = $"Start Install: SPT v{latestAkiRelease.TagName}";
+            InstallButtonCheckState = StatusSpinner.SpinnerState.OK;
+            
             AllowDetailsButton = true;
             AllowInstall = result.Succeeded;
         });

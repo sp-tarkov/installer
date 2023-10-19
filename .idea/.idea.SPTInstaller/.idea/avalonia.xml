@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="SPTInstaller/CustomControls/DetailedPreCheckItem.axaml" value="SPTInstaller/SPTInstaller.csproj" />
+        <entry key="SPTInstaller/CustomControls/PreCheckItem.axaml" value="SPTInstaller/SPTInstaller.csproj" />
+        <entry key="SPTInstaller/CustomControls/SPTInstallButton.axaml" value="SPTInstaller/SPTInstaller.csproj" />
+        <entry key="SPTInstaller/Views/DetailedPreChecksView.axaml" value="SPTInstaller/SPTInstaller.csproj" />
+        <entry key="SPTInstaller/Views/PreChecksView.axaml" value="SPTInstaller/SPTInstaller.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

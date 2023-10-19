@@ -22,7 +22,7 @@
         
 		<Label Grid.Column="1"
 			   Content="{Binding PreCheckName, RelativeSource={RelativeSource AncestorType=UserControl}}"
-			   Classes.bold="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl}
+			   Classes.bold="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl},
                              Converter={StaticResource ResourceKey=IsStateConverter},
                              ConverterParameter=Running}"
 			   />
