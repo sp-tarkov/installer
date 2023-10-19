@@ -19,13 +19,18 @@
 				   HorizontalAlignment="Center"
 				   />
 		</StackPanel>
-		<Button Grid.Column="2" Grid.Row="3" Content="Start Install" Padding="20 10"
+		<Button Grid.Column="2" Grid.Row="3" Padding="20 10"
 				Margin="10"
 				FontSize="15" FontWeight="SemiBold"
 				Classes="yellow"
 				IsEnabled="{Binding AllowInstall}"
 				Command="{Binding StartInstallCommand}"
-				/>
+				>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding InstallButtonText}" VerticalAlignment="Center" Foreground="Black"/>
+                <cc:StatusSpinner State="{Binding InstallButtonCheckState}" Margin="2" IsVisible="{Binding !AllowInstall}"/>
+            </StackPanel>
+        </Button>
         
 		<ItemsControl ItemsSource="{Binding PreChecks}" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4" HorizontalAlignment="Center">
 			<ItemsControl.ItemsPanel>
