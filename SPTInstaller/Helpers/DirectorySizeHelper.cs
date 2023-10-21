@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Serilog;
 
 namespace SPTInstaller.Helpers;
 
@@ -8,11 +9,23 @@ public static class DirectorySizeHelper
     // https://stackoverflow.com/a/14488941
     static readonly string[] SizeSuffixes =
                    { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+
     public static string SizeSuffix(Int64 value, int decimalPlaces = 1)
     {
-        if (decimalPlaces < 0) { throw new ArgumentOutOfRangeException("decimalPlaces"); }
-        if (value < 0) { return "-" + SizeSuffix(-value, decimalPlaces); }
-        if (value == 0) { return string.Format("{0:n" + decimalPlaces + "} bytes", 0); }
+        if (decimalPlaces < 0)
+        {
+            throw new ArgumentOutOfRangeException("decimalPlaces");
+        }
+
+        if (value < 0)
+        {
+            return "-" + SizeSuffix(-value, decimalPlaces);
+        }
+
+        if (value == 0)
+        {
+            return string.Format("{0:n" + decimalPlaces + "} bytes", 0);
+        }
 
         // mag is 0 for bytes, 1 for KB, 2, for MB, etc.
         int mag = (int)Math.Log(value, 1024);
@@ -34,5 +47,21 @@ public static class DirectorySizeHelper
             SizeSuffixes[mag]);
     }
 
-    public static long GetSizeOfDirectory(DirectoryInfo sourceDir) => sourceDir.EnumerateFiles("*", SearchOption.AllDirectories).Sum(fi => fi.Length);
+    /// <summary>
+    /// Gets the size of a directory in bytes
+    /// </summary>
+    /// <param name="sourceDir">The directory to get the size of</param>
+    /// <returns>the size of the <paramref name="sourceDir"/> in bytes or -1 if an error occurred</returns>
+    public static long GetSizeOfDirectory(DirectoryInfo sourceDir)
+    {
+        try
+        {
+            return sourceDir.EnumerateFiles("*", SearchOption.AllDirectories).Sum(fi => fi.Length);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Something went wrong calculating dir size");
+            return -1;
+        }
+    }
 }
