@@ -3,6 +3,7 @@
   <component name="AvaloniaProject">
     <option name="projectPerEditor">
       <map>
+        <entry key="SPTInstaller/App.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/DetailedPreCheckItem.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/PreCheckItem.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/SPTInstallButton.axaml" value="SPTInstaller/SPTInstaller.csproj" />
