@@ -18,7 +18,7 @@
               InfoText="{Binding CacheInfoText}" State="{Binding CacheCheckState}"
               />
         
-        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
+        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
                    Foreground="DodgerBlue" FontWeight="SemiBold" FontSize="16"
                    Text="{Binding InstallPath}" TextWrapping="Wrap"
                    Margin="5"
