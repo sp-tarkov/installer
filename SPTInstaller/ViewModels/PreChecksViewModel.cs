@@ -79,10 +79,24 @@ public class PreChecksViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _installButtonCheckState, value);
     }
 
+    private void ReCheckRequested(object? sender, EventArgs e)
+    {
+        Task.Run(async () =>
+        {
+            if (sender is InstallController installer)
+            {
+                var result = await installer.RunPreChecks();
+                AllowInstall = result.Succeeded;
+            }
+        });
+    }
+
     public PreChecksViewModel(IScreen host) : base(host)
     {
         var data = ServiceHelper.Get<InternalData?>();
         var installer = ServiceHelper.Get<InstallController?>();
+
+        installer.RecheckRequested += ReCheckRequested;
 
         InstallButtonText = "Please wait ...";
         InstallButtonCheckState = StatusSpinner.SpinnerState.Pending;
@@ -158,6 +172,7 @@ public class PreChecksViewModel : ViewModelBase
         {
             UpdateInfo.ShowCard = false;
             Log.Logger.Information("Opening Detailed PreCheck View");
+            installer.RecheckRequested -= ReCheckRequested;
             NavigateTo(new DetailedPreChecksViewModel(HostScreen));
         });
 

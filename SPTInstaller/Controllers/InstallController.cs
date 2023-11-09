@@ -11,8 +11,10 @@ namespace SPTInstaller.Controllers;
 
 public class InstallController
 {
+    public event EventHandler RecheckRequested = delegate { };
     public event EventHandler<IProgressableTask> TaskChanged = delegate { };
 
+    private bool _installRunning = false;
     private IPreCheck[] _preChecks { get; set; }
     private IProgressableTask[] _tasks { get; set; }
 
@@ -20,6 +22,22 @@ public class InstallController
     {
         _tasks = tasks;
         _preChecks = preChecks;
+        
+        _preChecks.ForEach(x => x.ReeevaluationRequested += (s, e) =>
+        {
+            if (s is IPreCheck preCheck)
+            {
+                Log.Information($"{preCheck.Name}: requested re-evaluation");
+                
+                if (_installRunning)
+                {
+                    Log.Warning("Install is running, re-evaluation denied (how did you do this?)");
+                    return;
+                }
+
+                RecheckRequested?.Invoke(this, null);
+            }
+        });
     }
 
     public async Task<IResult> RunPreChecks()
@@ -51,6 +69,8 @@ public class InstallController
 
     public async Task<IResult> RunTasks()
     {
+        _installRunning = true;
+        
         Log.Information("-<>--<>- Running Installer Tasks -<>--<>-");
 
         foreach (var task in _tasks)
