@@ -8,6 +8,7 @@ namespace SPTInstaller.Models;
 
 public abstract class PreCheckBase : ReactiveObject, IPreCheck
 {
+    public event EventHandler ReeevaluationRequested = delegate {  };
     private string _id;
     public string Id
     {
@@ -83,6 +84,14 @@ public abstract class PreCheckBase : ReactiveObject, IPreCheck
             (false, false) => StatusSpinner.SpinnerState.Warning,
             (_, _)         => StatusSpinner.SpinnerState.Error
         };
+
+    /// <summary>
+    /// Request pre-checks to be re-evaluated
+    /// </summary>
+    public void RequestReevaluation()
+    {
+        ReeevaluationRequested?.Invoke(this, null);
+    }
 
     public async Task<IResult> RunCheck()
     {

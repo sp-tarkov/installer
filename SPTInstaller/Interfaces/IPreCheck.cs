@@ -10,6 +10,7 @@ public interface IPreCheck
     public bool IsRequired { get; }
     public string PreCheckDetails { get; }
     public StatusSpinner.SpinnerState State { get; set; }
+    public event EventHandler ReeevaluationRequested;
 
     public Task<IResult> RunCheck();
 }
