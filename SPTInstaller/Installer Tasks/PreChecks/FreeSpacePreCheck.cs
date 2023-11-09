@@ -28,6 +28,12 @@ public class FreeSpacePreCheck : PreCheckBase
             var installTargetDirectoryInfo = new DirectoryInfo(_internalData.TargetInstallPath);
 
             var eftSourceDirSize = DirectorySizeHelper.GetSizeOfDirectory(eftSourceDirectoryInfo);
+
+            if (eftSourceDirSize == -1)
+            {
+                return PreCheckResult.FromError("An error occurred while getting the EFT source directory size");
+            }
+            
             var availableSize = DriveInfo.GetDrives().FirstOrDefault(d => d.Name.ToLower() == installTargetDirectoryInfo.Root.Name.ToLower())?.AvailableFreeSpace ?? 0;
 
             var availableSpaceMessage = $"Available Space: {DirectorySizeHelper.SizeSuffix(availableSize, 2)}";

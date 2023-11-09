@@ -20,6 +20,11 @@ public static class DownloadCacheHelper
 
         var cacheSize = DirectorySizeHelper.GetSizeOfDirectory(cacheDir);
 
+        if (cacheSize == -1)
+        {
+            return "An error occurred while getting the cache size :(";
+        }
+
         if (cacheSize == 0)
             return "Empty";
 
