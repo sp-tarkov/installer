@@ -41,6 +41,7 @@
     <PackageReference Include="MegaApiClient" Version="1.10.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="SerilogTraceListener" Version="3.2.0" />
     <PackageReference Include="SharpCompress" Version="0.34.0" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
   </ItemGroup>

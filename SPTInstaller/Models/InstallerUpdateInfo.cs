@@ -99,8 +99,13 @@ public class InstallerUpdateInfo : ReactiveObject
         return file.FullName;
     }
 
-    private void EndCheck(string infoText, bool updateAvailable)
+    private void EndCheck(string infoText, bool updateAvailable, bool log = true)
     {
+        if (log)
+        {
+            Log.Information(infoText);
+        }
+        
         UpdateInfoText = infoText;
 
         if (!updateAvailable)
@@ -138,7 +143,7 @@ public class InstallerUpdateInfo : ReactiveObject
 
             if (releases == null || releases.Count == 0)
             {
-                EndCheck("No updates available", false);
+                EndCheck("No releases available", false);
                 return;
             }
 
@@ -146,7 +151,7 @@ public class InstallerUpdateInfo : ReactiveObject
 
             if (latest == null)
             {
-                EndCheck("No updates available", false);
+                EndCheck("could not get latest release", false);
                 return;
             }
 
@@ -168,7 +173,7 @@ public class InstallerUpdateInfo : ReactiveObject
         }
         catch (Exception ex)
         {
-            EndCheck(ex.Message, false);
+            EndCheck(ex.Message, false, false);
             Log.Error(ex, "Failed to check for updates");
         }
 

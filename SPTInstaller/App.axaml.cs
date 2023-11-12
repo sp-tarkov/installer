@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Linq;
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
@@ -36,6 +37,12 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            if (desktop.Args != null && desktop.Args.Any(x => x.ToLower() == "debug"))
+            {
+                System.Diagnostics.Trace.Listeners.Add(new SerilogTraceListener.SerilogTraceListener());
+                Log.Debug("TraceListener is registered");
+            }
+            
             desktop.MainWindow = new MainWindow
             {
                 DataContext = new MainWindowViewModel(),
