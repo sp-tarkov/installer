@@ -9,8 +9,8 @@
     <PackageIcon>icon.ico</PackageIcon>
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     <Configurations>Debug;Release;TEST</Configurations>
-    <AssemblyVersion>2.19</AssemblyVersion>
-    <FileVersion>2.19</FileVersion>
+    <AssemblyVersion>2.20</AssemblyVersion>
+    <FileVersion>2.20</FileVersion>
     <Company>SPT-AKI</Company>
   </PropertyGroup>
 
@@ -41,6 +41,7 @@
     <PackageReference Include="MegaApiClient" Version="1.10.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="SerilogTraceListener" Version="3.2.0" />
     <PackageReference Include="SharpCompress" Version="0.34.0" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
   </ItemGroup>
