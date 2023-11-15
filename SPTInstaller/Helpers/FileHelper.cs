@@ -148,6 +148,7 @@ public static class FileHelper
     {
         EndsWith = 0,
         Contains = 1,
+        DriveRoot = 2
     }
 
     public static bool CheckPathForProblemLocations(string path, out string detectedName)
@@ -162,6 +163,7 @@ public static class FileHelper
             { "NextCloud", PathCheckType.Contains },
             { "DropBox", PathCheckType.Contains },
             { "Google", PathCheckType.Contains },
+            { "Drive Root", PathCheckType.DriveRoot}
         };
 
         foreach (var name in  problemNames)
@@ -182,7 +184,12 @@ public static class FileHelper
                         return true;
                     }
                     break;
-                default:
+                case PathCheckType.DriveRoot:
+                    if (Regex.Match(path.ToLower(), @"^\w:(\\|\/)$").Success)
+                    {
+                        detectedName = name.Key;
+                        return true;
+                    }
                     break;
             }
         }
