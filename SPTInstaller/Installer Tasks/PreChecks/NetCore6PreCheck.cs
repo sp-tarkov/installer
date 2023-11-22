@@ -3,6 +3,7 @@ using SPTInstaller.Models;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using SPTInstaller.Helpers;
 
 namespace SPTInstaller.Installer_Tasks.PreChecks;
 
@@ -32,17 +33,14 @@ public class NetCore6PreCheck : PreCheckBase
 
         try
         {
-            var proc = Process.Start(new ProcessStartInfo()
+            var result = ProcessHelper.RunAndReadProcessOutputs("dotnet", "--list-runtimes");
+
+            if (!result.Succeeded)
             {
-                FileName = "dotnet",
-                Arguments = "--list-runtimes",
-                RedirectStandardOutput = true,
-                CreateNoWindow = true
-            });
+                return PreCheckResult.FromError(result.Message);
+            }
 
-            proc.WaitForExit();
-
-            output = proc.StandardOutput.ReadToEnd().Split("\r\n");
+            output = result.StdOut.Split("\r\n");
         }
         catch (Exception ex)
         {
