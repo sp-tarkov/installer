@@ -159,10 +159,13 @@ public static class FileHelper
         {
             { "Desktop", PathCheckType.EndsWith },
             { "Downloads", PathCheckType.EndsWith },
+            { "Documents", PathCheckType.EndsWith},
             { "OneDrive", PathCheckType.Contains },
             { "NextCloud", PathCheckType.Contains },
             { "DropBox", PathCheckType.Contains },
             { "Google", PathCheckType.Contains },
+            { "Program Files", PathCheckType.Contains},
+            { "Program Files (x86)", PathCheckType.Contains},
             { "Drive Root", PathCheckType.DriveRoot}
         };
 
