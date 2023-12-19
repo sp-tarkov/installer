@@ -16,17 +16,17 @@ public static class PreCheckHelper
             return null;
 
         var uninstallStringValue = Registry.LocalMachine.OpenSubKey(registryInstall, false)
-            ?.GetValue("UninstallString");
-        var info = (uninstallStringValue is string key) ? new FileInfo(key) : null;
+            ?.GetValue("InstallLocation");
+        var info = (uninstallStringValue is string key) ? new DirectoryInfo(key) : null;
 
-        return info?.DirectoryName;
+        return info?.FullName;
     }
 
     public static Result DetectOriginalGameVersion(string gamePath)
     {
         try
         {
-            string version = FileVersionInfo.GetVersionInfo(Path.Join(gamePath + "/EscapeFromTarkov.exe")).ProductVersion.Replace('-', '.').Split('.')[^2];
+            string version = FileVersionInfo.GetVersionInfo(Path.Join(gamePath, "/EscapeFromTarkov.exe")).ProductVersion.Replace('-', '.').Split('.')[^2];
             return Result.FromSuccess(version);
         }
         catch (Exception ex)
