@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Serilog;
 using SPTInstaller.Helpers;
 using SPTInstaller.Models;
 
