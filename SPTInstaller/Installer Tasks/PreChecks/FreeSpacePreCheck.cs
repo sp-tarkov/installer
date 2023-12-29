@@ -36,8 +36,11 @@ public class FreeSpacePreCheck : PreCheckBase
             
             var availableSize = DriveInfo.GetDrives().FirstOrDefault(d => d.Name.ToLower() == installTargetDirectoryInfo.Root.Name.ToLower())?.AvailableFreeSpace ?? 0;
 
+            // add 10Gb overhead to game files for potential patches / release files
+            eftSourceDirSize += 10000000000;
+
             var availableSpaceMessage = $"Available Space: {DirectorySizeHelper.SizeSuffix(availableSize, 2)}";
-            var requiredSpaceMessage = $"Space Required for EFT Client: {DirectorySizeHelper.SizeSuffix(eftSourceDirSize, 2)}";
+            var requiredSpaceMessage = $"Space Required for EFT Client: {DirectorySizeHelper.SizeSuffix(eftSourceDirSize, 2)} including ~10Gb overhead";
 
             if (eftSourceDirSize > availableSize)
             {
