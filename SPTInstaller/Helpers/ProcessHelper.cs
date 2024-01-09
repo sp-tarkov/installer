@@ -103,7 +103,14 @@ public static class ProcessHelper
             }
         };
 
-        proc.Start();
+        try
+        {
+            proc.Start();
+        }
+        catch (Exception ex)
+        {
+            return ReadProcessResult.FromError(ex.Message);
+        }
 
         proc.BeginOutputReadLine();
         proc.BeginErrorReadLine();

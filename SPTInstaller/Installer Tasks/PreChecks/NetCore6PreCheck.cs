@@ -37,7 +37,7 @@ public class NetCore6PreCheck : PreCheckBase
 
             if (!result.Succeeded)
             {
-                return PreCheckResult.FromError(result.Message);
+                return PreCheckResult.FromError(result.Message + "\n\nYou most likely don't have .net 6 installed", failedButtonText, failedButtonAction);
             }
 
             output = result.StdOut.Split("\r\n");
