@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using Gitea.Model;
+using Serilog;
 
 namespace SPTInstaller.Helpers;
 
@@ -26,6 +27,8 @@ public static class FileHashHelper
         
         var sourceHash = md5Service.ComputeHash(sourceStream);
         var expectedHashBytes = Convert.FromBase64String(expectedHash);
+        
+        Log.Information($"Comparing Hashes :: S: {Convert.ToBase64String(sourceHash)} - E: {expectedHash}");
 
         var matched = Enumerable.SequenceEqual(sourceHash, expectedHashBytes);
 
