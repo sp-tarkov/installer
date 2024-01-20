@@ -14,7 +14,11 @@ public static class DownloadCacheHelper
     public static string GetCacheSizeText()
     {
         if (!Directory.Exists(CachePath))
-            return "No cache folder";
+        {
+            var message = "No cache folder";
+            Log.Information(message);
+            return message;
+        }
 
         var cacheDir = new DirectoryInfo(CachePath);
 
@@ -22,7 +26,9 @@ public static class DownloadCacheHelper
 
         if (cacheSize == -1)
         {
-            return "An error occurred while getting the cache size :(";
+            var message = "An error occurred while getting the cache size :(";
+            Log.Error(message);
+            return message;
         }
 
         if (cacheSize == 0)
@@ -51,7 +57,11 @@ public static class DownloadCacheHelper
             Directory.CreateDirectory(CachePath);
 
             if (!cacheFile.Exists || expectedHash == null)
+            {
+                Log.Information($"{cacheFile.Name} {(cacheFile.Exists ? "is in cache" : "NOT in cache")}");
+                Log.Information($"Expected hash: {(expectedHash == null ? "not provided" : expectedHash)}");
                 return false;
+            }
 
             if (FileHashHelper.CheckHash(cacheFile, expectedHash))
             {
