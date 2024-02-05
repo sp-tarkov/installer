@@ -9,7 +9,7 @@ namespace SPTInstaller.Installer_Tasks.PreChecks;
 
 public class NetCore6PreCheck : PreCheckBase
 {
-    public NetCore6PreCheck() : base(".Net Core 6 Desktop Runtime", false)
+    public NetCore6PreCheck() : base(".Net Core 6 Desktop Runtime", true)
     {
     }
 
