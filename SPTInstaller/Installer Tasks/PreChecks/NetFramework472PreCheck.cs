@@ -8,7 +8,7 @@ namespace SPTInstaller.Installer_Tasks.PreChecks;
 
 public class NetFramework472PreCheck : PreCheckBase
 {
-    public NetFramework472PreCheck() : base(".Net Framework 4.7.2", false)
+    public NetFramework472PreCheck() : base(".Net Framework 4.7.2", true)
     {
     }
 

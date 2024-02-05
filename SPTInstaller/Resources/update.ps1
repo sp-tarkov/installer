@@ -3,7 +3,7 @@
     [string]$destination
 )
 
-clear
+Clear-Host
 
 Write-Host "Stopping installer ..."
 
@@ -16,11 +16,7 @@ if ($installer -ne $null) {
 
 Write-Host "Copying new installer ..."
 
-Import-Module BitsTransfer
-
-Start-BitsTransfer -Source $source -Destination $destination -DisplayName "Updating" -Description "Copying new installer"
-
-Remove-Module -Name BitsTransfer
+Copy-Item -Path $source -Destination $destination -Force
 
 # remove the new installer from the cache folder after it is copied
 Remove-Item -Path $source
