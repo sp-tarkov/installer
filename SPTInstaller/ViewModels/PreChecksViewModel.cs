@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia.Controls;
 using Avalonia.Threading;
 using DialogHostAvalonia;
 using Gitea.Api;
@@ -26,8 +26,18 @@ public class PreChecksViewModel : ViewModelBase
     public ICommand UpdateInstallerCommand { get; set; }
 
     public ICommand DismissUpdateCommand { get; set; }
+    
+    public ICommand LaunchWithDebug { get; set; }
 
     public InstallerUpdateInfo UpdateInfo { get; set; } = new();
+
+    private bool _debugging;
+
+    public bool Debugging
+    {
+        get => _debugging;
+        set => this.RaiseAndSetIfChanged(ref _debugging, value);
+    }
 
     private string _installPath;
     public string InstallPath
@@ -91,8 +101,9 @@ public class PreChecksViewModel : ViewModelBase
         });
     }
 
-    public PreChecksViewModel(IScreen host) : base(host)
+    public PreChecksViewModel(IScreen host, bool debugging) : base(host)
     {
+        Debugging = debugging;
         var data = ServiceHelper.Get<InternalData?>();
         var installer = ServiceHelper.Get<InstallController?>();
 
@@ -162,6 +173,25 @@ public class PreChecksViewModel : ViewModelBase
             }
         });
 
+        LaunchWithDebug = ReactiveCommand.Create(async () =>
+        {
+            try
+            {
+                var installerPath = Path.Join(_installPath, "SPTInstaller.exe");
+                Process.Start(new ProcessStartInfo()
+                {
+                    FileName = installerPath,
+                    Arguments = "debug"
+                });
+
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to enter debug mode");
+            }
+        });
+
         StartInstallCommand = ReactiveCommand.Create(async () =>
         {
             UpdateInfo.ShowCard = false;
@@ -173,7 +203,7 @@ public class PreChecksViewModel : ViewModelBase
             UpdateInfo.ShowCard = false;
             Log.Logger.Information("Opening Detailed PreCheck View");
             installer.RecheckRequested -= ReCheckRequested;
-            NavigateTo(new DetailedPreChecksViewModel(HostScreen));
+            NavigateTo(new DetailedPreChecksViewModel(HostScreen, Debugging));
         });
 
         UpdateInstallerCommand = ReactiveCommand.Create(async () =>

@@ -70,5 +70,15 @@
                       VerticalAlignment="Bottom" HorizontalAlignment="Left"
                       InfoText="{Binding CacheInfoText}" State="{Binding CacheCheckState}"
                       />
+        
+        <Button Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3" Padding="10" x:Name="debugBtn"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                Classes="icon"
+                Command="{Binding LaunchWithDebug}"
+                IsVisible="{Binding !Debugging}"
+                >
+            <Path Data="{StaticResource Bug}" Fill="{Binding ElementName=debugBtn, Path=Foreground}"
+                  />
+        </Button>
 	</Grid>
 </UserControl>

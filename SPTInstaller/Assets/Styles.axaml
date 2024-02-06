@@ -1,11 +1,14 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:cc="using:SPTInstaller.CustomControls"
-        xmlns:rxui="using:Avalonia.ReactiveUI"
         >
 	<Design.PreviewWith>
 		<StackPanel Spacing="5" Background="{StaticResource AKI_Background_Dark}">
-			<Button Content="Blah" Classes="link"/>
+			<Button Classes="icon" x:Name="testBtn">
+                <Path Data="{StaticResource Bug}" 
+                      Fill="{Binding ElementName=testBtn, Path=Foreground}"
+                      />
+            </Button>
 			<TextBox Text="Some cool text here" Margin="5"/>
 			<TextBox Watermark="This is a watermark" Margin="5"/>
 		</StackPanel>
@@ -248,4 +251,21 @@
 		<Setter Property="BorderBrush" Value="Transparent"/>
 		<Setter Property="BorderThickness" Value="0"/>
 	</Style>
+    
+    <!-- Button icon Style -->
+    <Style Selector="Button.icon">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.icon:pointerover">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource AKI_Brush_Yellow}"/>
+    </Style>
+    <Style Selector="Button.icon:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.icon:pressed">
+        <Setter Property="Foreground" Value="{StaticResource AKI_DarkGrayBlue}"></Setter>
+    </Style>
 </Styles>
