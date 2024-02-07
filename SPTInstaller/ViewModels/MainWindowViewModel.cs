@@ -19,11 +19,11 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
         set => this.RaiseAndSetIfChanged(ref _title, value);
     }
 
-    public MainWindowViewModel()
+    public MainWindowViewModel(bool debugging)
     {
         Configuration.Default.BasePath = "https://dev.sp-tarkov.com/api/v1";
 
-        Title = $"SPT Installer {"v" + Assembly.GetExecutingAssembly().GetName()?.Version?.ToString() ?? "--unknown version--"}";
+        Title = $"{(debugging ? "-debug-" : "")} SPT Installer {"v" + Assembly.GetExecutingAssembly().GetName()?.Version?.ToString() ?? "--unknown version--"}";
 
         Log.Information($"========= {Title} Started =========");
         Log.Information(Environment.OSVersion.VersionString);
@@ -32,7 +32,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
 
         Log.Information("System Language: {iso} - {name}", uiCulture.TwoLetterISOLanguageName, uiCulture.DisplayName);
 
-        Router.Navigate.Execute(new PreChecksViewModel(this));
+        Router.Navigate.Execute(new PreChecksViewModel(this, debugging));
     }
 
     public void CloseCommand()

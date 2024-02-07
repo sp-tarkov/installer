@@ -12,17 +12,16 @@ namespace SPTInstaller;
 
 public partial class App : Application
 {
+    private readonly string _logPath = Path.Join(Environment.CurrentDirectory, "spt-aki-installer_.log");
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-
-        var logPath = Path.Join(Environment.CurrentDirectory, "spt-aki-installer_.log");
-
+        
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
+            .MinimumLevel.Information()
             .WriteTo
-            .File(path: logPath,
-                restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug,
+            .File(path: _logPath,
+                restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information,
                 rollingInterval: RollingInterval.Day)
             .CreateLogger();
 
@@ -37,15 +36,25 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (desktop.Args != null && desktop.Args.Any(x => x.ToLower() == "debug"))
+            var debug = desktop.Args != null && desktop.Args.Any(x => x.ToLower() == "debug");
+            if (debug)
             {
+                Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Debug()
+                    .WriteTo
+                    .File(path: _logPath,
+                        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug,
+                        rollingInterval: RollingInterval.Day)
+                    .CreateLogger();
+                
                 System.Diagnostics.Trace.Listeners.Add(new SerilogTraceListener.SerilogTraceListener());
+                
                 Log.Debug("TraceListener is registered");
             }
             
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = new MainWindowViewModel(debug),
             };
         }
 

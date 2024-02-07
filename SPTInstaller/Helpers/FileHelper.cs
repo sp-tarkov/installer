@@ -24,6 +24,7 @@ public static class FileHelper
                     if (currentDirRelativePath.StartsWith(exclusion) || currentDirRelativePath == exclusion)
                     {
                         exclude = true;
+                        Log.Debug($"EXCLUSION FOUND :: DIR\nExclusion: '{exclusion}'\nPath: '{currentDirRelativePath}'");
                         break;
                     }
                 }
@@ -62,6 +63,7 @@ public static class FileHelper
                     if (currentFileRelativePath.StartsWith(exclusion) || currentFileRelativePath == exclusion)
                     {
                         exclude = true;
+                        Log.Debug($"EXCLUSION FOUND :: FILE\nExclusion: '{exclusion}'\nPath: '{currentFileRelativePath}'");
                         break;
                     }
                 }
@@ -69,7 +71,12 @@ public static class FileHelper
                 if (exclude)
                     continue;
 
-                File.Copy(file.FullName, file.FullName.Replace(sourceDir.FullName, targetDir.FullName), true);
+                
+                var targetFile = file.FullName.Replace(sourceDir.FullName, targetDir.FullName);
+                
+                Log.Debug($"COPY\nSourceDir: '{sourceDir.FullName}'\nTargetDir: '{targetDir.FullName}'\nNewPath: '{targetFile}'");
+
+                File.Copy(file.FullName, targetFile, true);
                 processedFiles++;
             }
 

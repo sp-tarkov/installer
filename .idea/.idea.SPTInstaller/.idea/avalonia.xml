@@ -4,10 +4,12 @@
     <option name="projectPerEditor">
       <map>
         <entry key="SPTInstaller/App.axaml" value="SPTInstaller/SPTInstaller.csproj" />
+        <entry key="SPTInstaller/Assets/Styles.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/DetailedPreCheckItem.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/PreCheckItem.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/SPTInstallButton.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/Views/DetailedPreChecksView.axaml" value="SPTInstaller/SPTInstaller.csproj" />
+        <entry key="SPTInstaller/Views/MainWindow.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/Views/PreChecksView.axaml" value="SPTInstaller/SPTInstaller.csproj" />
       </map>
     </option>

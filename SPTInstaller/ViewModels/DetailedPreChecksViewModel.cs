@@ -3,7 +3,7 @@
 namespace SPTInstaller.ViewModels;
 public class DetailedPreChecksViewModel : PreChecksViewModel
 {
-    public DetailedPreChecksViewModel(IScreen host) : base(host)
+    public DetailedPreChecksViewModel(IScreen host, bool debugging) : base(host, debugging)
     {
     }
 }
