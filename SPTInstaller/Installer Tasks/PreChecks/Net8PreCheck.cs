@@ -7,18 +7,18 @@ using SPTInstaller.Helpers;
 
 namespace SPTInstaller.Installer_Tasks.PreChecks;
 
-public class NetCore6PreCheck : PreCheckBase
+public class Net8PreCheck : PreCheckBase
 {
-    public NetCore6PreCheck() : base(".Net Core 6 Desktop Runtime", true)
+    public Net8PreCheck() : base(".Net 8 Desktop Runtime", true)
     {
     }
 
     public override async Task<PreCheckResult> CheckOperation()
     {
-        var minRequiredVersion = new Version("6.0.0");
+        var minRequiredVersion = new Version("8.0.0");
         string[] output;
 
-        var failedButtonText = "Download .Net Core 6 Desktop Runtime";
+        var failedButtonText = "Download .Net 8 Desktop Runtime";
 
         var failedButtonAction = () =>
         {
@@ -27,7 +27,7 @@ public class NetCore6PreCheck : PreCheckBase
                 FileName = "cmd.exe",
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
-                ArgumentList = { "/C", "start", "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.4-windows-x64-installer" }
+                ArgumentList = { "/C", "start", "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.2-windows-x64-installer" }
             });
         };
 
@@ -37,7 +37,7 @@ public class NetCore6PreCheck : PreCheckBase
 
             if (!result.Succeeded)
             {
-                return PreCheckResult.FromError(result.Message + "\n\nYou most likely don't have .net 6 installed", failedButtonText, failedButtonAction);
+                return PreCheckResult.FromError(result.Message + "\n\nYou most likely don't have .net 8 installed", failedButtonText, failedButtonAction);
             }
 
             output = result.StdOut.Split("\r\n");
@@ -63,12 +63,12 @@ public class NetCore6PreCheck : PreCheckBase
 
             if (foundVersion >= minRequiredVersion)
             {
-                return PreCheckResult.FromSuccess($".Net Core {minRequiredVersion} Desktop Runtime or higher is installed.\n\nInstalled Version: {foundVersion}");
+                return PreCheckResult.FromSuccess($".Net {minRequiredVersion} Desktop Runtime or higher is installed.\n\nInstalled Version: {foundVersion}");
             }
 
             highestFoundVersion = foundVersion > highestFoundVersion ? foundVersion : highestFoundVersion;
         }
 
-        return PreCheckResult.FromError($".Net Core Desktop Runtime version {minRequiredVersion} or higher is required.\n\nHighest Version Found: {(highestFoundVersion > new Version("0.0.0") ? highestFoundVersion : "Not Found")}\n\nThis is required to play SPT, but you can install it later if and shouldn't affect the SPT install process.", failedButtonText, failedButtonAction);
+        return PreCheckResult.FromError($".Net Desktop Runtime version {minRequiredVersion} or higher is required.\n\nHighest Version Found: {(highestFoundVersion > new Version("0.0.0") ? highestFoundVersion : "Not Found")}\n\nThis is required to play SPT", failedButtonText, failedButtonAction);
     }
 }
