@@ -1,6 +1,7 @@
 ﻿using CG.Web.MegaApiClient;
 using SPTInstaller.Helpers;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace SPTInstaller.Models.Mirrors.Downloaders;
 public class MegaMirrorDownloader : MirrorDownloaderBase
@@ -29,8 +30,9 @@ public class MegaMirrorDownloader : MirrorDownloaderBase
 
             return FileHashHelper.CheckHash(file, MirrorInfo.Hash) ? file : null;
         }
-        catch
+        catch(Exception ex)
         {
+            Log.Error(ex, "Exception thrown while downloading from mega");
             //most likely a 509 (Bandwidth limit exceeded) due to mega's user quotas.
             return null;
         }
