@@ -139,6 +139,8 @@ public static class DownloadCacheHelper
             }
 
             patcherFileStream.Close();
+            
+            outputFile.Refresh();
 
             if (!outputFile.Exists)
             {
