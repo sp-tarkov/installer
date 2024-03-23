@@ -21,11 +21,14 @@ public class MegaMirrorDownloader : MirrorDownloaderBase
 
         try
         {
-            using var megaDownloadStream = await megaClient.DownloadAsync(new Uri(MirrorInfo.Link), progress);
+            var file = new FileInfo(Path.Join(DownloadCacheHelper.CachePath, "patcher"));
+            
+            await megaClient.DownloadFileAsync(new Uri(MirrorInfo.Link),
+                file.FullName, progress);
+            
+            file.Refresh();
 
-            var file = await DownloadCacheHelper.DownloadFileAsync("patcher", megaDownloadStream);
-
-            if (file == null)
+            if (!file.Exists)
                 return null;
 
             return FileHashHelper.CheckHash(file, MirrorInfo.Hash) ? file : null;
