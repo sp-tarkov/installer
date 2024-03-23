@@ -61,7 +61,12 @@ public class InstallerUpdateInfo : ReactiveObject
         UpdateAvailable = false;
         
         var updater = new FileInfo(Path.Join(DownloadCacheHelper.CachePath, "update.ps1"));
-        FileHelper.StreamAssemblyResourceOut("update.ps1", updater.FullName);
+
+        if (!FileHelper.StreamAssemblyResourceOut("update.ps1", updater.FullName))
+        {
+            Log.Fatal("Failed to prepare update file");
+            return;
+        }
 
 
         if (!updater.Exists)

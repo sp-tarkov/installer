@@ -23,7 +23,7 @@ public class MegaMirrorDownloader : MirrorDownloaderBase
         {
             using var megaDownloadStream = await megaClient.DownloadAsync(new Uri(MirrorInfo.Link), progress);
 
-            var file = await DownloadCacheHelper.DownloadFileAsync("patcher.zip", megaDownloadStream);
+            var file = await DownloadCacheHelper.DownloadFileAsync("patcher", megaDownloadStream);
 
             if (file == null)
                 return null;

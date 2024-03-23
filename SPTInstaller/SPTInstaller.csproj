@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
 	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
@@ -9,8 +9,8 @@
     <PackageIcon>icon.ico</PackageIcon>
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     <Configurations>Debug;Release;TEST</Configurations>
-    <AssemblyVersion>2.33</AssemblyVersion>
-    <FileVersion>2.33</FileVersion>
+    <AssemblyVersion>2.42</AssemblyVersion>
+    <FileVersion>2.42</FileVersion>
     <Company>SPT-AKI</Company>
   </PropertyGroup>
 
@@ -23,6 +23,8 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\update.ps1" />
+    <None Remove="Resources\7z.dll" />
+    <EmbeddedResource Include="Resources\7z.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,7 +44,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="SerilogTraceListener" Version="3.2.0" />
-    <PackageReference Include="SharpCompress" Version="0.34.0" />
+    <PackageReference Include="Squid-Box.SevenZipSharp" Version="1.6.1.23" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
   </ItemGroup>
 
