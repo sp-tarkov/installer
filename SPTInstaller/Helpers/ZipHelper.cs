@@ -1,46 +1,34 @@
-﻿using System.Linq;
-using SharpCompress.Archives;
-using SharpCompress.Archives.Zip;
-using SharpCompress.Common;
+﻿using SevenZip;
 using SPTInstaller.Models;
 
 namespace SPTInstaller.Helpers;
 
 public static class ZipHelper
 {
-    public static Result Decompress(FileInfo ArchivePath, DirectoryInfo OutputFolderPath, IProgress<double> progress = null)
+    public static Result Decompress(FileInfo archiveFile, DirectoryInfo outputDirectory, IProgress<double> progress = null)
     {
         try
         {
-            OutputFolderPath.Refresh();
+            using var archiveStream = archiveFile.OpenRead();
 
-            if (!OutputFolderPath.Exists) OutputFolderPath.Create();
+            var dllPath = Path.Join(DownloadCacheHelper.CachePath, "7z.dll");
+            
+            SevenZipBase.SetLibraryPath(dllPath);
 
-            using var archive = ZipArchive.Open(ArchivePath);
-            var totalEntries = archive.Entries.Where(entry => !entry.IsDirectory);
-            var processedEntries = 0;
+            var extractor = new SevenZipExtractor(archiveStream);
 
-            foreach (var entry in totalEntries)
+            extractor.Extracting += (_, args) =>
             {
-                entry.WriteToDirectory(OutputFolderPath.FullName, new ExtractionOptions()
-                {
-                    ExtractFullPath = true,
-                    Overwrite = true
-                });
+                progress.Report(args.PercentDone);
+            };
 
-                processedEntries++;
+            extractor.ExtractArchive(outputDirectory.FullName);
 
-                if (progress != null)
-                {
-                    progress.Report(Math.Floor(((double)processedEntries / totalEntries.Count()) * 100));
-                }
-            }
+            outputDirectory.Refresh();
 
-            OutputFolderPath.Refresh();
-
-            if (!OutputFolderPath.Exists)
+            if (!outputDirectory.Exists)
             {
-                return Result.FromError($"Failed to extract files: {ArchivePath.Name}");
+                return Result.FromError($"Failed to extract files: {archiveFile.Name}");
             }
 
             return Result.FromSuccess();

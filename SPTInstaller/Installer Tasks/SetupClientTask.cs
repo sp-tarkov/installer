@@ -28,6 +28,13 @@ public class SetupClientTask : InstallerTaskBase
 
         if (_data.PatchNeeded)
         {
+            SetStatus("Preparing 7z", "", null, ProgressStyle.Indeterminate);
+            
+            if (!FileHelper.StreamAssemblyResourceOut("7z.dll", Path.Join(DownloadCacheHelper.CachePath, "7z.dll")))
+            {
+                return Result.FromError("Failed to prepare 7z");
+            }
+            
             // extract patcher files
             SetStatus("Extrating Patcher", "", 0);
 

@@ -126,28 +126,39 @@ public static class FileHelper
         }
     }
 
-    public static void StreamAssemblyResourceOut(string resourceName, string outputFilePath)
+    public static bool StreamAssemblyResourceOut(string resourceName, string outputFilePath)
     {
-        var assembly = Assembly.GetExecutingAssembly();
-
-        FileInfo outputFile = new FileInfo(outputFilePath);
-
-        if (outputFile.Exists)
+        try
         {
-            outputFile.Delete();
+            var assembly = Assembly.GetExecutingAssembly();
+
+            FileInfo outputFile = new FileInfo(outputFilePath);
+
+            if (outputFile.Exists)
+            {
+                outputFile.Delete();
+            }
+
+            if (!outputFile.Directory.Exists)
+            {
+                Directory.CreateDirectory(outputFile.Directory.FullName);
+            }
+
+            var resName = assembly.GetManifestResourceNames().First(x => x.EndsWith(resourceName));
+
+            using (FileStream fs = File.Create(outputFilePath))
+            using (Stream s = assembly.GetManifestResourceStream(resName))
+            {
+                s.CopyTo(fs);
+            }
+
+            outputFile.Refresh();
+            return outputFile.Exists;
         }
-
-        if (!outputFile.Directory.Exists)
+        catch (Exception ex)
         {
-            Directory.CreateDirectory(outputFile.Directory.FullName);
-        }
-
-        var resName = assembly.GetManifestResourceNames().First(x => x.EndsWith(resourceName));
-
-        using (FileStream fs = File.Create(outputFilePath))
-        using (Stream s = assembly.GetManifestResourceStream(resName))
-        {
-            s.CopyTo(fs);
+            Log.Fatal(ex, $"Failed to stream resource out: {resourceName}");
+            return false;
         }
     }
 

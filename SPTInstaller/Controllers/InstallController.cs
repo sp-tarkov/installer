@@ -1,5 +1,4 @@
 ﻿using Serilog;
-using SharpCompress;
 using SPTInstaller.CustomControls;
 using SPTInstaller.Interfaces;
 using SPTInstaller.Models;
@@ -22,13 +21,18 @@ public class InstallController
     {
         _tasks = tasks;
         _preChecks = preChecks;
-        
-        _preChecks.ForEach(x => x.ReeevaluationRequested += (s, e) =>
+
+        foreach (var check in _preChecks)
         {
-            if (s is IPreCheck preCheck)
+            check.ReeevaluationRequested += (s, _) =>
             {
-                Log.Information($"{preCheck.Name}: requested re-evaluation");
+                if (s is not IPreCheck preCheck)
+                {
+                    return;
+                }
                 
+                Log.Information($"{preCheck.Name}: requested re-evaluation");
+
                 if (_installRunning)
                 {
                     Log.Warning("Install is running, re-evaluation denied (how did you do this?)");
@@ -36,8 +40,8 @@ public class InstallController
                 }
 
                 RecheckRequested?.Invoke(this, null);
-            }
-        });
+            };
+        }
     }
 
     public async Task<IResult> RunPreChecks()
@@ -45,7 +49,10 @@ public class InstallController
         Log.Information("-<>--<>- Running PreChecks -<>--<>-");
         var requiredResults = new List<IResult>();
 
-        _preChecks.ForEach(x => x.State = StatusSpinner.SpinnerState.Pending);
+        foreach (var check in _preChecks)
+        {
+            check.State = StatusSpinner.SpinnerState.Pending;
+        }
 
         foreach (var check in _preChecks)
         {

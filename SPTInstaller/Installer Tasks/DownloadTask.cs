@@ -35,7 +35,9 @@ public class DownloadTask : InstallerTaskBase
         var mirrorsList = JsonConvert.DeserializeObject<List<DownloadMirror>>(File.ReadAllText(file.FullName));
 
         if (mirrorsList == null)
+        {
             return Result.FromError("Failed to deserialize mirrors list");
+        }
 
         foreach (var mirror in mirrorsList)
         {
@@ -59,7 +61,7 @@ public class DownloadTask : InstallerTaskBase
     {
         SetStatus("Downloading Patcher", "Verifying cached patcher ...", progressStyle: ProgressStyle.Indeterminate);
 
-        if (DownloadCacheHelper.CheckCache("patcher.zip", _expectedPatcherHash, out var cacheFile))
+        if (DownloadCacheHelper.CheckCache("patcher", _expectedPatcherHash, out var cacheFile))
         {
             _data.PatcherZipInfo = cacheFile;
             Log.Information("Using cached file {fileName} - Hash: {hash}", _data.PatcherZipInfo.Name, _expectedPatcherHash);
@@ -106,7 +108,7 @@ public class DownloadTask : InstallerTaskBase
 
         SetStatus("Downloading SPT-AKI", _data.AkiReleaseDownloadLink, 0);
 
-        _data.AkiZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("sptaki.zip", _data.AkiReleaseDownloadLink, progress, _data.AkiReleaseHash);
+        _data.AkiZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("sptaki", _data.AkiReleaseDownloadLink, progress, _data.AkiReleaseHash);
 
         if (_data.AkiZipInfo == null)
         {
