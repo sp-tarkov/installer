@@ -44,6 +44,7 @@ internal class Program
 
 #if !TEST
         ServiceHelper.Register<PreCheckBase, NetFramework472PreCheck>();
+        ServiceHelper.Register<PreCheckBase, NetCore6PreCheck>();
         ServiceHelper.Register<PreCheckBase, Net8PreCheck>();
         ServiceHelper.Register<PreCheckBase, FreeSpacePreCheck>();
         ServiceHelper.Register<PreCheckBase, EftLauncherPreCheck>();
