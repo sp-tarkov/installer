@@ -22,6 +22,11 @@ public class MegaMirrorDownloader : MirrorDownloaderBase
         try
         {
             var file = new FileInfo(Path.Join(DownloadCacheHelper.CachePath, "patcher"));
+
+            if (file.Exists) 
+            {
+                file.Delete();
+            }
             
             await megaClient.DownloadFileAsync(new Uri(MirrorInfo.Link),
                 file.FullName, progress);
