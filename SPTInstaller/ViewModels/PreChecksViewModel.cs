@@ -19,12 +19,12 @@ namespace SPTInstaller.ViewModels;
 
 public class PreChecksViewModel : ViewModelBase
 {
-    private int _selectedPreCheckIndex;
+    private bool _hasPreCheckSelected;
 
-    public int SelectedPreCheckIndex
+    public bool HasPreCheckSelected
     {
-        get => _selectedPreCheckIndex;
-        set => this.RaiseAndSetIfChanged(ref _selectedPreCheckIndex, value);
+        get => _hasPreCheckSelected;
+        set => this.RaiseAndSetIfChanged(ref _hasPreCheckSelected, value);
     }
     
     public ObservableCollection<PreCheckBase> PreChecks { get; set; } = new(ServiceHelper.GetAll<PreCheckBase>());
@@ -209,7 +209,7 @@ public class PreChecksViewModel : ViewModelBase
                 {
                     precheck.IsSelected = true;
 
-                    SelectedPreCheckIndex = PreChecks.IndexOf(precheck);
+                    HasPreCheckSelected = true;
                     
                     continue;
                 }

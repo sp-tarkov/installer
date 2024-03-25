@@ -22,7 +22,7 @@
                 <!-- selected precheck details grid -->
                 <cc:PreCheckDetails Grid.Row="2" Grid.Column="1" 
                                     PreChecks="{Binding PreChecks}"
-                                    SelectedIndex="{Binding SelectedPreCheckIndex}"
+                                    HasSelection="{Binding HasPreCheckSelected}"
                                     />
                 
                 <!-- info card vertical separator -->

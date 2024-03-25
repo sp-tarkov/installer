@@ -21,12 +21,12 @@ public partial class PreCheckDetails : UserControl
         set => SetValue(PreChecksProperty, value);
     }
 
-    public static readonly StyledProperty<int> SelectedIndexProperty =
-        AvaloniaProperty.Register<PreCheckDetails, int>(nameof(SelectedIndex));
+    public static readonly StyledProperty<bool> HasSelectionProperty =
+        AvaloniaProperty.Register<PreCheckDetails, bool>(nameof(HasSelection));
 
-    public int SelectedIndex
+    public bool HasSelection
     {
-        get => GetValue(SelectedIndexProperty);
-        set => SetValue(SelectedIndexProperty, value);
+        get => GetValue(HasSelectionProperty);
+        set => SetValue(HasSelectionProperty, value);
     }
 }
