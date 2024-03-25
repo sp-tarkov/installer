@@ -63,7 +63,9 @@ public partial class WhyCacheThoughDialog : UserControl
 
                 if (!downloadsFolder.Exists)
                 {
-                    AdditionalInfo = "Could not get downloads folder :(";
+                    var message = "Could not get downloads folder :(";
+                    Log.Error($"[MV_0] {message}");
+                    AdditionalInfo = message;
                     AdditionalInfoColor = "red";
                     _movePatcherState = -1;
                     return;
@@ -73,13 +75,15 @@ public partial class WhyCacheThoughDialog : UserControl
 
                 if (_foundPatcher == null || !_foundPatcher.Exists)
                 {
-                    AdditionalInfo =
-                        "Could not find a patcher file in your downloads folder";
+                    var message = "Could not find a patcher file in your downloads folder";
+                    Log.Warning($"[MV_0] {message}");
+                    AdditionalInfo = message;
 
                     AdditionalInfoColor = "red";
                     return;
                 }
 
+                Log.Information($"[MV_0] Found patcher for move: {_foundPatcher.Name}");
                 AdditionalInfo = $"Click again to move the below patcher file to the cache folder\n{_foundPatcher?.Name ?? "-SOMETHING WENT WRONG-"}";
                 AdditionalInfoColor = "#FFC107";
                 _movePatcherState = 1;
@@ -89,7 +93,9 @@ public partial class WhyCacheThoughDialog : UserControl
                 {
                     var cacheFilePath = Path.Join(DownloadCacheHelper.CachePath, "patcher");
                     _foundPatcher?.MoveTo(cacheFilePath, true);
-                    AdditionalInfo = "Patch was moved into cache :D";
+                    var message = "Patcher was moved into cache :D";
+                    Log.Information($"[MV_1] {message}");
+                    AdditionalInfo = message;
                     AdditionalInfoColor = "ForestGreen";
                 }
                 catch (Exception ex)
@@ -98,6 +104,9 @@ public partial class WhyCacheThoughDialog : UserControl
                     AdditionalInfoColor = "red";
                     Log.Error(ex, "Failed to move downloaded patcher file into cache");
                 }
+                break;
+            default:
+                Log.Error("[MV_ ] Move state is broken :(");
                 break;
         }
     }
