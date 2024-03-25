@@ -1,6 +1,7 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
 using Avalonia;
 using Avalonia.Controls;
+using SPTInstaller.Models;
 
 namespace SPTInstaller.CustomControls;
 
@@ -11,57 +12,21 @@ public partial class PreCheckDetails : UserControl
         InitializeComponent();
     }
 
-    public static readonly StyledProperty<string> PreCheckNameProperty =
-        AvaloniaProperty.Register<PreCheckDetails, string>(nameof(PreCheckName));
+    public static readonly StyledProperty<ObservableCollection<PreCheckBase>> PreChecksProperty =
+        AvaloniaProperty.Register<PreCheckDetails, ObservableCollection<PreCheckBase>>(nameof(PreChecks));
 
-    public string PreCheckName
+    public ObservableCollection<PreCheckBase> PreChecks
     {
-        get => GetValue(PreCheckNameProperty);
-        set => SetValue(PreCheckNameProperty, value);
+        get => GetValue(PreChecksProperty);
+        set => SetValue(PreChecksProperty, value);
     }
 
-    public static readonly StyledProperty<string> DetailsProperty =
-        AvaloniaProperty.Register<PreCheckDetails, string>(nameof(Details));
+    public static readonly StyledProperty<int> SelectedIndexProperty =
+        AvaloniaProperty.Register<PreCheckDetails, int>(nameof(SelectedIndex));
 
-    public string Details
+    public int SelectedIndex
     {
-        get => GetValue(DetailsProperty);
-        set => SetValue(DetailsProperty, value);
-    }
-
-    public static readonly StyledProperty<string> ActionButtonTextProperty =
-        AvaloniaProperty.Register<PreCheckDetails, string>(nameof(ActionButtonText));
-
-    public string ActionButtonText
-    {
-        get => GetValue(ActionButtonTextProperty);
-        set => SetValue(ActionButtonTextProperty, value);
-    }
-
-    public static readonly StyledProperty<ICommand> ActionCommandProperty =
-        AvaloniaProperty.Register<PreCheckDetails, ICommand>(nameof(ActionCommand));
-
-    public ICommand ActionCommand
-    {
-        get => GetValue(ActionCommandProperty);
-        set => SetValue(ActionCommandProperty, value);
-    }
-
-    public static readonly StyledProperty<bool> ShowActionProperty =
-        AvaloniaProperty.Register<PreCheckDetails, bool>(nameof(ShowAction));
-
-    public bool ShowAction
-    {
-        get => GetValue(ShowActionProperty);
-        set => SetValue(ShowActionProperty, value);
-    }
-
-    public static readonly StyledProperty<string> BarColorProperty =
-        AvaloniaProperty.Register<PreCheckDetails, string>(nameof(BarColor));
-
-    public string BarColor
-    {
-        get => GetValue(BarColorProperty);
-        set => SetValue(BarColorProperty, value);
+        get => GetValue(SelectedIndexProperty);
+        set => SetValue(SelectedIndexProperty, value);
     }
 }
