@@ -69,7 +69,7 @@ public partial class WhyCacheThoughDialog : UserControl
                     return;
                 }
 
-                _foundPatcher = downloadsFolder.GetFiles("Patcher_*").FirstOrDefault();
+                _foundPatcher = downloadsFolder.GetFiles("Patcher_*").OrderByDescending(p => p.CreationTime).FirstOrDefault();
 
                 if (_foundPatcher == null || !_foundPatcher.Exists)
                 {
