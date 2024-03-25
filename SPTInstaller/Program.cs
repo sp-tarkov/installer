@@ -11,6 +11,7 @@ using SPTInstaller.Models;
 using System.Linq;
 using System.Reflection;
 using Serilog;
+using SPTInstaller.CustomControls;
 
 namespace SPTInstaller;
 

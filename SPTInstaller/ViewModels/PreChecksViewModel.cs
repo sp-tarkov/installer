@@ -19,9 +19,12 @@ namespace SPTInstaller.ViewModels;
 
 public class PreChecksViewModel : ViewModelBase
 {
+    public PreCheckDetailInfo SelectedPreCheck { get; set; } = new();
+    
     public ObservableCollection<PreCheckBase> PreChecks { get; set; } = new(ServiceHelper.GetAll<PreCheckBase>());
+    
+    public ICommand SelectPreCheckCommand { get; set; }
     public ICommand StartInstallCommand { get; set; }
-    public ICommand ShowDetailedViewCommand { get; set; }
 
     public ICommand UpdateInstallerCommand { get; set; }
 
@@ -61,7 +64,7 @@ public class PreChecksViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _allowInstall, value);
     }
 
-    private bool _allowDetailsButton = false; 
+    private bool _allowDetailsButton = false;
     public bool AllowDetailsButton
     {
         get => _allowDetailsButton;
@@ -192,18 +195,49 @@ public class PreChecksViewModel : ViewModelBase
             }
         });
 
+        SelectPreCheckCommand = ReactiveCommand.Create(async(PreCheckBase check) =>
+        {
+            foreach (var precheck in PreChecks)
+            {
+                if (check.Id == precheck.Id)
+                {
+                    precheck.IsSelected = true;
+                    SelectedPreCheck.Name = precheck.Name;
+                    SelectedPreCheck.Details = precheck.PreCheckDetails;
+                    SelectedPreCheck.ActionButtonText = precheck.ActionButtonText;
+                    SelectedPreCheck.ActionButtonCommand = precheck.ActionButtonCommand;
+                    SelectedPreCheck.ShowActionButton = precheck.ActionButtonIsVisible;
+
+                    switch (precheck.State)
+                    {
+                        case StatusSpinner.SpinnerState.Pending:
+                            SelectedPreCheck.BarColor = "gray";
+                            break;
+                        case StatusSpinner.SpinnerState.Running:
+                            SelectedPreCheck.BarColor = "dodgerblue";
+                            break;
+                        case StatusSpinner.SpinnerState.OK:
+                            SelectedPreCheck.BarColor = "forestgreen";
+                            break;
+                        case StatusSpinner.SpinnerState.Warning:
+                            SelectedPreCheck.BarColor = "gold";
+                            break;
+                        case StatusSpinner.SpinnerState.Error:
+                            SelectedPreCheck.BarColor = "red";
+                            break;
+                    }
+                    
+                    continue;
+                }
+
+                precheck.IsSelected = false;
+            }
+        });
+
         StartInstallCommand = ReactiveCommand.Create(async () =>
         {
             UpdateInfo.ShowCard = false;
             NavigateTo(new InstallViewModel(HostScreen));
-        });
-
-        ShowDetailedViewCommand = ReactiveCommand.Create(() => 
-        {
-            UpdateInfo.ShowCard = false;
-            Log.Logger.Information("Opening Detailed PreCheck View");
-            installer.RecheckRequested -= ReCheckRequested;
-            NavigateTo(new DetailedPreChecksViewModel(HostScreen, Debugging));
         });
 
         UpdateInstallerCommand = ReactiveCommand.Create(async () =>
