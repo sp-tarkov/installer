@@ -176,15 +176,16 @@ public static class FileHelper
         var problemNames = new Dictionary<string, PathCheckType>()
         {
             { "Desktop", PathCheckType.EndsWith },
-            { "Downloads", PathCheckType.EndsWith },
-            { "Documents", PathCheckType.EndsWith},
+            { "Documents", PathCheckType.EndsWith },
+            { "scoped_dir", PathCheckType.Contains },
+            { "Downloads", PathCheckType.Contains },
             { "OneDrive", PathCheckType.Contains },
             { "NextCloud", PathCheckType.Contains },
             { "DropBox", PathCheckType.Contains },
             { "Google", PathCheckType.Contains },
-            { "Program Files", PathCheckType.Contains},
-            { "Program Files (x86)", PathCheckType.Contains},
-            { "Drive Root", PathCheckType.DriveRoot}
+            { "Program Files", PathCheckType.Contains },
+            { "Program Files (x86)", PathCheckType.Contains },
+            { "Drive Root", PathCheckType.DriveRoot }
         };
 
         foreach (var name in  problemNames)
