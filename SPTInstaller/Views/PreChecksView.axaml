@@ -25,7 +25,7 @@
                                          Details="{Binding SelectedPreCheck.Details}"
                                          ActionButtonText="{Binding SelectedPreCheck.ActionButtonText}"
                                          ActionCommand="{Binding SelectedPreCheck.ActionButtonCommand}"
-                                         ShowAction="{Binding SelectedPreCheck.ActionButtonIsVisible}"
+                                         ShowAction="{Binding SelectedPreCheck.ShowActionButton}"
                                          BarColor="{Binding SelectedPreCheck.BarColor}"
                                          />
                 
