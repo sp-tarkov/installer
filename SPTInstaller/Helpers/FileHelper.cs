@@ -175,9 +175,9 @@ public static class FileHelper
 
         var problemNames = new Dictionary<string, PathCheckType>()
         {
-            { "Desktop", PathCheckType.EndsWith },
-            { "Downloads", PathCheckType.EndsWith },
-            { "Documents", PathCheckType.EndsWith},
+            { "Desktop", PathCheckType.Contains },
+            { "Downloads", PathCheckType.Contains },
+            { "Documents", PathCheckType.EndsWith },
             { "OneDrive", PathCheckType.Contains },
             { "NextCloud", PathCheckType.Contains },
             { "DropBox", PathCheckType.Contains },
