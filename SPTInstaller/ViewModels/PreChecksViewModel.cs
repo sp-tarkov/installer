@@ -19,7 +19,13 @@ namespace SPTInstaller.ViewModels;
 
 public class PreChecksViewModel : ViewModelBase
 {
-    public PreCheckDetailInfo SelectedPreCheck { get; set; } = new();
+    private bool _hasPreCheckSelected;
+
+    public bool HasPreCheckSelected
+    {
+        get => _hasPreCheckSelected;
+        set => this.RaiseAndSetIfChanged(ref _hasPreCheckSelected, value);
+    }
     
     public ObservableCollection<PreCheckBase> PreChecks { get; set; } = new(ServiceHelper.GetAll<PreCheckBase>());
     
@@ -202,30 +208,8 @@ public class PreChecksViewModel : ViewModelBase
                 if (check.Id == precheck.Id)
                 {
                     precheck.IsSelected = true;
-                    SelectedPreCheck.Name = precheck.Name;
-                    SelectedPreCheck.Details = precheck.PreCheckDetails;
-                    SelectedPreCheck.ActionButtonText = precheck.ActionButtonText;
-                    SelectedPreCheck.ActionButtonCommand = precheck.ActionButtonCommand;
-                    SelectedPreCheck.ShowActionButton = precheck.ActionButtonIsVisible;
 
-                    switch (precheck.State)
-                    {
-                        case StatusSpinner.SpinnerState.Pending:
-                            SelectedPreCheck.BarColor = "gray";
-                            break;
-                        case StatusSpinner.SpinnerState.Running:
-                            SelectedPreCheck.BarColor = "dodgerblue";
-                            break;
-                        case StatusSpinner.SpinnerState.OK:
-                            SelectedPreCheck.BarColor = "forestgreen";
-                            break;
-                        case StatusSpinner.SpinnerState.Warning:
-                            SelectedPreCheck.BarColor = "gold";
-                            break;
-                        case StatusSpinner.SpinnerState.Error:
-                            SelectedPreCheck.BarColor = "red";
-                            break;
-                    }
+                    HasPreCheckSelected = true;
                     
                     continue;
                 }
