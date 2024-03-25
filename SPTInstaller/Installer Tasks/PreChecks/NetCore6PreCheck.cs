@@ -33,7 +33,7 @@ public class NetCore6PreCheck : PreCheckBase
 
         try
         {
-            var result = ProcessHelper.RunAndReadProcessOutputs("dotnet", "--list-runtimes");
+            var result = ProcessHelper.RunAndReadProcessOutputs(@"C:\Program Files\dotnet\dotnet.exe", "--list-runtimes");
 
             if (!result.Succeeded)
             {

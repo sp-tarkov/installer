@@ -16,6 +16,13 @@ public abstract class PreCheckBase : ReactiveObject, IPreCheck
         set => this.RaiseAndSetIfChanged(ref _id, value);
     }
 
+    private bool _isSelected;
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => this.RaiseAndSetIfChanged(ref _isSelected, value);
+    }
+
     private string _name;
     public string Name
     {
