@@ -66,13 +66,16 @@ public static class DownloadCacheHelper
             if (FileHashHelper.CheckHash(cacheFile, expectedHash))
             {
                 fileInCache = cacheFile;
+                Log.Information("Hashes MATCH");
                 return true;
             }
 
+            Log.Warning("Hashes DO NOT MATCH");
             return false;
         }
-        catch
+        catch(Exception ex)
         {
+            Log.Error(ex, "Something went wrong during hashing");
             return false;
         }
     }
