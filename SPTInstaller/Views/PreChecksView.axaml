@@ -20,14 +20,10 @@
                        />
                 
                 <!-- selected precheck details grid -->
-                <cc:PreCheckDetails Grid.Row="2" Grid.Column="1"
-                                         PreCheckName="{Binding SelectedPreCheck.Name}"
-                                         Details="{Binding SelectedPreCheck.Details}"
-                                         ActionButtonText="{Binding SelectedPreCheck.ActionButtonText}"
-                                         ActionCommand="{Binding SelectedPreCheck.ActionButtonCommand}"
-                                         ShowAction="{Binding SelectedPreCheck.ShowActionButton}"
-                                         BarColor="{Binding SelectedPreCheck.BarColor}"
-                                         />
+                <cc:PreCheckDetails Grid.Row="2" Grid.Column="1" 
+                                    PreChecks="{Binding PreChecks}"
+                                    SelectedIndex="{Binding SelectedPreCheckIndex}"
+                                    />
                 
                 <!-- info card vertical separator -->
                 <Rectangle Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" VerticalAlignment="Stretch"
