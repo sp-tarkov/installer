@@ -1,0 +1,27 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SPTInstaller.CustomControls.UpdateButton">
+    <UserControl.Styles>
+        <StyleInclude Source="../Assets/Styles.axaml"/>
+    </UserControl.Styles>
+    
+    <Panel>
+        
+    <StackPanel Orientation="Horizontal" IsVisible="False" IsEnabled="False">
+        <Button Content="Update Installer to v2.56" CornerRadius="20 0 0 20" Classes="yellow"/>
+        
+        <Button Content="Not now" CornerRadius="0 20 20 0" />
+    </StackPanel>
+        
+    <Panel IsVisible="True" IsEnabled="True">
+        <ProgressBar CornerRadius="20" VerticalAlignment="Stretch"
+                     Value="10" IsIndeterminate="True"
+        />
+        <Label Content="Downloading v2.56" VerticalAlignment="Center" HorizontalAlignment="Center"
+               Foreground="Black" FontWeight="SemiBold"/>
+    </Panel>
+    </Panel>
+</UserControl>

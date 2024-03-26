@@ -75,6 +75,7 @@
         
         <!-- Start install button -->
         <Button Grid.Column="2" Grid.Row="3" Padding="20 10"
+                IsVisible="False"
                 FontSize="15" FontWeight="SemiBold"
                 Classes="yellow"
                 IsEnabled="{Binding AllowInstall}"
@@ -87,16 +88,19 @@
             </StackPanel>
         </Button>
         
-        <cc:UpdateInfoCard Grid.Row="1" Grid.RowSpan="5" Grid.ColumnSpan="5" Padding="10"
-                           VerticalAlignment="Center" HorizontalAlignment="Center"
-                           InfoText="{Binding UpdateInfo.UpdateInfoText}"
-                           ShowUpdateCard="{Binding UpdateInfo.ShowCard}"
-                           NotNowCommand="{Binding DismissUpdateCommand}"
-                           UpdateInstallerCommand="{Binding UpdateInstallerCommand}"
-                           Updating="{Binding UpdateInfo.Updating}"
-                           DownloadProgress="{Binding UpdateInfo.DownloadProgress}"
-                           IndeterminateProgress="{Binding UpdateInfo.CheckingForUpdates}"
-                           UpdateAvailable="{Binding UpdateInfo.UpdateAvailable}"
-        />
+        <!-- Update installer button -->
+        <cc:UpdateButton Grid.Column="2" Grid.Row="3" Padding="20 10"/>
+        
+        <!-- <cc:UpdateInfoCard Grid.Row="1" Grid.RowSpan="5" Grid.ColumnSpan="5" Padding="10" -->
+        <!--                    VerticalAlignment="Center" HorizontalAlignment="Center" -->
+        <!--                    InfoText="{Binding UpdateInfo.UpdateInfoText}" -->
+        <!--                    ShowUpdateCard="{Binding UpdateInfo.ShowCard}" -->
+        <!--                    NotNowCommand="{Binding DismissUpdateCommand}" -->
+        <!--                    UpdateInstallerCommand="{Binding UpdateInstallerCommand}" -->
+        <!--                    Updating="{Binding UpdateInfo.Updating}" -->
+        <!--                    DownloadProgress="{Binding UpdateInfo.DownloadProgress}" -->
+        <!--                    IndeterminateProgress="{Binding UpdateInfo.CheckingForUpdates}" -->
+        <!--                    UpdateAvailable="{Binding UpdateInfo.UpdateAvailable}" -->
+        <!-- /> -->
     </Grid>
 </UserControl>
