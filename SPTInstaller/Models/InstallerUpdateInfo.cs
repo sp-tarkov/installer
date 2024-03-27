@@ -20,11 +20,11 @@ public class InstallerUpdateInfo : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _updateInfoText, value);
     }
 
-    private bool _showCard = false;
-    public bool ShowCard
+    private bool _show = false;
+    public bool Show
     {
-        get => _showCard;
-        set => this.RaiseAndSetIfChanged(ref _showCard, value);
+        get => _show;
+        set => this.RaiseAndSetIfChanged(ref _show, value);
     }
 
     private bool _updating = false;
@@ -89,7 +89,7 @@ public class InstallerUpdateInfo : ReactiveObject
 
     private async Task<string> DownloadNewInstaller()
     {
-        UpdateInfoText = $"Downloading new installer v{_newVersion}";
+        UpdateInfoText = $"Downloading installer v{_newVersion}";
 
         var progress = new Progress<double>(x => DownloadProgress = (int)x);
 
@@ -112,21 +112,7 @@ public class InstallerUpdateInfo : ReactiveObject
         }
         
         UpdateInfoText = infoText;
-
-        if (!updateAvailable)
-        {
-            Task.Run(async () =>
-            {
-                // delay card dismiss
-                await Task.Delay(TimeSpan.FromSeconds(2));
-                ShowCard = updateAvailable;
-            });
-        }
-        else
-        {
-            ShowCard = updateAvailable;
-        }
-
+        Show = updateAvailable;
         CheckingForUpdates = false;
         UpdateAvailable = updateAvailable;
     }
@@ -137,7 +123,7 @@ public class InstallerUpdateInfo : ReactiveObject
             return;
 
         UpdateInfoText = "Checking for installer updates";
-        ShowCard = true;
+        Show = true;
         CheckingForUpdates = true;
 
         try
@@ -172,7 +158,7 @@ public class InstallerUpdateInfo : ReactiveObject
 
             NewInstallerUrl = latest.Assets[0].BrowserDownloadUrl;
 
-            EndCheck($"Update available, version {latestVersion}", true);
+            EndCheck($"Update available: v{latestVersion}", true);
 
             return;
         }

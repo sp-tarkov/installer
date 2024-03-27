@@ -8,10 +8,12 @@
         <entry key="SPTInstaller/CustomControls/CacheInfo.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/DetailedPreCheckItem.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/Dialogs/WhyCacheThoughDialog.axaml" value="SPTInstaller/SPTInstaller.csproj" />
+        <entry key="SPTInstaller/CustomControls/MainInstallerButton.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/PreCheckDetails.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/PreCheckItem.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/ProgressableTaskItem.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/SPTInstallButton.axaml" value="SPTInstaller/SPTInstaller.csproj" />
+        <entry key="SPTInstaller/CustomControls/UpdateButton.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/UpdateInfoCard.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/Views/DetailedPreChecksView.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/Views/MainWindow.axaml" value="SPTInstaller/SPTInstaller.csproj" />

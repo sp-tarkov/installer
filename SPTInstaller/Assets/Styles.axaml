@@ -123,16 +123,13 @@
 	<!-- SourceRef: https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Themes.Fluent/Controls/Button.xaml -->
 	<Style Selector="Button">
 		<Setter Property="Background" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
-		<Setter Property="Foreground" Value="{StaticResource AKI_Background_Dark}"/>
-	</Style>
-
-	<Style Selector="Button:pointerover">
-		<Setter Property="FontWeight" Value="SemiBold"/>
+		<Setter Property="Foreground" Value="{StaticResource AKI_White}"/>
 	</Style>
 
 	<Style Selector="Button:pointerover /template/ ContentPresenter">
-		<Setter Property="Background" Value="{StaticResource AKI_Background_Light}"/>
-		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_Yellow}"/>
+		<Setter Property="Background" Value="{StaticResource AKI_LightGrayBlue}"/>
+		<Setter Property="BorderBrush" Value="{StaticResource AKI_LightGrayBlue}"/>
+        <Setter Property="Foreground" Value="{StaticResource AKI_White}"/>
 		<Setter Property="BorderThickness" Value="1"/>
 	</Style>
 
@@ -159,6 +156,7 @@
 	<Style Selector="Button.yellow:pointerover /template/ ContentPresenter">
 		<Setter Property="Background" Value="Gold"/>
 		<Setter Property="BorderBrush" Value="{StaticResource AKI_Brush_DarkGrayBlue}"/>
+        <Setter Property="Foreground" Value="{StaticResource AKI_Background_Dark}"/>
 		<Setter Property="BorderThickness" Value="1"/>
 	</Style>
 

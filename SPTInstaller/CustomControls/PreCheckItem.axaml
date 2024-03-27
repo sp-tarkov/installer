@@ -38,8 +38,7 @@
         </Style>
          
         <Style Selector="Button.selected">
-            <Setter Property="Background" Value="{StaticResource AKI_Brush_DarkGrayBlue}" />
-            <Setter Property="BorderBrush" Value="{StaticResource AKI_Yellow}"/>
+            <Setter Property="Background" Value="{StaticResource AKI_Brush_LightGrayBlue}" />
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
 	</UserControl.Styles>
