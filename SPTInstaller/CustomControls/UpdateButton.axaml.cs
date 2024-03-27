@@ -20,13 +20,13 @@ public partial class UpdateButton : UserControl
         set => SetValue(InfoTextProperty, value);
     }
 
-    public static readonly StyledProperty<bool> ShowProperty = AvaloniaProperty.Register<UpdateButton, bool>(
-        "Show");
+    public static readonly StyledProperty<bool> CheckingForUpdateProperty = AvaloniaProperty.Register<UpdateButton, bool>(
+        "CheckingForUpdate");
 
-    public bool Show
+    public bool CheckingForUpdate
     {
-        get => GetValue(ShowProperty);
-        set => SetValue(ShowProperty, value);
+        get => GetValue(CheckingForUpdateProperty);
+        set => SetValue(CheckingForUpdateProperty, value);
     }
 
     public static readonly StyledProperty<ICommand> DismissCommandProperty = AvaloniaProperty.Register<UpdateButton, ICommand>(

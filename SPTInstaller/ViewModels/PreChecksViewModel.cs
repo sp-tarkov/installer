@@ -220,7 +220,7 @@ public class PreChecksViewModel : ViewModelBase
 
         StartInstallCommand = ReactiveCommand.Create(async () =>
         {
-            UpdateInfo.ShowCard = false;
+            UpdateInfo.Show = false;
             NavigateTo(new InstallViewModel(HostScreen));
         });
 
@@ -233,7 +233,7 @@ public class PreChecksViewModel : ViewModelBase
 
         DismissUpdateCommand = ReactiveCommand.Create(() =>
         {
-            UpdateInfo.ShowCard = false;
+            UpdateInfo.Show = false;
         });
 
 
