@@ -36,7 +36,7 @@ public class InitializationTask : InstallerTaskBase
 
         if (File.Exists(Path.Join(_data.TargetInstallPath, "EscapeFromTarkov.exe")))
         {
-            return Result.FromError("Installer is located in a folder that has existing game files. Please make sure the installer is in a fresh folder as per the guide");
+            return Result.FromError("Installer is located in a folder that has existing game files. Please make sure the installer is in an empty folder as per the guide");
         }
 
         return Result.FromSuccess($"Current Game Version: {_data.OriginalGameVersion}");
