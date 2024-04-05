@@ -33,7 +33,8 @@ public class Net8PreCheck : PreCheckBase
 
         try
         {
-            var result = ProcessHelper.RunAndReadProcessOutputs(@"C:\Program Files\dotnet\dotnet.exe", "--list-runtimes");
+            var programFiles = Environment.ExpandEnvironmentVariables("%ProgramW6432%");
+            var result = ProcessHelper.RunAndReadProcessOutputs($@"{programFiles}\dotnet\dotnet.exe", "--list-runtimes");
 
             if (!result.Succeeded)
             {
