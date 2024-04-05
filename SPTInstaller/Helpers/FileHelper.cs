@@ -162,54 +162,47 @@ public static class FileHelper
         }
     }
 
-    private enum PathCheckType
+    public static bool CheckPathForProblemLocations(string path, out PathCheck failedCheck)
     {
-        EndsWith = 0,
-        Contains = 1,
-        DriveRoot = 2
-    }
+        failedCheck = new();
 
-    public static bool CheckPathForProblemLocations(string path, out string detectedName)
-    {
-        detectedName = "";
-
-        var problemNames = new Dictionary<string, PathCheckType>()
+        var problemPaths = new List<PathCheck>()
         {
-            { "Documents", PathCheckType.EndsWith },
-            { "Desktop", PathCheckType.Contains },
-            { "scoped_dir", PathCheckType.Contains },
-            { "Downloads", PathCheckType.Contains },
-            { "OneDrive", PathCheckType.Contains },
-            { "NextCloud", PathCheckType.Contains },
-            { "DropBox", PathCheckType.Contains },
-            { "Google", PathCheckType.Contains },
-            { "Program Files", PathCheckType.Contains },
-            { "Program Files (x86)", PathCheckType.Contains },
-            { "Drive Root", PathCheckType.DriveRoot }
+            new("Documents", PathCheckType.EndsWith, PathCheckAction.Warn),
+            new("Desktop", PathCheckType.Contains, PathCheckAction.Warn),
+            new("scoped_dir", PathCheckType.Contains, PathCheckAction.Deny),
+            new("Downloads", PathCheckType.Contains, PathCheckAction.Deny),
+            new("OneDrive", PathCheckType.Contains, PathCheckAction.Deny),
+            new("NextCloud", PathCheckType.Contains, PathCheckAction.Warn),
+            new("DropBox", PathCheckType.Contains, PathCheckAction.Warn),
+            new("Google", PathCheckType.Contains, PathCheckAction.Warn),
+            new("Program Files", PathCheckType.Contains, PathCheckAction.Deny),
+            new("Program Files (x86", PathCheckType.Contains, PathCheckAction.Deny),
+            new("Drive Root", PathCheckType.DriveRoot, PathCheckAction.Deny)
         };
 
-        foreach (var name in  problemNames)
+        foreach (var check in  problemPaths)
         {
-            switch (name.Value)
+            switch (check.CheckType)
             {
                 case PathCheckType.EndsWith:
-                    if (path.ToLower().EndsWith(name.Key.ToLower()))
+                    if (path.ToLower().EndsWith(check.Target.ToLower()))
                     {
-                        detectedName = name.Key;
+                        failedCheck = check;
                         return true;
                     }
                     break;
                 case PathCheckType.Contains:
-                    if (path.ToLower().Contains(name.Key.ToLower()))
+                    if (path.ToLower().Contains(check.Target.ToLower()))
                     {
-                        detectedName = name.Key;
+                        failedCheck = check;
                         return true;
                     }
                     break;
                 case PathCheckType.DriveRoot:
                     if (Regex.Match(path.ToLower(), @"^\w:(\\|\/)$").Success)
                     {
-                        detectedName = name.Key;
+                        failedCheck = check;
                         return true;
                     }
                     break;

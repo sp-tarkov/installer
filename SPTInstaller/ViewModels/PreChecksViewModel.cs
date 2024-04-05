@@ -164,19 +164,38 @@ public class PreChecksViewModel : ViewModelBase
 
         Task.Run(async () =>
         {
-            if (FileHelper.CheckPathForProblemLocations(InstallPath, out var detectedName))
+            if (FileHelper.CheckPathForProblemLocations(InstallPath, out var failedCheck ))
             {
-                await Dispatcher.UIThread.InvokeAsync(async () =>
-                {
-                    Log.Warning("Problem folder detected, confirming install path ...");
-                    var confirmation = await DialogHost.Show(new ConfirmationDialog($"We suspect you may be installing into a problematic folder: {detectedName}.\nYou might want to consider installing somewhere else to avoid issues.\n\nAre you sure you want to install to this path?\n{InstallPath}"));
-
-                    if (confirmation == null || !bool.TryParse(confirmation.ToString(), out var confirm) || !confirm)
+                    switch (failedCheck.CheckAction)
                     {
-                        Log.Information("User declined install path, exiting");
-                        Environment.Exit(0);
+                        case PathCheckAction.Warn:
+                        {
+                            await Dispatcher.UIThread.InvokeAsync(async () =>
+                            {
+                                Log.Warning("Problem path detected, confirming install path ...");
+                                var confirmation = await DialogHost.Show(new ConfirmationDialog(
+                                    $"We suspect you may be installing into a problematic folder: {failedCheck.Target}.\nYou might want to consider installing somewhere else to avoid issues.\n\nAre you sure you want to install to this path?\n{InstallPath}"));
+
+                                if (confirmation == null || !bool.TryParse(confirmation.ToString(), out var confirm) ||
+                                    !confirm)
+                                {
+                                    Log.Information("User declined install path, exiting");
+                                    Environment.Exit(0);
+                                }
+                            });
+                            
+                            break;
+                        }
+                        
+                        case PathCheckAction.Deny:
+                        {
+                            Log.Error("Problem path detected, install denied");
+                            NavigateTo(new MessageViewModel(HostScreen, Result.FromError($"We suspect you may be installing into a problematic folder: {failedCheck.Target}.\nWe won't be letting you install here. Please move the installer to another folder.\nSuggestion: a folder under your drive root, such as 'C:\\spt\\'\nDenied Path: {InstallPath}")));
+                            break;
+                        }
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
-                });
 
                 Log.Information("User accepted install path");
             }
