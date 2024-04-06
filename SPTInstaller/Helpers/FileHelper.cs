@@ -169,13 +169,14 @@ public static class FileHelper
         var problemPaths = new List<PathCheck>()
         {
             new("Documents", PathCheckType.EndsWith, PathCheckAction.Warn),
+            new("Desktop", PathCheckType.EndsWith, PathCheckAction.Deny),
             new("Desktop", PathCheckType.Contains, PathCheckAction.Warn),
             new("scoped_dir", PathCheckType.Contains, PathCheckAction.Deny),
             new("Downloads", PathCheckType.Contains, PathCheckAction.Deny),
             new("OneDrive", PathCheckType.Contains, PathCheckAction.Deny),
-            new("NextCloud", PathCheckType.Contains, PathCheckAction.Warn),
-            new("DropBox", PathCheckType.Contains, PathCheckAction.Warn),
-            new("Google", PathCheckType.Contains, PathCheckAction.Warn),
+            new("NextCloud", PathCheckType.Contains, PathCheckAction.Deny),
+            new("DropBox", PathCheckType.Contains, PathCheckAction.Deny),
+            new("Google", PathCheckType.Contains, PathCheckAction.Deny),
             new("Program Files", PathCheckType.Contains, PathCheckAction.Deny),
             new("Program Files (x86", PathCheckType.Contains, PathCheckAction.Deny),
             new("Drive Root", PathCheckType.DriveRoot, PathCheckAction.Deny)
