@@ -170,6 +170,7 @@ public static class FileHelper
         {
             new("Documents", PathCheckType.EndsWith, PathCheckAction.Warn),
             new("Desktop", PathCheckType.EndsWith, PathCheckAction.Deny),
+            new("Battlestate Games", PathCheckType.Contains, PathCheckAction.Deny),
             new("Desktop", PathCheckType.Contains, PathCheckAction.Warn),
             new("scoped_dir", PathCheckType.Contains, PathCheckAction.Deny),
             new("Downloads", PathCheckType.Contains, PathCheckAction.Deny),
