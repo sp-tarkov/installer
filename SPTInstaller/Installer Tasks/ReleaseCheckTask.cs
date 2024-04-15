@@ -60,7 +60,7 @@ public class ReleaseCheckTask : InstallerTaskBase
 
             if (comparePatchToAki == null && patchNeedCheck)
             {
-                return Result.FromError("No patcher available for your version. A patcher is usually created within 24 hours of an EFT update.\nYou can join our discord and watch the dev-webhooks channel for '[SPT-AKI/Downgrade-Patches] Release created' to know when a patcher is available");
+                return Result.FromError("No patcher available for your version.\nA patcher is usually created within 24 hours of an EFT update.");
             }
 
             _data.PatchNeeded = patchNeedCheck;
