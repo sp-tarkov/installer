@@ -7,6 +7,7 @@ using SPTInstaller.Helpers;
 
 namespace SPTInstaller.Installer_Tasks.PreChecks;
 
+[Obsolete("No longer needed, but keeping around for now just in case. Can be removed from code after 7/1/2024 if no issues are found")]
 public class NetCore6PreCheck : PreCheckBase
 {
     public NetCore6PreCheck() : base(".Net Core 6 Desktop Runtime", true)
