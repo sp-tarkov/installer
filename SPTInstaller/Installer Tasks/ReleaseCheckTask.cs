@@ -5,7 +5,7 @@ using SPTInstaller.Models;
 using System.Threading.Tasks;
 using SPTInstaller.Helpers;
 using Newtonsoft.Json;
-using SPTInstaller.Models.Releases;
+using SPTInstaller.Models.ReleaseInfo;
 
 namespace SPTInstaller.Installer_Tasks;
 
@@ -27,7 +27,7 @@ public class ReleaseCheckTask : InstallerTaskBase
             SetStatus("Checking SPT Releases", "", null, ProgressStyle.Indeterminate);
 
             var progress = new Progress<double>((d) => { SetStatus(null, null, (int)Math.Floor(d)); });
-            var akiReleaseInfoFile = await DownloadCacheHelper.DownloadFileAsync("release.json", "https://spt-releases.modd.in/release.json", progress);
+            var akiReleaseInfoFile = await DownloadCacheHelper.DownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl, progress);
             if (akiReleaseInfoFile == null)
             {
                 return Result.FromError("Failed to download release metadata");

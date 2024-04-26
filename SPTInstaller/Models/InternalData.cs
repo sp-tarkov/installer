@@ -1,4 +1,4 @@
-﻿using SPTInstaller.Models.Releases;
+﻿using SPTInstaller.Models.ReleaseInfo;
 
 namespace SPTInstaller.Models;
 
@@ -32,7 +32,7 @@ public class InternalData
     /// <summary>
     /// The release information from release.json
     /// </summary>
-    public ReleaseInfo ReleaseInfo { get; set; }
+    public ReleaseInfo.ReleaseInfo ReleaseInfo { get; set; }
 
     /// <summary>
     /// The release download link for the patcher mirror list
