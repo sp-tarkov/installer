@@ -10,6 +10,7 @@ public static class DownloadCacheHelper
     private static HttpClient _httpClient = new() { Timeout = TimeSpan.FromHours(1) };
 
     public static string CachePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "spt-installer/cache");
+    public static string ReleaseMirrorUrl = "https://spt-releases.modd.in/release.json";
 
     public static string GetCacheSizeText()
     {

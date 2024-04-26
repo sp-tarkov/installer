@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using DialogHostAvalonia;
 using Gitea.Api;
 using Gitea.Client;
+using Newtonsoft.Json;
 using ReactiveUI;
 using Serilog;
 using SPTInstaller.Controllers;
@@ -14,6 +15,7 @@ using SPTInstaller.CustomControls;
 using SPTInstaller.CustomControls.Dialogs;
 using SPTInstaller.Helpers;
 using SPTInstaller.Models;
+using SPTInstaller.Models.ReleaseInfo;
 
 namespace SPTInstaller.ViewModels;
 
@@ -267,27 +269,25 @@ public class PreChecksViewModel : ViewModelBase
             // get latest spt version
             InstallButtonText = "Getting latest release ...";
             InstallButtonCheckState = StatusSpinner.SpinnerState.Running;
-            
-            var repo = new RepositoryApi(Configuration.Default);
-            var akiRepoReleases = await repo.RepoListReleasesAsync("SPT-AKI", "Stable-releases");
 
-            if (akiRepoReleases == null || akiRepoReleases.Count == 0)
+            var progress = new Progress<double>((d) => { });
+            var akiReleaseInfoFile = await DownloadCacheHelper.DownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl, progress);
+            if (akiReleaseInfoFile == null)
             {
-                InstallButtonText = "Could not get SPT releases from repo";
+                InstallButtonText = "Could not get SPT release metadata";
                 InstallButtonCheckState = StatusSpinner.SpinnerState.Error;
                 return;
             }
-            
-            var latestAkiRelease = akiRepoReleases.FindAll(x => !x.Prerelease)[0];
 
-            if (latestAkiRelease == null)
+            var akiReleaseInfo = JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(akiReleaseInfoFile.FullName));
+            if (akiReleaseInfo == null)
             {
-                InstallButtonText = "Could not find the latest SPT release";
+                InstallButtonText = "Could not parse latest SPT release";
                 InstallButtonCheckState = StatusSpinner.SpinnerState.Error;
                 return;
             }
-            
-            InstallButtonText = $"Start Install: SPT v{latestAkiRelease.TagName}";
+
+            InstallButtonText = $"Start Install: SPT v{akiReleaseInfo.AkiVersion}";
             InstallButtonCheckState = StatusSpinner.SpinnerState.OK;
             
             AllowDetailsButton = true;
