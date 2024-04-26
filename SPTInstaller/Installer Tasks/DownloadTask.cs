@@ -83,6 +83,24 @@ public class DownloadTask : InstallerTaskBase
         return Result.FromError("Failed to download Patcher");
     }
 
+    private async Task<IResult> DownloadSptAkiFromMirrors(IProgress<double> progress)
+    {
+        // Note that GetOrDownloadFileAsync handles the cached file hash check, so we don't need to check it first
+        foreach (var mirror in _data.ReleaseInfo.Mirrors)
+        {
+            SetStatus("Downloading SPT-AKI", mirror.DownloadUrl, progressStyle: ProgressStyle.Indeterminate);
+
+            _data.AkiZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("sptaki", mirror.DownloadUrl, progress, mirror.Hash);
+
+            if (_data.AkiZipInfo != null)
+            {
+                return Result.FromSuccess();
+            }
+        }
+
+        return Result.FromError("Failed to download spt-aki");
+    }
+
     public override async Task<IResult> TaskOperation()
     {
         var progress = new Progress<double>((d) => { SetStatus(null, null, (int)Math.Floor(d)); });
@@ -106,15 +124,6 @@ public class DownloadTask : InstallerTaskBase
             }
         }
 
-        SetStatus("Downloading SPT-AKI", _data.AkiReleaseDownloadLink, 0);
-
-        _data.AkiZipInfo = await DownloadCacheHelper.GetOrDownloadFileAsync("sptaki", _data.AkiReleaseDownloadLink, progress, _data.AkiReleaseHash);
-
-        if (_data.AkiZipInfo == null)
-        {
-            return Result.FromError("Failed to download spt-aki");
-        }
-
-        return Result.FromSuccess();
+        return await DownloadSptAkiFromMirrors(progress);
     }
 }

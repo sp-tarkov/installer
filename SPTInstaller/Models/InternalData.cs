@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using SPTInstaller.Models.Mirrors;
+﻿using SPTInstaller.Models.Releases;
 
 namespace SPTInstaller.Models;
 
@@ -31,14 +30,9 @@ public class InternalData
     public FileInfo AkiZipInfo { get; set; }
 
     /// <summary>
-    /// The release download link for SPT-AKI
+    /// The release information from release.json
     /// </summary>
-    public string AkiReleaseDownloadLink { get; set; }
-
-    /// <summary>
-    /// The release zip hash
-    /// </summary>
-    public string AkiReleaseHash { get; set; } = null;
+    public ReleaseInfo ReleaseInfo { get; set; }
 
     /// <summary>
     /// The release download link for the patcher mirror list
