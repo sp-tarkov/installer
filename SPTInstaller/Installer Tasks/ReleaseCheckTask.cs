@@ -4,6 +4,8 @@ using SPTInstaller.Interfaces;
 using SPTInstaller.Models;
 using System.Threading.Tasks;
 using SPTInstaller.Helpers;
+using Newtonsoft.Json;
+using SPTInstaller.Models.Releases;
 
 namespace SPTInstaller.Installer_Tasks;
 
@@ -24,21 +26,25 @@ public class ReleaseCheckTask : InstallerTaskBase
 
             SetStatus("Checking SPT Releases", "", null, ProgressStyle.Indeterminate);
 
-            var akiRepoReleases = await repo.RepoListReleasesAsync("SPT-AKI", "Stable-releases");
+            var progress = new Progress<double>((d) => { SetStatus(null, null, (int)Math.Floor(d)); });
+            var akiReleaseInfoFile = await DownloadCacheHelper.DownloadFileAsync("release.json", "https://spt-releases.modd.in/release.json", progress);
+            if (akiReleaseInfoFile == null)
+            {
+                return Result.FromError("Failed to download release metadata");
+            }
+
+            var akiReleaseInfo = JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(akiReleaseInfoFile.FullName));
 
             SetStatus("Checking for Patches", "", null, ProgressStyle.Indeterminate);
 
             var patchRepoReleases = await repo.RepoListReleasesAsync("SPT-AKI", "Downgrade-Patches");
 
-            var latestAkiRelease = akiRepoReleases.FindAll(x => !x.Prerelease)[0];
-            var latestAkiVersion = latestAkiRelease.Name.Replace('(', ' ').Replace(')', ' ').Split(' ')[3];
-            var comparePatchToAki = patchRepoReleases?.Find(x => x.Name.Contains(_data.OriginalGameVersion) && x.Name.Contains(latestAkiVersion));
+            var comparePatchToAki = patchRepoReleases?.Find(x => x.Name.Contains(_data.OriginalGameVersion) && x.Name.Contains(akiReleaseInfo.ClientVersion));
 
             _data.PatcherMirrorsLink = comparePatchToAki?.Assets[0].BrowserDownloadUrl;
-            _data.AkiReleaseDownloadLink = latestAkiRelease.Assets[0].BrowserDownloadUrl;
-            _data.AkiReleaseHash = FileHashHelper.GetGiteaReleaseHash(latestAkiRelease);
+            _data.ReleaseInfo = akiReleaseInfo;
 
-            int IntAkiVersion = int.Parse(latestAkiVersion);
+            int IntAkiVersion = int.Parse(akiReleaseInfo.ClientVersion);
             int IntGameVersion = int.Parse(_data.OriginalGameVersion);
             bool patchNeedCheck = false;
 
@@ -65,7 +71,7 @@ public class ReleaseCheckTask : InstallerTaskBase
 
             _data.PatchNeeded = patchNeedCheck;
 
-            string status = $"Current Release: {latestAkiVersion} - {(_data.PatchNeeded ? "Patch Available" : "No Patch Needed")}";
+            string status = $"Current Release: {akiReleaseInfo.ClientVersion} - {(_data.PatchNeeded ? "Patch Available" : "No Patch Needed")}";
 
             SetStatus(null, status);
 
