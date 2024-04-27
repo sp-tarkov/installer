@@ -6,7 +6,7 @@ using Serilog;
 namespace SPTInstaller.Models.Mirrors.Downloaders;
 public class MegaMirrorDownloader : MirrorDownloaderBase
 {
-    public MegaMirrorDownloader(DownloadMirror mirrorInfo) : base(mirrorInfo)
+    public MegaMirrorDownloader(PatchInfoMirror mirrorInfo) : base(mirrorInfo)
     {
     }
 

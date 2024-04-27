@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
 using DialogHostAvalonia;
-using Gitea.Api;
-using Gitea.Client;
 using Newtonsoft.Json;
 using ReactiveUI;
 using Serilog;
@@ -264,7 +262,7 @@ public class PreChecksViewModel : ViewModelBase
             var result = await installer.RunPreChecks();
 
             // check for updates
-            await UpdateInfo.CheckForUpdates(Assembly.GetExecutingAssembly().GetName()?.Version);
+            //await UpdateInfo.CheckForUpdates(Assembly.GetExecutingAssembly().GetName()?.Version);
             
             // get latest spt version
             InstallButtonText = "Getting latest release ...";

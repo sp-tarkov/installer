@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace SPTInstaller.Models.Mirrors.Downloaders;
 public class HttpMirrorDownloader : MirrorDownloaderBase
 {
-    public HttpMirrorDownloader(DownloadMirror mirror) : base(mirror)
+    public HttpMirrorDownloader(PatchInfoMirror mirror) : base(mirror)
     {
     }
 
