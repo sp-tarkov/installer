@@ -23,29 +23,13 @@ public class DownloadTask : InstallerTaskBase
 
     private async Task<IResult> BuildMirrorList()
     {
-        var progress = new Progress<double>((d) => { SetStatus("Downloading Mirror List", "", (int)Math.Floor(d), ProgressStyle.Shown);});
-
-        var file = await DownloadCacheHelper.DownloadFileAsync("mirrors.json", _data.PatcherMirrorsLink, progress);
-
-        if (file == null)
-        {
-            return Result.FromError("Failed to download mirror list");
-        }
-
-        var mirrorsList = JsonConvert.DeserializeObject<List<DownloadMirror>>(File.ReadAllText(file.FullName));
-
-        if (mirrorsList == null)
-        {
-            return Result.FromError("Failed to deserialize mirrors list");
-        }
-
-        foreach (var mirror in mirrorsList)
+        foreach (var mirror in _data.PatchInfo.Mirrors)
         {
             _expectedPatcherHash = mirror.Hash;
 
             switch (mirror.Link)
             {
-                case string l when l.StartsWith("https://mega"):
+                case { } l when l.StartsWith("https://mega"):
                     _mirrors.Add(new MegaMirrorDownloader(mirror));
                     break;
                 default:

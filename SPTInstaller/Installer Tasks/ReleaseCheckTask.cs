@@ -1,10 +1,9 @@
-﻿using Gitea.Api;
-using Gitea.Client;
-using SPTInstaller.Interfaces;
+﻿using SPTInstaller.Interfaces;
 using SPTInstaller.Models;
 using System.Threading.Tasks;
 using SPTInstaller.Helpers;
 using Newtonsoft.Json;
+using SPTInstaller.Models.Mirrors;
 using SPTInstaller.Models.ReleaseInfo;
 
 namespace SPTInstaller.Installer_Tasks;
@@ -22,8 +21,6 @@ public class ReleaseCheckTask : InstallerTaskBase
     {
         try
         {
-            var repo = new RepositoryApi(Configuration.Default);
-
             SetStatus("Checking SPT Releases", "", null, ProgressStyle.Indeterminate);
 
             var progress = new Progress<double>((d) => { SetStatus(null, null, (int)Math.Floor(d)); });
@@ -37,34 +34,42 @@ public class ReleaseCheckTask : InstallerTaskBase
 
             SetStatus("Checking for Patches", "", null, ProgressStyle.Indeterminate);
 
-            var patchRepoReleases = await repo.RepoListReleasesAsync("SPT-AKI", "Downgrade-Patches");
+            var akiPatchMirrorsFile =
+                await DownloadCacheHelper.DownloadFileAsync("mirrors.json", DownloadCacheHelper.PatchMirrorUrl,
+                    progress);
 
-            var comparePatchToAki = patchRepoReleases?.Find(x => x.Name.Contains(_data.OriginalGameVersion) && x.Name.Contains(akiReleaseInfo.ClientVersion));
-
-            _data.PatcherMirrorsLink = comparePatchToAki?.Assets[0].BrowserDownloadUrl;
-            _data.ReleaseInfo = akiReleaseInfo;
-
-            int IntAkiVersion = int.Parse(akiReleaseInfo.ClientVersion);
-            int IntGameVersion = int.Parse(_data.OriginalGameVersion);
-            bool patchNeedCheck = false;
-
-            if (IntGameVersion > IntAkiVersion)
+            if (akiPatchMirrorsFile == null)
             {
-                patchNeedCheck = true;
+                return Result.FromError("Failed to download patch mirror data");
             }
+            
+            var patchMirrorInfo = JsonConvert.DeserializeObject<PatchInfo>(File.ReadAllText(akiPatchMirrorsFile.FullName));
 
-            if (IntGameVersion < IntAkiVersion)
+            if (akiReleaseInfo == null || patchMirrorInfo == null)
+            {
+                return Result.FromError("An error occurred while deserializing aki or patch data");
+            }
+            
+            _data.ReleaseInfo = akiReleaseInfo;
+            _data.PatchInfo = patchMirrorInfo;
+            int intAkiVersion = int.Parse(akiReleaseInfo.ClientVersion);
+            int intGameVersion = int.Parse(_data.OriginalGameVersion);
+            
+            // note: it's possible the game version could be lower than the aki version and still need a patch if the major version numbers change
+            //     : it's probably a low chance though
+            bool patchNeedCheck = intGameVersion > intAkiVersion;
+
+            if (intGameVersion < intAkiVersion)
             {
                 return Result.FromError("Your client is outdated. Please update EFT");
-
             }
 
-            if (IntGameVersion == IntAkiVersion)
+            if (intGameVersion == intAkiVersion)
             {
                 patchNeedCheck = false;
             }
 
-            if (comparePatchToAki == null && patchNeedCheck)
+            if ((intGameVersion != patchMirrorInfo.SourceClientVersion || intAkiVersion != patchMirrorInfo.TargetClientVersion) && patchNeedCheck)
             {
                 return Result.FromError("No patcher available for your version.\nA patcher is usually created within 24 hours of an EFT update.");
             }

@@ -1,4 +1,5 @@
-﻿using SPTInstaller.Models.ReleaseInfo;
+﻿using SPTInstaller.Models.Mirrors;
+using SPTInstaller.Models.ReleaseInfo;
 
 namespace SPTInstaller.Models;
 
@@ -33,11 +34,13 @@ public class InternalData
     /// The release information from release.json
     /// </summary>
     public ReleaseInfo.ReleaseInfo ReleaseInfo { get; set; }
+    
+    public PatchInfo PatchInfo { get; set; }
 
     /// <summary>
     /// The release download link for the patcher mirror list
     /// </summary>
-    public string PatcherMirrorsLink { get; set; }
+    // public string PatcherMirrorsLink { get; set; }
 
     /// <summary>
     /// Whether or not a patch is needed to downgrade the client files

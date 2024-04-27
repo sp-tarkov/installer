@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 namespace SPTInstaller.Models.Mirrors.Downloaders;
 public abstract class MirrorDownloaderBase : IMirrorDownloader
 {
-    public DownloadMirror MirrorInfo { get; private set; }
+    public PatchInfoMirror MirrorInfo { get; private set; }
     public abstract Task<FileInfo?> Download(IProgress<double> progress);
-    public MirrorDownloaderBase(DownloadMirror mirrorInfo)
+    public MirrorDownloaderBase(PatchInfoMirror mirrorInfo)
     {
         MirrorInfo = mirrorInfo;
     }

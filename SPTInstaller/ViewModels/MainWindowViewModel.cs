@@ -1,5 +1,4 @@
 ﻿using Avalonia;
-using Gitea.Client;
 using ReactiveUI;
 using Serilog;
 using System.Globalization;
@@ -21,8 +20,6 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
 
     public MainWindowViewModel(bool debugging)
     {
-        Configuration.Default.BasePath = "https://dev.sp-tarkov.com/api/v1";
-
         Title = $"{(debugging ? "-debug-" : "")} SPT Installer {"v" + Assembly.GetExecutingAssembly().GetName()?.Version?.ToString() ?? "--unknown version--"}";
 
         Log.Information($"========= {Title} Started =========");

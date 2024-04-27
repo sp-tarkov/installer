@@ -9,8 +9,8 @@
     <PackageIcon>icon.ico</PackageIcon>
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     <Configurations>Debug;Release;TEST</Configurations>
-    <AssemblyVersion>2.59</AssemblyVersion>
-    <FileVersion>2.59</FileVersion>
+    <AssemblyVersion>2.61</AssemblyVersion>
+    <FileVersion>2.61</FileVersion>
     <Company>SPT-AKI</Company>
   </PropertyGroup>
 
@@ -46,11 +46,5 @@
     <PackageReference Include="SerilogTraceListener" Version="3.2.0" />
     <PackageReference Include="Squid-Box.SevenZipSharp" Version="1.6.1.23" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Gitea">
-      <HintPath>Z:\dev_stuff\EftPatchHelper\EftPatchHelper\EftPatchHelper\Resources\Gitea.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>
