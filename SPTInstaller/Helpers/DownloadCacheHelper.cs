@@ -7,7 +7,7 @@ namespace SPTInstaller.Helpers;
 
 public static class DownloadCacheHelper
 {
-    private static HttpClient _httpClient = new() { Timeout = TimeSpan.FromHours(1) };
+    private static HttpClient _httpClient = new() { Timeout = TimeSpan.FromMinutes(15) };
     
     public static string CachePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "spt-installer/cache");
