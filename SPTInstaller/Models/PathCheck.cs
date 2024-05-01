@@ -18,7 +18,7 @@ public class PathCheck
     public string Target { get; private set; }
     public PathCheckType CheckType { get; private set; }
     public PathCheckAction CheckAction { get; private set; }
-
+    
     public PathCheck()
     {
     }

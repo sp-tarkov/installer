@@ -4,56 +4,55 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:convt="using:SPTInstaller.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SPTInstaller.CustomControls.StatusSpinner"
-             >
+             x:Class="SPTInstaller.CustomControls.StatusSpinner">
 
     <UserControl.Resources>
-        <convt:StatusSpinnerIsStateConverter x:Key="IsStateConverter"/>
-        <convt:StatusSpinnerIsProcessingConverter x:Key="IsInProcessingStateConverter"/>
+        <convt:StatusSpinnerIsStateConverter x:Key="IsStateConverter" />
+        <convt:StatusSpinnerIsProcessingConverter x:Key="IsInProcessingStateConverter" />
     </UserControl.Resources>
     <UserControl.Styles>
         <Style Selector="Arc.running">
-            <Setter Property="Stroke" Value="DodgerBlue"/>
+            <Setter Property="Stroke" Value="DodgerBlue" />
         </Style>
 
         <Style Selector="Path.ok">
-            <Setter Property="Data" Value="{StaticResource CircledCheck}"/>
-            <Setter Property="Fill" Value="Green"/>
+            <Setter Property="Data" Value="{StaticResource CircledCheck}" />
+            <Setter Property="Fill" Value="Green" />
         </Style>
 
         <Style Selector="Path.warning">
-            <Setter Property="Data" Value="{StaticResource CircledWarn}"/>
-            <Setter Property="Fill" Value="Goldenrod"/>
+            <Setter Property="Data" Value="{StaticResource CircledWarn}" />
+            <Setter Property="Fill" Value="Goldenrod" />
         </Style>
-        
+
         <Style Selector="Path.error">
-            <Setter Property="Data" Value="{StaticResource CircledX}"/>
-            <Setter Property="Fill" Value="Red"/>
+            <Setter Property="Data" Value="{StaticResource CircledX}" />
+            <Setter Property="Fill" Value="Red" />
         </Style>
 
         <Style Selector="Arc">
-            <Setter Property="Stroke" Value="Gray"/>
-            <Setter Property="IsVisible" Value="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl},
-                                         Converter={StaticResource ResourceKey=IsInProcessingStateConverter}}"/>
+            <Setter Property="Stroke" Value="Gray" />
+            <Setter Property="IsVisible"
+                    Value="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl},
+                                         Converter={StaticResource ResourceKey=IsInProcessingStateConverter}}" />
             <Style.Animations>
                 <Animation Duration="0:0:1" IterationCount="Infinite">
                     <KeyFrame Cue="0%">
-                        <Setter Property="RotateTransform.Angle" Value="0"/>
+                        <Setter Property="RotateTransform.Angle" Value="0" />
                     </KeyFrame>
                     <KeyFrame Cue="100%">
-                        <Setter Property="RotateTransform.Angle" Value="360"/>
+                        <Setter Property="RotateTransform.Angle" Value="360" />
                     </KeyFrame>
                 </Animation>
             </Style.Animations>
         </Style>
     </UserControl.Styles>
-    
+
     <Grid>
         <Canvas Margin="0 3 0 0" Height="20" Width="20"
-                  IsVisible="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl},
+                IsVisible="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl},
                              Converter={StaticResource ResourceKey=IsInProcessingStateConverter}, ConverterParameter=invert}">
-            <Ellipse Fill="White" Height="15" Width="15" Canvas.Top="3" Canvas.Left="3"
-					 />
+            <Ellipse Fill="White" Height="15" Width="15" Canvas.Top="3" Canvas.Left="3" />
             <Path StrokeThickness="2"
                   Classes.ok="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl},
                               Converter={StaticResource ResourceKey=IsStateConverter},
@@ -63,15 +62,13 @@
                               ConverterParameter=Warning}"
                   Classes.error="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl},
                               Converter={StaticResource ResourceKey=IsStateConverter},
-                              ConverterParameter=Error}"
-                  />
+                              ConverterParameter=Error}" />
         </Canvas>
 
         <Arc StartAngle="280" SweepAngle="80" Margin="0 3 0 0" StrokeThickness="3"
              Width="20" Height="20" VerticalAlignment="Top"
              Classes.running="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl},
                               Converter={StaticResource ResourceKey=IsStateConverter},
-                              ConverterParameter=Running}"
-			 />
+                              ConverterParameter=Running}" />
     </Grid>
 </UserControl>

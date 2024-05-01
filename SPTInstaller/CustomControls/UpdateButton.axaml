@@ -5,43 +5,43 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SPTInstaller.CustomControls.UpdateButton">
     <UserControl.Styles>
-        <StyleInclude Source="../Assets/Styles.axaml"/>
+        <StyleInclude Source="../Assets/Styles.axaml" />
     </UserControl.Styles>
-    
+
     <Panel>
-        
-    <StackPanel Orientation="Horizontal">
-        <StackPanel.IsVisible>
-            <MultiBinding Converter="{x:Static BoolConverters.And}">
-                <Binding Path="!Updating" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
-                <Binding Path="UpdateAvailable" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
-            </MultiBinding>
-        </StackPanel.IsVisible>
-        <Button Content="{Binding InfoText, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                CornerRadius="20 0 0 20" 
-                Classes="yellow"
-                Command="{Binding UpdateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-        />
-        
-        <Button Content="Not now" CornerRadius="0 20 20 0" 
-                Command="{Binding DismissCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                />
-    </StackPanel>
-        
-    <Panel Margin="0 10">
-        <Panel.IsVisible>
-            <MultiBinding Converter="{x:Static BoolConverters.Or}">
-                <Binding Path="Updating" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
-                <Binding Path="CheckingForUpdate" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
-            </MultiBinding>
-        </Panel.IsVisible>
-        <ProgressBar CornerRadius="20" VerticalAlignment="Stretch"
-                     Value="{Binding DownloadProgress, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                     IsIndeterminate="{Binding IsIndeterminate, RelativeSource={RelativeSource AncestorType=UserControl}}"
-        />
-        <Label Content="{Binding InfoText, RelativeSource={RelativeSource AncestorType=UserControl}}"
-               VerticalAlignment="Center" HorizontalAlignment="Center"
-               Foreground="Black" FontWeight="SemiBold"/>
-    </Panel>
+
+        <StackPanel HorizontalAlignment="Center">
+            <StackPanel.IsVisible>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                    <Binding Path="!Updating" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                    <Binding Path="UpdateAvailable" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                </MultiBinding>
+            </StackPanel.IsVisible>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="{Binding InfoText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        CornerRadius="20 0 0 20"
+                        Classes="yellow"
+                        Command="{Binding UpdateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+
+                <Button Content="Not now" CornerRadius="0 20 20 0"
+                        Command="{Binding DismissCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            </StackPanel>
+
+        </StackPanel>
+
+        <Panel Margin="0 10">
+            <Panel.IsVisible>
+                <MultiBinding Converter="{x:Static BoolConverters.Or}">
+                    <Binding Path="Updating" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                    <Binding Path="CheckingForUpdate" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                </MultiBinding>
+            </Panel.IsVisible>
+            <ProgressBar CornerRadius="20" VerticalAlignment="Stretch"
+                         Value="{Binding DownloadProgress, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                         IsIndeterminate="{Binding IsIndeterminate, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            <Label Content="{Binding InfoText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                   VerticalAlignment="Center" HorizontalAlignment="Center"
+                   Foreground="Black" FontWeight="SemiBold" />
+        </Panel>
     </Panel>
 </UserControl>

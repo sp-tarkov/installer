@@ -5,24 +5,21 @@
              xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
              x:Class="SPTInstaller.CustomControls.Dialogs.ConfirmationDialog"
-             MinWidth="300" MinHeight="100" 
+             MinWidth="300" MinHeight="100"
              MaxWidth="600" MaxHeight="300">
     <Grid RowDefinitions="10,AUTO,*,AUTO,10" ColumnDefinitions="10,*,AUTO,10,AUTO,10"
           Background="{StaticResource AKI_Background_Light}">
-        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" 
+        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4"
                    Text="{Binding Message, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                   TextWrapping="Wrap"
-                   />
+                   TextWrapping="Wrap" />
         <Button Content="No" Grid.Row="3" Grid.Column="2"
                 Width="50" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
                 CommandParameter="False"
-                Classes="yellow"
-                />
+                Classes="yellow" />
         <Button Content="Yes" Grid.Row="3" Grid.Column="4"
                 Width="50" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
-                CommandParameter="True"
-                />
+                CommandParameter="True" />
     </Grid>
 </UserControl>

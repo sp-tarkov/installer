@@ -2,15 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:cc="using:SPTInstaller.CustomControls"
-			 xmlns:bh="using:SPTInstaller.Behaviors"
-			 xmlns:convt="using:SPTInstaller.Converters"
+             xmlns:cc="using:SPTInstaller.CustomControls"
+             xmlns:bh="using:SPTInstaller.Behaviors"
+             xmlns:convt="using:SPTInstaller.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SPTInstaller.CustomControls.ProgressableTaskList"
-			 >
-	<UserControl.Resources>
-		<convt:InvertedProgressConverter x:Key="invtProgressConvt"/>
-	</UserControl.Resources>
+             x:Class="SPTInstaller.CustomControls.ProgressableTaskList">
+    <UserControl.Resources>
+        <convt:InvertedProgressConverter x:Key="invtProgressConvt" />
+    </UserControl.Resources>
 
     <Grid>
         <ProgressBar Orientation="Vertical"
@@ -19,13 +18,13 @@
                      Foreground="{Binding PendingColor, RelativeSource={RelativeSource AncestorType=UserControl}}"
                      HorizontalAlignment="Left"
                      VerticalAlignment="Stretch"
-                     Margin="25 20"
-				     />
-        <ItemsControl Name="itemsControl" ItemsSource="{Binding Tasks, RelativeSource={RelativeSource AncestorType=UserControl}}"
-				  Padding="5">
+                     Margin="25 20" />
+        <ItemsControl Name="itemsControl"
+                      ItemsSource="{Binding Tasks, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Padding="5">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <cc:DistributedSpacePanel/>
+                    <cc:DistributedSpacePanel />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
@@ -36,8 +35,7 @@
                                              IsCompleted="{Binding IsCompleted}"
                                              PendingColor="{Binding PendingColor, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                              RunningColor="{Binding RunningColor, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                             CompletedColor="{Binding CompletedColor, RelativeSource={RelativeSource AncestorType=UserControl}}"
-										 />
+                                             CompletedColor="{Binding CompletedColor, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

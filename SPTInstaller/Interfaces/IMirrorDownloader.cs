@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 namespace SPTInstaller.Interfaces;
+
 public interface IMirrorDownloader
 {
     public PatchInfoMirror MirrorInfo { get; }

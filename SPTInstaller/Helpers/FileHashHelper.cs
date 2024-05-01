@@ -17,7 +17,7 @@ public static class FileHashHelper
     //
     //     return null;
     // }
-
+    
     public static bool CheckHash(FileInfo file, string expectedHash)
     {
         using var md5Service = MD5.Create();
@@ -27,9 +27,9 @@ public static class FileHashHelper
         var expectedHashBytes = Convert.FromBase64String(expectedHash);
         
         Log.Information($"Comparing Hashes :: S: {Convert.ToBase64String(sourceHash)} - E: {expectedHash}");
-
+        
         var matched = Enumerable.SequenceEqual(sourceHash, expectedHashBytes);
-
+        
         return matched;
     }
 }

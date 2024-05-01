@@ -1,5 +1,4 @@
-﻿
-[*]
+﻿[*]
 charset = utf-8-bom
 end_of_line = crlf
 trim_trailing_whitespace = false
@@ -8,7 +7,7 @@ indent_style = space
 indent_size = 4
 
 # Microsoft .NET properties
-csharp_style_namespace_declarations=file_scoped:error
+csharp_style_namespace_declarations = file_scoped:error
 csharp_new_line_before_members_in_object_initializers = false
 csharp_preferred_modifier_order = public, private, protected, internal, file, new, static, abstract, virtual, sealed, readonly, override, extern, unsafe, volatile, async, required:warning
 csharp_style_prefer_utf8_string_literals = true:suggestion

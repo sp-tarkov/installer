@@ -9,9 +9,9 @@ public class StateSpinnerStateToColorConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value == null) 
+        if (value == null)
             return null;
-
+        
         if (value is not StatusSpinner.SpinnerState state)
             return null;
         
@@ -31,7 +31,7 @@ public class StateSpinnerStateToColorConverter : IValueConverter
                 throw new ArgumentOutOfRangeException();
         }
     }
-
+    
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         return value;
