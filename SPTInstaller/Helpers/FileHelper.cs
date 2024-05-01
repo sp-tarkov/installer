@@ -187,6 +187,7 @@ public static class FileHelper
             new("Google", PathCheckType.Contains, PathCheckAction.Deny),
             new("Program Files", PathCheckType.Contains, PathCheckAction.Deny),
             new("Program Files (x86", PathCheckType.Contains, PathCheckAction.Deny),
+            new(Path.Join("spt-installer", "cache"), PathCheckType.Contains, PathCheckAction.Deny),
             new("Drive Root", PathCheckType.DriveRoot, PathCheckAction.Deny)
         };
         

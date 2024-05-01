@@ -10,9 +10,11 @@
         <Label Content="{Binding Version, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat='{}Installer Change Log for {0}'}" FontSize="18" FontWeight="SemiBold"
         />
         <Separator Margin="0 10" Padding="0" Background="{StaticResource AKI_Yellow}"/>
-        <TextBlock Text="{Binding Message, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                   TextWrapping="Wrap" MinHeight="100"
-        />
+        <ScrollViewer MaxHeight="250">
+          <TextBlock Text="{Binding Message, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                     TextWrapping="Wrap" MinHeight="100"
+          />
+        </ScrollViewer>
         <Button Content="Close" Classes="yellow"
                 HorizontalAlignment="Right"
                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
