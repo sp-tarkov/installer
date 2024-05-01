@@ -27,6 +27,8 @@ public class FreeSpacePreCheck : PreCheckBase
             var eftSourceDirectoryInfo = new DirectoryInfo(_internalData.OriginalGamePath);
             var installTargetDirectoryInfo = new DirectoryInfo(_internalData.TargetInstallPath);
             
+            var cacheDirectory = new DirectoryInfo(DownloadCacheHelper.CachePath);
+            
             var eftSourceDirSize = DirectorySizeHelper.GetSizeOfDirectory(eftSourceDirectoryInfo);
             
             if (eftSourceDirSize == -1)
@@ -45,14 +47,46 @@ public class FreeSpacePreCheck : PreCheckBase
             var requiredSpaceMessage =
                 $"Space Required for EFT Client: {DirectorySizeHelper.SizeSuffix(eftSourceDirSize, 2)} including ~10Gb overhead";
             
+            var cacheDriveMessage = "";
+            var cacheDriveOK = true;
+            
+            // if cache directory is on another drive, check that drive for around 5Gb of required space
+            if (cacheDirectory.Root.Name.ToLower() != installTargetDirectoryInfo.Root.Name.ToLower())
+            {
+                cacheDriveOK = false;
+                var availableCacheDriveSize = DriveInfo.GetDrives()
+                                              .FirstOrDefault(d =>
+                                                  d.Name.ToLower() == cacheDirectory.Root.Name.ToLower())
+                                              ?.AvailableFreeSpace ??
+                                          0;
+                
+                // check if the drive where the cache is has at least 5Gb of free space. We should only need 2-3Gb
+                if (availableCacheDriveSize > 5000000000)
+                {
+                    cacheDriveMessage = $"Drive for cache '{cacheDirectory.Root.Name}' has at least 5Gb of space. Available: {DirectorySizeHelper.SizeSuffix(availableCacheDriveSize, 2)}";
+                    cacheDriveOK = true;
+                }
+                else
+                {
+                    cacheDriveMessage = $"Drive for cache '{cacheDirectory.Root.Name}' does NOT have at least 5Gb of space. Available: {DirectorySizeHelper.SizeSuffix(availableCacheDriveSize, 2)}";
+                }
+            }
+            
             if (eftSourceDirSize > availableSize)
             {
                 return PreCheckResult.FromError(
-                    $"Not enough free space on {installTargetDirectoryInfo.Root.Name} to install SPT\n\n{availableSpaceMessage}\n{requiredSpaceMessage}");
+                    $"Not enough free space on {installTargetDirectoryInfo.Root.Name} to install SPT\n\n{availableSpaceMessage}\n{requiredSpaceMessage}\n\n{cacheDriveMessage}");
             }
             
-            return PreCheckResult.FromSuccess(
-                $"There is enough space available on {installTargetDirectoryInfo.Root.Name} to install SPT.\n\n{availableSpaceMessage}\n{requiredSpaceMessage}");
+            var okGameSpaceMessage =
+                $"There is enough space available on {installTargetDirectoryInfo.Root.Name} to install SPT.\n\n{availableSpaceMessage}\n{requiredSpaceMessage}\n\n{cacheDriveMessage}";
+            
+            if (!cacheDriveOK)
+            {
+                return PreCheckResult.FromError(okGameSpaceMessage);
+            }
+            
+            return PreCheckResult.FromSuccess(okGameSpaceMessage);
         }
         catch (Exception ex)
         {
