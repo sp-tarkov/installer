@@ -1,14 +1,14 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:SPTInstaller.ViewModels"
-		xmlns:rxui="using:Avalonia.ReactiveUI"
+        xmlns:rxui="using:Avalonia.ReactiveUI"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:cc="using:SPTInstaller.CustomControls"
+        xmlns:cc="using:SPTInstaller.CustomControls"
         xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SPTInstaller.Views.MainWindow"
-		Icon="/Assets/icon.ico"
+        Icon="/Assets/icon.ico"
         Title="SPT Installer"
         Height="450" Width="750"
         WindowStartupLocation="CenterScreen"
@@ -16,26 +16,24 @@
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="-1"
         Background="{StaticResource AKI_Background_Light}"
-        MinWidth="800" MinHeight="400"
-		>
-    
-	<Window.Styles>
-		<StyleInclude Source="/Assets/Styles.axaml"/>
-	</Window.Styles>
+        MinWidth="800" MinHeight="400">
+
+    <Window.Styles>
+        <StyleInclude Source="/Assets/Styles.axaml" />
+    </Window.Styles>
 
 
-	<Design.DataContext>
-		<vm:MainWindowViewModel/>
-	</Design.DataContext>
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
 
-	<Grid RowDefinitions="AUTO,*">
-		<cc:TitleBar Title="{Binding Title}"
-			         XButtonCommand="{Binding CloseCommand}"
-			         MinButtonCommand="{Binding MinimizeCommand}"
-					 />
+    <Grid RowDefinitions="AUTO,*">
+        <cc:TitleBar Title="{Binding Title}"
+                     XButtonCommand="{Binding CloseCommand}"
+                     MinButtonCommand="{Binding MinimizeCommand}" />
 
-        <dialogHost:DialogHost  Grid.Row="1" Background="{StaticResource AKI_Background_Light}">
-            <rxui:RoutedViewHost Router="{Binding Router}"/>
+        <dialogHost:DialogHost Grid.Row="1" Background="{StaticResource AKI_Background_Light}">
+            <rxui:RoutedViewHost Router="{Binding Router}" />
         </dialogHost:DialogHost>
-	</Grid>
+    </Grid>
 </Window>

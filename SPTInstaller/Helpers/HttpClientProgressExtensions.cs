@@ -6,7 +6,8 @@ namespace SPTInstaller.Helpers;
 
 public static class HttpClientProgressExtensions
 {
-    public static async Task DownloadDataAsync(this HttpClient client, string requestUrl, Stream destination, IProgress<double> progress = null, CancellationToken cancellationToken = default(CancellationToken))
+    public static async Task DownloadDataAsync(this HttpClient client, string requestUrl, Stream destination,
+        IProgress<double> progress = null, CancellationToken cancellationToken = default(CancellationToken))
     {
         using (var response = await client.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead))
         {
@@ -19,16 +20,19 @@ public static class HttpClientProgressExtensions
                     await download.CopyToAsync(destination);
                     return;
                 }
+                
                 // Such progress and contentLength much reporting Wow!
-                var progressWrapper = new Progress<long>(totalBytes => progress.Report(GetProgressPercentage(totalBytes, contentLength.Value)));
+                var progressWrapper = new Progress<long>(totalBytes =>
+                    progress.Report(GetProgressPercentage(totalBytes, contentLength.Value)));
                 await download.CopyToAsync(destination, 81920, progressWrapper, cancellationToken);
             }
         }
-
+        
         float GetProgressPercentage(float totalBytes, float currentBytes) => (totalBytes / currentBytes) * 100f;
     }
-
-    static async Task CopyToAsync(this Stream source, Stream destination, int bufferSize, IProgress<long> progress = null, CancellationToken cancellationToken = default(CancellationToken))
+    
+    static async Task CopyToAsync(this Stream source, Stream destination, int bufferSize,
+        IProgress<long> progress = null, CancellationToken cancellationToken = default(CancellationToken))
     {
         if (bufferSize < 0)
             throw new ArgumentOutOfRangeException(nameof(bufferSize));
@@ -40,11 +44,12 @@ public static class HttpClientProgressExtensions
             throw new ArgumentNullException(nameof(destination));
         if (!destination.CanWrite)
             throw new InvalidOperationException($"'{nameof(destination)}' is not writable.");
-
+        
         var buffer = new byte[bufferSize];
         long totalBytesRead = 0;
         int bytesRead;
-        while ((bytesRead = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) != 0)
+        while ((bytesRead =
+                   await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) != 0)
         {
             await destination.WriteAsync(buffer, 0, bytesRead, cancellationToken).ConfigureAwait(false);
             totalBytesRead += bytesRead;

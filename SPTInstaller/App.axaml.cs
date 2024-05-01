@@ -13,6 +13,7 @@ namespace SPTInstaller;
 public partial class App : Application
 {
     private readonly string _logPath = Path.Join(Environment.CurrentDirectory, "spt-aki-installer_.log");
+    
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -24,14 +25,13 @@ public partial class App : Application
                 restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information,
                 rollingInterval: RollingInterval.Day)
             .CreateLogger();
-
+        
         RxApp.DefaultExceptionHandler = Observer.Create<Exception>((exception) =>
         {
             Log.Error(exception, "An application exception occurred");
         });
-
     }
-
+    
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -57,7 +57,7 @@ public partial class App : Application
                 DataContext = new MainWindowViewModel(debug),
             };
         }
-
+        
         base.OnFrameworkInitializationCompleted();
     }
 }

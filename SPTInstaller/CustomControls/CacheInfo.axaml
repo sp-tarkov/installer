@@ -7,25 +7,24 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SPTInstaller.CustomControls.CacheInfo">
     <UserControl.Resources>
-        <convt:StatusSpinnerIsProcessingConverter x:Key="IsInProcessingStateConverter"/>
+        <convt:StatusSpinnerIsProcessingConverter x:Key="IsInProcessingStateConverter" />
     </UserControl.Resources>
-    
+
     <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,AUTO,10,AUTO,*">
-        <cc:StatusSpinner Grid.Column="1" State="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl}}"
+        <cc:StatusSpinner Grid.Column="1"
+                          State="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl}}"
                           IsVisible="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl},
-                                        Converter={StaticResource IsInProcessingStateConverter}}"
-                          />
-        
+                                        Converter={StaticResource IsInProcessingStateConverter}}" />
+
         <Path Grid.Column="1" Data="{StaticResource Cache}" Fill="DodgerBlue" Margin="0 6 0 0"
               IsVisible="{Binding State, RelativeSource={RelativeSource AncestorType=UserControl},
                                         Converter={StaticResource IsInProcessingStateConverter},
-                                        ConverterParameter=invert}"
-        />
-        
+                                        ConverterParameter=invert}" />
+
         <Label Grid.Column="3" Content="{Binding InfoText, RelativeSource={RelativeSource AncestorType=UserControl}}"
-               Margin="0 2 0 0"
-               />
-        <Button Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Content="What's this?" Classes="link" HorizontalAlignment="Center"
-                Command="{Binding ShowCacheDialogCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+               Margin="0 2 0 0" />
+        <Button Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Content="What's this?" Classes="link"
+                HorizontalAlignment="Center"
+                Command="{Binding ShowCacheDialogCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
     </Grid>
 </UserControl>

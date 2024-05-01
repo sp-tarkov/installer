@@ -2,39 +2,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:cc="using:SPTInstaller.CustomControls"
+             xmlns:cc="using:SPTInstaller.CustomControls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SPTInstaller.Views.PreChecksView">
-    
+
     <!-- main UI grid -->
     <Grid RowDefinitions="10, *, 10, Auto, 10" ColumnDefinitions="10, *, Auto, 10">
-        
+
         <!-- info card -->
         <Border Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" BoxShadow="1 1 10 0 black" CornerRadius="15">
-            
+
             <!-- main information grid -->
             <Grid RowDefinitions="10, Auto, *, Auto, 10" ColumnDefinitions="10, 2*, Auto,*, 10">
-                
-                <Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" 
-                       Content="Details" FontSize="20"
-                       />
-                
+
+                <Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"
+                       Content="Details" FontSize="20" Margin="0 2 0 0"/>
+
                 <!-- selected precheck details grid -->
-                <cc:PreCheckDetails Grid.Row="2" Grid.Column="1" 
+                <cc:PreCheckDetails Grid.Row="2" Grid.Column="1"
                                     PreChecks="{Binding PreChecks}"
-                                    HasSelection="{Binding HasPreCheckSelected}"
-                                    />
-                
+                                    HasSelection="{Binding HasPreCheckSelected}" />
+
                 <!-- info card vertical separator -->
                 <Rectangle Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" VerticalAlignment="Stretch"
-                           Fill="black" Width="1" Margin="10 0"
-                />
-                
+                           Fill="black" Width="1" Margin="10 0" />
+
                 <!-- precheck list -->
-                <Label Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" 
-                       Content="Pre-Checks" FontSize="20"
+                <Grid Grid.Row="1" Grid.Column="3">
+                <Label  HorizontalAlignment="Center"
+                        Margin="0 2 0 0"
+                       Content="Pre-Checks" FontSize="20" 
                        />
-                
+                <Button Padding="10" x:Name="debugBtn"
+                        HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Classes="icon"
+                        Command="{Binding LaunchWithDebug}"
+                        IsVisible="{Binding !Debugging}"
+                >
+                    <Path Data="{StaticResource Bug}" Fill="{Binding ElementName=debugBtn, Path=Foreground}"
+                    />
+                </Button>
+                </Grid>
+
                 <ItemsControl ItemsSource="{Binding PreChecks}" Grid.Row="2" Grid.Column="3">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -43,36 +52,33 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                                <cc:PreCheckItem PreCheckName="{Binding Name}"
-                                                 IsRequired="{Binding IsRequired}"
-                                                 IsSelected="{Binding IsSelected}"
-                                                 State="{Binding State}"
-                                                 SelectCommand="{Binding $parent[ItemsControl].DataContext.SelectPreCheckCommand}"
-                                                 HorizontalAlignment="Stretch"
-                                />
+                            <cc:PreCheckItem PreCheckName="{Binding Name}"
+                                             IsRequired="{Binding IsRequired}"
+                                             IsSelected="{Binding IsSelected}"
+                                             State="{Binding State}"
+                                             SelectCommand="{Binding $parent[ItemsControl].DataContext.SelectPreCheckCommand}"
+                                             HorizontalAlignment="Stretch" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                
+
                 <!-- cache info -->
                 <cc:CacheInfo Grid.Row="2" Grid.Column="3" Padding="10"
                               VerticalAlignment="Bottom" HorizontalAlignment="Left"
-                              InfoText="{Binding CacheInfoText}" State="{Binding CacheCheckState}"
-                              />
-                
+                              InfoText="{Binding CacheInfoText}" State="{Binding CacheCheckState}" />
+
             </Grid>
         </Border>
-        
+
         <!-- Install path info -->
-        <StackPanel Grid.Row="3" Grid.Column="1" >
+        <StackPanel Grid.Row="3" Grid.Column="1">
             <Label Content="Install Path" FontSize="20" />
-            
+
             <TextBlock TextWrapping="Wrap" Margin="3 0"
                        Text="{Binding InstallPath}"
-                       Foreground="DodgerBlue" FontWeight="SemiBold"
-                       />
+                       Foreground="DodgerBlue" FontWeight="SemiBold" />
         </StackPanel>
-        
+
         <!-- Start install button -->
         <Button Grid.Column="2" Grid.Row="3" Padding="20 10"
                 IsVisible="{Binding !UpdateInfo.Show}"
@@ -80,14 +86,14 @@
                 FontSize="15" FontWeight="SemiBold"
                 Classes="yellow"
                 Command="{Binding StartInstallCommand}"
-                CornerRadius="15"
-        >
+                CornerRadius="15">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding InstallButtonText}" VerticalAlignment="Center" Foreground="Black"/>
-                <cc:StatusSpinner State="{Binding InstallButtonCheckState}" Margin="2" IsVisible="{Binding !AllowInstall}"/>
+                <TextBlock Text="{Binding InstallButtonText}" VerticalAlignment="Center" Foreground="Black" />
+                <cc:StatusSpinner State="{Binding InstallButtonCheckState}" Margin="2"
+                                  IsVisible="{Binding !AllowInstall}" />
             </StackPanel>
         </Button>
-        
+
         <!-- Update installer button -->
         <cc:UpdateButton Grid.Column="2" Grid.Row="3"
                          IsVisible="{Binding UpdateInfo.Show}"
@@ -97,9 +103,9 @@
                          Updating="{Binding UpdateInfo.Updating}"
                          DismissCommand="{Binding DismissUpdateCommand}"
                          UpdateCommand="{Binding UpdateInstallerCommand}"
+                         WhatsNewCommand="{Binding  WhatsNewCommand}"
                          DownloadProgress="{Binding UpdateInfo.DownloadProgress}"
                          UpdateAvailable="{Binding UpdateInfo.UpdateAvailable}"
-                         CheckingForUpdate="{Binding UpdateInfo.CheckingForUpdates}"
-                         />
+                         CheckingForUpdate="{Binding UpdateInfo.CheckingForUpdates}" />
     </Grid>
 </UserControl>

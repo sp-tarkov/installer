@@ -9,7 +9,8 @@ Write-Host "Stopping installer ..."
 
 $installer = Stop-Process -Name "SPTInstaller" -ErrorAction SilentlyContinue
 
-if ($installer -ne $null) {
+if ($installer -ne $null)
+{
     Write-Host "Something went wrong, couldn't stop installer process'"
     return;
 }

@@ -9,8 +9,7 @@
     <Grid RowDefinitions="AUTO,AUTO,AUTO,*,AUTO" ColumnDefinitions="*,AUTO, AUTO"
           Background="{StaticResource AKI_Background_Light}">
         <Label Content="What is the installer cache for?" FontSize="20"
-               Foreground="{StaticResource AKI_Brush_Yellow}"
-               />
+               Foreground="{StaticResource AKI_Brush_Yellow}" />
         <TextBlock Grid.Row="1" Grid.ColumnSpan="2" TextWrapping="Wrap" xml:space="preserve">
 The installer cache is used to ensure you don't re-download large files that you've already downloaded before.
  <Span Foreground="red">You should only delete the cache folder if</Span>
@@ -19,31 +18,27 @@ The installer cache is used to ensure you don't re-download large files that you
     - You are not planning on installing SPT again any time soon
 
 If possible, you should leave the cache in place to avoid uneccessary, lengthy downloads.
-It also helps us prevent extra traffic to our limited download mirrors. Every bit helps <Span Foreground="red" FontSize="25">♥️</Span>
+It also helps us prevent extra traffic to our limited download mirrors. Every bit helps <Span Foreground="red"
+                FontSize="25">♥️</Span>
         </TextBlock>
-        <Label Grid.Row="2" Content="You can find the cache folder here"
-               />
-        <Button Grid.Row="3" Grid.ColumnSpan="2" Content="{Binding Source={x:Static helpers:DownloadCacheHelper.CachePath}}" 
+        <Label Grid.Row="2" Content="You can find the cache folder here" />
+        <Button Grid.Row="3" Grid.ColumnSpan="2"
+                Content="{Binding Source={x:Static helpers:DownloadCacheHelper.CachePath}}"
                 Classes="link"
                 Margin="0 10"
                 IsVisible="{Binding CacheExists, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                Command="{Binding OpenCacheFolder, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                />
+                Command="{Binding OpenCacheFolder, RelativeSource={RelativeSource AncestorType=UserControl}}" />
         <Label Grid.Row="3" Content="No cache folder exists"
-               IsVisible="{Binding !CacheExists, RelativeSource={RelativeSource AncestorType=UserControl}}"
-               />
-        
-        <Label Grid.Row="4" 
-               Content="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=AdditionalInfo}" 
-               Foreground="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=AdditionalInfoColor}"
-               />
-        
+               IsVisible="{Binding !CacheExists, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+
+        <Label Grid.Row="4"
+               Content="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=AdditionalInfo}"
+               Foreground="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=AdditionalInfoColor}" />
+
         <Button Grid.Row="4" Grid.Column="1" Content="Move Downloaded Patcher" Margin="0 0 10 0"
-                Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=MoveDownloadsPatcherToCache}"
-                />
-        
+                Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=MoveDownloadsPatcherToCache}" />
+
         <Button Grid.Row="4" Grid.Column="2" Content="Close" Classes="yellow"
-                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
-                />
+                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}" />
     </Grid>
 </UserControl>

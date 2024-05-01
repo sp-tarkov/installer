@@ -4,43 +4,39 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cc="using:SPTInstaller.CustomControls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SPTInstaller.Views.MessageView"
-			 >
-	<UserControl.Styles>
-		<Style Selector="Grid.error">
-			<Setter Property="Background" Value="#330000"/>
-		</Style>
-		<Style Selector="Label.error">
-			<Setter Property="Foreground" Value="Crimson"/>
-		</Style>
-		
-	</UserControl.Styles>
+             x:Class="SPTInstaller.Views.MessageView">
+    <UserControl.Styles>
+        <Style Selector="Grid.error">
+            <Setter Property="Background" Value="#330000" />
+        </Style>
+        <Style Selector="Label.error">
+            <Setter Property="Foreground" Value="Crimson" />
+        </Style>
 
-	<Grid ColumnDefinitions="*,AUTO,*" RowDefinitions="*,AUTO,20,AUTO,*"
-		  Classes.error="{Binding HasErrors}">
+    </UserControl.Styles>
 
-		<Label Grid.Column="1" Grid.Row="1"
-			   Classes.error="{Binding HasErrors}">
-			<TextBlock Text="{Binding Message}" FontSize="18"
-					   TextWrapping="Wrap"
-					   MaxWidth="500"
-				       HorizontalAlignment="Center"
-			   />
-		</Label>
+    <Grid ColumnDefinitions="*,AUTO,*" RowDefinitions="*,AUTO,20,AUTO,*"
+          Classes.error="{Binding HasErrors}">
 
-			<Button Grid.Column="1" Grid.Row="3"
-				    Content="Close" Command="{Binding CloseCommand}"
-					FontSize="15" FontWeight="SemiBold"
-					Classes.yellow="{Binding !HasErrors}"
-                    IsVisible="{Binding ShowCloseButton}"
-					HorizontalAlignment="Center"
-					VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-				    Padding="20 10"
-					/>
+        <Label Grid.Column="1" Grid.Row="1"
+               Classes.error="{Binding HasErrors}">
+            <TextBlock Text="{Binding Message}" FontSize="18"
+                       TextWrapping="Wrap"
+                       MaxWidth="500"
+                       HorizontalAlignment="Center" />
+        </Label>
+
+        <Button Grid.Column="1" Grid.Row="3"
+                Content="Close" Command="{Binding CloseCommand}"
+                FontSize="15" FontWeight="SemiBold"
+                Classes.yellow="{Binding !HasErrors}"
+                IsVisible="{Binding ShowCloseButton}"
+                HorizontalAlignment="Center"
+                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                Padding="20 10" />
 
         <cc:CacheInfo Grid.Row="4" Grid.ColumnSpan="3" Padding="10" Margin="10 0 0 0"
                       VerticalAlignment="Bottom"
-                      InfoText="{Binding CacheInfoText}" State="{Binding CacheCheckState}"
-                      />
-	</Grid>
+                      InfoText="{Binding CacheInfoText}" State="{Binding CacheCheckState}" />
+    </Grid>
 </UserControl>

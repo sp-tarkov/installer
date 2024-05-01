@@ -7,26 +7,28 @@ namespace SPTInstaller.Helpers;
 
 public static class PreCheckHelper
 {
-    private const string registryInstall = @"Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov";
-
+    private const string registryInstall =
+        @"Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov";
+    
     public static string DetectOriginalGamePath()
     {
         // We can't detect the installed path on non-Windows
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             return null;
-
+        
         var uninstallStringValue = Registry.LocalMachine.OpenSubKey(registryInstall, false)
             ?.GetValue("InstallLocation");
         var info = (uninstallStringValue is string key) ? new DirectoryInfo(key) : null;
-
+        
         return info?.FullName;
     }
-
+    
     public static Result DetectOriginalGameVersion(string gamePath)
     {
         try
         {
-            string version = FileVersionInfo.GetVersionInfo(Path.Join(gamePath, "/EscapeFromTarkov.exe")).ProductVersion.Replace('-', '.').Split('.')[^2];
+            string version = FileVersionInfo.GetVersionInfo(Path.Join(gamePath, "/EscapeFromTarkov.exe")).ProductVersion
+                .Replace('-', '.').Split('.')[^2];
             return Result.FromSuccess(version);
         }
         catch (Exception ex)

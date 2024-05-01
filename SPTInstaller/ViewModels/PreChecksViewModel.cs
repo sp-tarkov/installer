@@ -20,7 +20,7 @@ namespace SPTInstaller.ViewModels;
 public class PreChecksViewModel : ViewModelBase
 {
     private bool _hasPreCheckSelected;
-
+    
     public bool HasPreCheckSelected
     {
         get => _hasPreCheckSelected;
@@ -31,32 +31,35 @@ public class PreChecksViewModel : ViewModelBase
     
     public ICommand SelectPreCheckCommand { get; set; }
     public ICommand StartInstallCommand { get; set; }
-
+    
     public ICommand UpdateInstallerCommand { get; set; }
-
+    
     public ICommand DismissUpdateCommand { get; set; }
     
+    public ICommand WhatsNewCommand { get; set; }
+    
     public ICommand LaunchWithDebug { get; set; }
-
+    
     public InstallerUpdateInfo UpdateInfo { get; set; } = new();
-
+    
     private bool _debugging;
-
+    
     public bool Debugging
     {
         get => _debugging;
         set => this.RaiseAndSetIfChanged(ref _debugging, value);
     }
-
+    
     private string _installPath;
+    
     public string InstallPath
     {
         get => _installPath;
         set => this.RaiseAndSetIfChanged(ref _installPath, value);
     }
-
+    
     private string _installButtonText;
-
+    
     public string InstallButtonText
     {
         get => _installButtonText;
@@ -64,27 +67,31 @@ public class PreChecksViewModel : ViewModelBase
     }
     
     private bool _allowInstall;
+    
     public bool AllowInstall
     {
         get => _allowInstall;
         set => this.RaiseAndSetIfChanged(ref _allowInstall, value);
     }
-
+    
     private bool _allowDetailsButton = false;
+    
     public bool AllowDetailsButton
     {
         get => _allowDetailsButton;
         set => this.RaiseAndSetIfChanged(ref _allowDetailsButton, value);
     }
-
+    
     private string _cacheInfoText;
+    
     public string CacheInfoText
     {
         get => _cacheInfoText;
         set => this.RaiseAndSetIfChanged(ref _cacheInfoText, value);
     }
-
+    
     private StatusSpinner.SpinnerState _cacheCheckState;
+    
     public StatusSpinner.SpinnerState CacheCheckState
     {
         get => _cacheCheckState;
@@ -92,12 +99,13 @@ public class PreChecksViewModel : ViewModelBase
     }
     
     private StatusSpinner.SpinnerState _installButtonCheckState;
+    
     public StatusSpinner.SpinnerState InstallButtonCheckState
     {
         get => _installButtonCheckState;
         set => this.RaiseAndSetIfChanged(ref _installButtonCheckState, value);
     }
-
+    
     private void ReCheckRequested(object? sender, EventArgs e)
     {
         Task.Run(async () =>
@@ -109,45 +117,47 @@ public class PreChecksViewModel : ViewModelBase
             }
         });
     }
-
+    
     public PreChecksViewModel(IScreen host, bool debugging) : base(host)
     {
         Debugging = debugging;
         var data = ServiceHelper.Get<InternalData?>();
         var installer = ServiceHelper.Get<InstallController?>();
-
+        
         installer.RecheckRequested += ReCheckRequested;
-
+        
         InstallButtonText = "Please wait ...";
         InstallButtonCheckState = StatusSpinner.SpinnerState.Pending;
-
+        
         if (data == null || installer == null)
         {
-            NavigateTo(new MessageViewModel(HostScreen, Result.FromError("Failed to get required service for prechecks")));
+            NavigateTo(new MessageViewModel(HostScreen,
+                Result.FromError("Failed to get required service for prechecks")));
             return;
         }
-
+        
         data.OriginalGamePath = PreCheckHelper.DetectOriginalGamePath();
         
         data.TargetInstallPath = Environment.CurrentDirectory;
         InstallPath = data.TargetInstallPath;
-
+        
         Log.Information($"Install Path: {FileHelper.GetRedactedPath(InstallPath)}");
-
+        
 #if !TEST
         if (data.OriginalGamePath == null)
         {
-            NavigateTo(new MessageViewModel(HostScreen, Result.FromError("Could not find EFT install.\n\nDo you own and have the game installed?")));
+            NavigateTo(new MessageViewModel(HostScreen,
+                Result.FromError("Could not find EFT install.\n\nDo you own and have the game installed?")));
             return;
         }
 #endif
-
+        
         if (data.OriginalGamePath == data.TargetInstallPath)
         {
             Log.CloseAndFlush();
-
+            
             var logFiles = Directory.GetFiles(InstallPath, "spt-aki-installer_*.log");
-
+            
             // remove log file from original game path if they exist
             foreach (var file in logFiles)
             {
@@ -155,52 +165,59 @@ public class PreChecksViewModel : ViewModelBase
                 {
                     File.Delete(file);
                 }
-                catch { }
+                catch
+                {
+                }
             }
-
-            NavigateTo(new MessageViewModel(HostScreen, Result.FromError("Installer is located in EFT's original directory. Please move the installer to a seperate folder as per the guide"), noLog: true));
+            
+            NavigateTo(new MessageViewModel(HostScreen,
+                Result.FromError(
+                    "Installer is located in EFT's original directory. Please move the installer to a seperate folder as per the guide"),
+                noLog: true));
             return;
         }
-
+        
         Task.Run(async () =>
         {
-            if (FileHelper.CheckPathForProblemLocations(InstallPath, out var failedCheck ))
+            if (FileHelper.CheckPathForProblemLocations(InstallPath, out var failedCheck))
             {
-                    switch (failedCheck.CheckAction)
+                switch (failedCheck.CheckAction)
+                {
+                    case PathCheckAction.Warn:
                     {
-                        case PathCheckAction.Warn:
+                        await Dispatcher.UIThread.InvokeAsync(async () =>
                         {
-                            await Dispatcher.UIThread.InvokeAsync(async () =>
-                            {
-                                Log.Warning("Problem path detected, confirming install path ...");
-                                var confirmation = await DialogHost.Show(new ConfirmationDialog(
-                                    $"We suspect you may be installing into a problematic folder: {failedCheck.Target}.\nYou might want to consider installing somewhere else to avoid issues.\n\nAre you sure you want to install to this path?\n{InstallPath}"));
-
-                                if (confirmation == null || !bool.TryParse(confirmation.ToString(), out var confirm) ||
-                                    !confirm)
-                                {
-                                    Log.Information("User declined install path, exiting");
-                                    Environment.Exit(0);
-                                }
-                            });
+                            Log.Warning("Problem path detected, confirming install path ...");
+                            var confirmation = await DialogHost.Show(new ConfirmationDialog(
+                                $"We suspect you may be installing into a problematic folder: {failedCheck.Target}.\nYou might want to consider installing somewhere else to avoid issues.\n\nAre you sure you want to install to this path?\n{InstallPath}"));
                             
-                            break;
-                        }
+                            if (confirmation == null || !bool.TryParse(confirmation.ToString(), out var confirm) ||
+                                !confirm)
+                            {
+                                Log.Information("User declined install path, exiting");
+                                Environment.Exit(0);
+                            }
+                        });
                         
-                        case PathCheckAction.Deny:
-                        {
-                            Log.Error("Problem path detected, install denied");
-                            NavigateTo(new MessageViewModel(HostScreen, Result.FromError($"We suspect you may be installing into a problematic folder: {failedCheck.Target}.\nWe won't be letting you install here. Please move the installer to another folder.\nSuggestion: a folder under your drive root, such as 'C:\\spt\\'\nDenied Path: {InstallPath}")));
-                            break;
-                        }
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        break;
                     }
-
+                    
+                    case PathCheckAction.Deny:
+                    {
+                        Log.Error("Problem path detected, install denied");
+                        NavigateTo(new MessageViewModel(HostScreen,
+                            Result.FromError(
+                                $"We suspect you may be installing into a problematic folder: {failedCheck.Target}.\nWe won't be letting you install here. Please move the installer to another folder.\nSuggestion: a folder under your drive root, such as 'C:\\spt\\'\nDenied Path: {InstallPath}")));
+                        break;
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                
                 Log.Information("User accepted install path");
             }
         });
-
+        
         LaunchWithDebug = ReactiveCommand.Create(async () =>
         {
             try
@@ -211,7 +228,7 @@ public class PreChecksViewModel : ViewModelBase
                     FileName = installerPath,
                     Arguments = "debug"
                 });
-
+                
                 Environment.Exit(0);
             }
             catch (Exception ex)
@@ -219,84 +236,87 @@ public class PreChecksViewModel : ViewModelBase
                 Log.Error(ex, "Failed to enter debug mode");
             }
         });
-
-        SelectPreCheckCommand = ReactiveCommand.Create(async(PreCheckBase check) =>
+        
+        SelectPreCheckCommand = ReactiveCommand.Create(async (PreCheckBase check) =>
         {
             foreach (var precheck in PreChecks)
             {
                 if (check.Id == precheck.Id)
                 {
                     precheck.IsSelected = true;
-
+                    
                     HasPreCheckSelected = true;
                     
                     continue;
                 }
-
+                
                 precheck.IsSelected = false;
             }
         });
-
+        
         StartInstallCommand = ReactiveCommand.Create(async () =>
         {
             UpdateInfo.Show = false;
             NavigateTo(new InstallViewModel(HostScreen));
         });
-
+        
         UpdateInstallerCommand = ReactiveCommand.Create(async () =>
         {
             AllowDetailsButton = false;
             AllowInstall = false;
             await UpdateInfo.UpdateInstaller();
         });
-
-        DismissUpdateCommand = ReactiveCommand.Create(() =>
-        {
-            UpdateInfo.Show = false;
-        });
-
-
+        
+        DismissUpdateCommand = ReactiveCommand.Create(() => { UpdateInfo.Show = false; });
+        
+        WhatsNewCommand =
+            ReactiveCommand.Create(async () => await DialogHost.Show(new ChangeLogDialog(UpdateInfo.NewVersion.ToString(), UpdateInfo.ChangeLog)));
+        
+        
         Task.Run(async () =>
         {
             // run prechecks
             var result = await installer.RunPreChecks();
-
+            
             // check for updates
-            //await UpdateInfo.CheckForUpdates(Assembly.GetExecutingAssembly().GetName()?.Version);
+            await UpdateInfo.CheckForUpdates(Assembly.GetExecutingAssembly().GetName()?.Version);
             
             // get latest spt version
             InstallButtonText = "Getting latest release ...";
             InstallButtonCheckState = StatusSpinner.SpinnerState.Running;
-
+            
             var progress = new Progress<double>((d) => { });
-            var akiReleaseInfoFile = await DownloadCacheHelper.DownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl, progress);
+            var akiReleaseInfoFile =
+                await DownloadCacheHelper.DownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl,
+                    progress);
             if (akiReleaseInfoFile == null)
             {
                 InstallButtonText = "Could not get SPT release metadata";
                 InstallButtonCheckState = StatusSpinner.SpinnerState.Error;
                 return;
             }
-
-            var akiReleaseInfo = JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(akiReleaseInfoFile.FullName));
+            
+            var akiReleaseInfo =
+                JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(akiReleaseInfoFile.FullName));
             if (akiReleaseInfo == null)
             {
                 InstallButtonText = "Could not parse latest SPT release";
                 InstallButtonCheckState = StatusSpinner.SpinnerState.Error;
                 return;
             }
-
+            
             InstallButtonText = $"Start Install: SPT v{akiReleaseInfo.AkiVersion}";
             InstallButtonCheckState = StatusSpinner.SpinnerState.OK;
             
             AllowDetailsButton = true;
             AllowInstall = result.Succeeded;
         });
-
+        
         Task.Run(() =>
         {
             CacheInfoText = "Getting cache size ...";
             CacheCheckState = StatusSpinner.SpinnerState.Running;
-
+            
             CacheInfoText = $"Cache Size: {DownloadCacheHelper.GetCacheSizeText()}";
             CacheCheckState = StatusSpinner.SpinnerState.OK;
         });
