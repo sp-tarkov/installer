@@ -90,6 +90,7 @@
                          Updating="{Binding UpdateInfo.Updating}"
                          DismissCommand="{Binding DismissUpdateCommand}"
                          UpdateCommand="{Binding UpdateInstallerCommand}"
+                         WhatsNewCommand="{Binding  WhatsNewCommand}"
                          DownloadProgress="{Binding UpdateInfo.DownloadProgress}"
                          UpdateAvailable="{Binding UpdateInfo.UpdateAvailable}"
                          CheckingForUpdate="{Binding UpdateInfo.CheckingForUpdates}" />

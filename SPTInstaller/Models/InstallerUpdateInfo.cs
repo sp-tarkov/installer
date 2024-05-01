@@ -9,7 +9,7 @@ namespace SPTInstaller.Models;
 
 public class InstallerUpdateInfo : ReactiveObject
 {
-    private Version? _newVersion;
+    public Version? NewVersion { get; private set; }
     
     public string ChangeLog = "";
     
@@ -99,7 +99,7 @@ public class InstallerUpdateInfo : ReactiveObject
     
     private async Task<string> DownloadNewInstaller()
     {
-        UpdateInfoText = $"Downloading installer v{_newVersion}";
+        UpdateInfoText = $"Downloading installer v{NewVersion}";
         
         var progress = new Progress<double>(x => DownloadProgress = (int)x);
         
@@ -166,7 +166,7 @@ public class InstallerUpdateInfo : ReactiveObject
                 return;
             }
             
-            _newVersion = latestVersion;
+            NewVersion = latestVersion;
             ChangeLog = installerInfo.ChangeLog;
             
             EndCheck($"Update available: v{latestVersion}", true);

@@ -36,6 +36,8 @@ public class PreChecksViewModel : ViewModelBase
     
     public ICommand DismissUpdateCommand { get; set; }
     
+    public ICommand WhatsNewCommand { get; set; }
+    
     public ICommand LaunchWithDebug { get; set; }
     
     public InstallerUpdateInfo UpdateInfo { get; set; } = new();
@@ -266,6 +268,9 @@ public class PreChecksViewModel : ViewModelBase
         });
         
         DismissUpdateCommand = ReactiveCommand.Create(() => { UpdateInfo.Show = false; });
+        
+        WhatsNewCommand =
+            ReactiveCommand.Create(async () => await DialogHost.Show(new ChangeLogDialog(UpdateInfo.NewVersion.ToString(), UpdateInfo.ChangeLog)));
         
         
         Task.Run(async () =>

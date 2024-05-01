@@ -50,6 +50,15 @@ public partial class UpdateButton : UserControl
         set => SetValue(UpdateCommandProperty, value);
     }
     
+    public static readonly StyledProperty<ICommand> WhatsNewCommandProperty =
+        AvaloniaProperty.Register<UpdateButton, ICommand>("WhatsNewCommand");
+    
+    public ICommand WhatsNewCommand
+    {
+        get => GetValue(WhatsNewCommandProperty);
+        set => SetValue(WhatsNewCommandProperty, value);
+    }
+    
     public static readonly StyledProperty<bool> UpdatingProperty = AvaloniaProperty.Register<UpdateButton, bool>(
         "Updating");
     

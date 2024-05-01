@@ -26,7 +26,8 @@
                 <Button Content="Not now" CornerRadius="0 20 20 0"
                         Command="{Binding DismissCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
             </StackPanel>
-
+            <Button HorizontalAlignment="Center" Content="What's new?" Classes="link"
+                    Command="{Binding WhatsNewCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
         </StackPanel>
 
         <Panel Margin="0 10">
