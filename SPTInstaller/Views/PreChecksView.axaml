@@ -16,7 +16,7 @@
             <Grid RowDefinitions="10, Auto, *, Auto, 10" ColumnDefinitions="10, 2*, Auto,*, 10">
 
                 <Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"
-                       Content="Details" FontSize="20" />
+                       Content="Details" FontSize="20" Margin="0 2 0 0"/>
 
                 <!-- selected precheck details grid -->
                 <cc:PreCheckDetails Grid.Row="2" Grid.Column="1"
@@ -28,8 +28,21 @@
                            Fill="black" Width="1" Margin="10 0" />
 
                 <!-- precheck list -->
-                <Label Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center"
-                       Content="Pre-Checks" FontSize="20" />
+                <Grid Grid.Row="1" Grid.Column="3">
+                <Label  HorizontalAlignment="Center"
+                        Margin="0 2 0 0"
+                       Content="Pre-Checks" FontSize="20" 
+                       />
+                <Button Padding="10" x:Name="debugBtn"
+                        HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Classes="icon"
+                        Command="{Binding LaunchWithDebug}"
+                        IsVisible="{Binding !Debugging}"
+                >
+                    <Path Data="{StaticResource Bug}" Fill="{Binding ElementName=debugBtn, Path=Foreground}"
+                    />
+                </Button>
+                </Grid>
 
                 <ItemsControl ItemsSource="{Binding PreChecks}" Grid.Row="2" Grid.Column="3">
                     <ItemsControl.ItemsPanel>
