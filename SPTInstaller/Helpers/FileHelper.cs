@@ -70,6 +70,13 @@ public static class FileHelper
                             $"EXCLUSION FOUND :: FILE\nExclusion: '{exclusion}'\nPath: '{currentFileRelativePath}'");
                         break;
                     }
+                    
+                    if (currentFileRelativePath.EndsWith(".bak"))
+                    {
+                        exclude = true;
+                        Log.Debug($"EXCLUDING BAK FILE :: {currentFileRelativePath}");
+                        break;
+                    }
                 }
                 
                 if (exclude)
