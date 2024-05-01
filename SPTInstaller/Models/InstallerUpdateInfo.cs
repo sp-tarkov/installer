@@ -167,9 +167,13 @@ public class InstallerUpdateInfo : ReactiveObject
             }
             
             NewVersion = latestVersion;
-            ChangeLog = installerInfo.ChangeLog;
             
-            EndCheck($"Update available: v{latestVersion}", true);
+            foreach (var change in installerInfo.Changes)
+            {
+                ChangeLog += $"◉ {change}\n";
+            }
+            
+            EndCheck($"Update Installer: v{latestVersion}", true);
             
             return;
         }

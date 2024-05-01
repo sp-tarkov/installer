@@ -1,7 +1,9 @@
-﻿namespace SPTInstaller.Models;
+﻿using System.Collections.Generic;
+
+namespace SPTInstaller.Models;
 
 public class InstallerInfo
 {
     public string LatestVersion { get; set; }
-    public string ChangeLog { get; set; }
+    public List<string> Changes { get; set; }
 }

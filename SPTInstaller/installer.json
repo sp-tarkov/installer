@@ -1,0 +1,9 @@
+﻿{
+    // You will want to remove comments before using this template
+    "latestVersion": "0.0", // the new version you are pushing
+    "changes": [ // a list of chnages. These will be formated for you. Don't add leading bullets or such
+        "changes",
+        "go",
+        "here"
+    ]
+}

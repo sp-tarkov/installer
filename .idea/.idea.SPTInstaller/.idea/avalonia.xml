@@ -7,6 +7,7 @@
         <entry key="SPTInstaller/Assets/Styles.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/CacheInfo.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/DetailedPreCheckItem.axaml" value="SPTInstaller/SPTInstaller.csproj" />
+        <entry key="SPTInstaller/CustomControls/Dialogs/ChangeLogDialog.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/Dialogs/ConfirmationDialog.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/Dialogs/MessageDialog.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/CustomControls/Dialogs/WhyCacheThoughDialog.axaml" value="SPTInstaller/SPTInstaller.csproj" />
