@@ -8,7 +8,8 @@ namespace SPTInstaller.Helpers;
 public static class DownloadCacheHelper
 {
     private static HttpClient _httpClient = new() { Timeout = TimeSpan.FromMinutes(15) };
-    
+
+    public static TimeSpan SuggestedTtl = TimeSpan.FromHours(1);
     public static string CachePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "spt-installer/cache");
     
@@ -50,10 +51,10 @@ public static class DownloadCacheHelper
     /// <param name="expectedHash">The expected hash of the file in the cache</param>
     /// <param name="cachedFile">The file found in the cache; null if no file is found</param>
     /// <returns>True if the file is in the cache and its hash matches the expected hash, otherwise false</returns>
-    public static bool CheckCache(string fileName, string expectedHash, out FileInfo cachedFile)
-        => CheckCache(new FileInfo(Path.Join(CachePath, fileName)), expectedHash, out cachedFile);
+    public static bool CheckCacheHash(string fileName, string expectedHash, out FileInfo cachedFile)
+        => CheckCacheHash(new FileInfo(Path.Join(CachePath, fileName)), expectedHash, out cachedFile);
     
-    private static bool CheckCache(FileInfo cacheFile, string expectedHash, out FileInfo fileInCache)
+    private static bool CheckCacheHash(FileInfo cacheFile, string expectedHash, out FileInfo fileInCache)
     {
         fileInCache = cacheFile;
         
@@ -78,6 +79,44 @@ public static class DownloadCacheHelper
             
             Log.Warning("Hashes DO NOT MATCH");
             return false;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Something went wrong during hashing");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Gets a file in the cache based on a time-to-live from its last modified time
+    /// </summary>
+    /// <param name="fileName">The name of the file to look for in the cache</param>
+    /// <param name="ttl">The time-to-live to check against</param>
+    /// <param name="cachedFile">The file found in the cache if it exists</param>
+    /// <returns>Returns true if the file was found in the cache, otherwise false</returns>
+    public static bool CheckCacheTTL(string fileName, TimeSpan ttl, out FileInfo cachedFile) =>
+        CheckCacheTTL(new FileInfo(Path.Join(CachePath, fileName)), ttl, out cachedFile);
+
+    private static bool CheckCacheTTL(FileInfo cacheFile, TimeSpan ttl, out FileInfo fileInCache)
+    {
+        fileInCache = cacheFile;
+        
+        try
+        {
+            cacheFile.Refresh();
+            Directory.CreateDirectory(CachePath);
+            
+            if (!cacheFile.Exists)
+            {
+                Log.Information($"{cacheFile.Name} {(cacheFile.Exists ? "is in cache" : "NOT in cache")}");
+                return false;
+            }
+            
+            var validTimeToLive = cacheFile.LastWriteTime.Add(ttl) > DateTime.Now;
+
+            Log.Information($"{cacheFile.Name} TTL is {(validTimeToLive ? "OK" : "INVALID")}");
+            
+            return validTimeToLive;
         }
         catch (Exception ex)
         {
@@ -166,6 +205,33 @@ public static class DownloadCacheHelper
             return null;
         }
     }
+
+    /// <summary>
+    /// Get or download a file using a time to live
+    /// </summary>
+    /// <param name="fileName">The file to get from cache</param>
+    /// <param name="targetLink">The link to use for the download</param>
+    /// <param name="progress">A progress object for reporting download progress</param>
+    /// <param name="timeToLive">The time-to-live to check against in the cache</param>
+    /// <returns></returns>
+    public static async Task<FileInfo?> GetOrDownloadFileAsync(string fileName, string targetLink,
+        IProgress<double> progress, TimeSpan timeToLive)
+    {
+        try
+        {
+            if (CheckCacheTTL(fileName, timeToLive, out FileInfo cachedFile))
+            {
+                return cachedFile;
+            }
+
+            return await DownloadFileAsync(fileName, targetLink, progress);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, $"Error while getting file: {fileName}");
+            return null;
+        }
+    }
     
     /// <summary>
     /// Get the file from cache or download it
@@ -181,7 +247,7 @@ public static class DownloadCacheHelper
     {
         try
         {
-            if (CheckCache(fileName, expectedHash, out var cacheFile))
+            if (CheckCacheHash(fileName, expectedHash, out var cacheFile))
                 return cacheFile;
             
             return await DownloadFileAsync(fileName, targetLink, progress);
@@ -206,7 +272,7 @@ public static class DownloadCacheHelper
     {
         try
         {
-            if (CheckCache(fileName, expectedHash, out var cacheFile))
+            if (CheckCacheHash(fileName, expectedHash, out var cacheFile))
                 return cacheFile;
             
             return await DownloadFileAsync(fileName, fileDownloadStream);

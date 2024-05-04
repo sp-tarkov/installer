@@ -45,7 +45,7 @@ public class DownloadTask : InstallerTaskBase
     {
         SetStatus("Downloading Patcher", "Verifying cached patcher ...", progressStyle: ProgressStyle.Indeterminate);
         
-        if (DownloadCacheHelper.CheckCache("patcher", _expectedPatcherHash, out var cacheFile))
+        if (DownloadCacheHelper.CheckCacheHash("patcher", _expectedPatcherHash, out var cacheFile))
         {
             _data.PatcherZipInfo = cacheFile;
             Log.Information("Using cached file {fileName} - Hash: {hash}", _data.PatcherZipInfo.Name,
