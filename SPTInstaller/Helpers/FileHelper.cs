@@ -9,98 +9,6 @@ namespace SPTInstaller.Helpers;
 
 public static class FileHelper
 {
-    private static Result IterateDirectories(DirectoryInfo sourceDir, DirectoryInfo targetDir, string[] exclusions)
-    {
-        try
-        {
-            foreach (var dir in sourceDir.GetDirectories("*", SearchOption.AllDirectories))
-            {
-                var exclude = false;
-                
-                foreach (var exclusion in exclusions)
-                {
-                    var currentDirRelativePath = dir.FullName.Replace(sourceDir.FullName, "");
-                    
-                    if (currentDirRelativePath.StartsWith(exclusion) || currentDirRelativePath == exclusion)
-                    {
-                        exclude = true;
-                        Log.Debug(
-                            $"EXCLUSION FOUND :: DIR\nExclusion: '{exclusion}'\nPath: '{currentDirRelativePath}'");
-                        break;
-                    }
-                }
-                
-                if (exclude)
-                    continue;
-                
-                Directory.CreateDirectory(dir.FullName.Replace(sourceDir.FullName, targetDir.FullName));
-            }
-            
-            return Result.FromSuccess();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error while creating directories");
-            return Result.FromError(ex.Message);
-        }
-    }
-    
-    private static Result IterateFiles(DirectoryInfo sourceDir, DirectoryInfo targetDir, string[] exclusions,
-        Action<string, int> updateCallback = null)
-    {
-        try
-        {
-            int totalFiles = sourceDir.GetFiles("*.*", SearchOption.AllDirectories).Length;
-            int processedFiles = 0;
-            
-            foreach (var file in sourceDir.GetFiles("*.*", SearchOption.AllDirectories))
-            {
-                var exclude = false;
-                
-                updateCallback?.Invoke(file.Name, (int)Math.Floor(((double)processedFiles / totalFiles) * 100));
-                
-                foreach (var exclusion in exclusions)
-                {
-                    var currentFileRelativePath = file.FullName.Replace(sourceDir.FullName, "");
-                    
-                    if (currentFileRelativePath.StartsWith(exclusion) || currentFileRelativePath == exclusion)
-                    {
-                        exclude = true;
-                        Log.Debug(
-                            $"EXCLUSION FOUND :: FILE\nExclusion: '{exclusion}'\nPath: '{currentFileRelativePath}'");
-                        break;
-                    }
-                    
-                    if (currentFileRelativePath.EndsWith(".bak"))
-                    {
-                        exclude = true;
-                        Log.Debug($"EXCLUDING BAK FILE :: {currentFileRelativePath}");
-                        break;
-                    }
-                }
-                
-                if (exclude)
-                    continue;
-                
-                
-                var targetFile = file.FullName.Replace(sourceDir.FullName, targetDir.FullName);
-                
-                Log.Debug(
-                    $"COPY\nSourceDir: '{sourceDir.FullName}'\nTargetDir: '{targetDir.FullName}'\nNewPath: '{targetFile}'");
-                
-                File.Copy(file.FullName, targetFile, true);
-                processedFiles++;
-            }
-            
-            return Result.FromSuccess();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error while copying files");
-            return Result.FromError(ex.Message);
-        }
-    }
-    
     public static string GetRedactedPath(string path)
     {
         var nameMatched = Regex.Match(path, @".:\\[uU]sers\\(?<NAME>[^\\]+)");
@@ -123,13 +31,57 @@ public static class FileHelper
     {
         try
         {
-            var iterateDirectoriesResult = IterateDirectories(sourceDir, targetDir, exclusions ??= new string[0]);
+            var allFiles = sourceDir.GetFiles("*", SearchOption.AllDirectories);
+            var fileCopies = new List<CopyInfo>();
+            int count = 0;
             
-            if (!iterateDirectoriesResult.Succeeded) return iterateDirectoriesResult;
+            // filter files before starting copy
+            foreach (var file in allFiles)
+            {
+                count++;
+                updateCallback?.Invoke("getting list of files to copy", (int)Math.Floor((double)count / allFiles.Length * 100));
+                
+                var currentFileRelativePath = file.FullName.Replace(sourceDir.FullName, "");
+
+                if (exclusions != null)
+                {
+                    // check exclusions
+                    foreach (var exclusion in exclusions)
+                    {
+                        if (currentFileRelativePath.StartsWith(exclusion) || currentFileRelativePath == exclusion)
+                        {
+                            Log.Debug(
+                                $"EXCLUSION FOUND :: FILE\nExclusion: '{exclusion}'\nPath: '{currentFileRelativePath}'");
+                            break;
+                        }
+                    }
+                }
+
+                // don't copy .bak files
+                if (currentFileRelativePath.EndsWith(".bak"))
+                {
+                    Log.Debug($"EXCLUDING BAK FILE :: {currentFileRelativePath}");
+                    break;
+                }
+                
+                fileCopies.Add(new CopyInfo(file.FullName, file.FullName.Replace(sourceDir.FullName, targetDir.FullName)));
+            }
+
+            count = 0;
             
-            var iterateFilesResult = IterateFiles(sourceDir, targetDir, exclusions ??= new string[0], updateCallback);
-            
-            if (!iterateFilesResult.Succeeded) return iterateDirectoriesResult;
+            // process copy info for files that need to be copied
+            foreach (var copyInfo in fileCopies)
+            {
+                count++;
+                updateCallback?.Invoke(copyInfo.FileName, (int)Math.Floor((double)count / fileCopies.Count * 100));
+                
+                var result = copyInfo.Copy();
+                
+                if (!result.Succeeded)
+                {
+                    return result;
+                }
+            }
             
             return Result.FromSuccess();
         }
