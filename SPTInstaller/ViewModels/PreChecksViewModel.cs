@@ -286,9 +286,11 @@ public class PreChecksViewModel : ViewModelBase
             InstallButtonCheckState = StatusSpinner.SpinnerState.Running;
             
             var progress = new Progress<double>((d) => { });
+            
             var akiReleaseInfoFile =
-                await DownloadCacheHelper.DownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl,
-                    progress);
+                await DownloadCacheHelper.GetOrDownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl,
+                    progress, DownloadCacheHelper.SuggestedTtl);
+            
             if (akiReleaseInfoFile == null)
             {
                 InstallButtonText = "Could not get SPT release metadata";

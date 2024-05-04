@@ -25,8 +25,9 @@ public class ReleaseCheckTask : InstallerTaskBase
             
             var progress = new Progress<double>((d) => { SetStatus(null, null, (int)Math.Floor(d)); });
             var akiReleaseInfoFile =
-                await DownloadCacheHelper.DownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl,
-                    progress);
+                await DownloadCacheHelper.GetOrDownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl,
+                    progress, DownloadCacheHelper.SuggestedTtl);
+            
             if (akiReleaseInfoFile == null)
             {
                 return Result.FromError("Failed to download release metadata");
@@ -38,8 +39,8 @@ public class ReleaseCheckTask : InstallerTaskBase
             SetStatus("Checking for Patches", "", null, ProgressStyle.Indeterminate);
             
             var akiPatchMirrorsFile =
-                await DownloadCacheHelper.DownloadFileAsync("mirrors.json", DownloadCacheHelper.PatchMirrorUrl,
-                    progress);
+                await DownloadCacheHelper.GetOrDownloadFileAsync("mirrors.json", DownloadCacheHelper.PatchMirrorUrl,
+                    progress, DownloadCacheHelper.SuggestedTtl);
             
             if (akiPatchMirrorsFile == null)
             {

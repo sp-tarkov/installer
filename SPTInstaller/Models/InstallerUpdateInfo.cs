@@ -140,8 +140,8 @@ public class InstallerUpdateInfo : ReactiveObject
         try
         {
             var installerInfoFile =
-                await DownloadCacheHelper.DownloadFileAsync("installer.json", DownloadCacheHelper.InstallerInfoUrl,
-                    null);
+                await DownloadCacheHelper.GetOrDownloadFileAsync("installer.json", DownloadCacheHelper.InstallerInfoUrl, null
+                    , DownloadCacheHelper.SuggestedTtl);
             
             if (installerInfoFile == null)
             {
