@@ -1,7 +1,6 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Serilog;
-using SPTInstaller.Models;
 
 namespace SPTInstaller.Helpers;
 
@@ -146,7 +145,20 @@ public static class DownloadCacheHelper
             
             // Use the provided extension method
             using (var file = new FileStream(outputFile.FullName, FileMode.Create, FileAccess.Write, FileShare.None))
-                await _httpClient.DownloadDataAsync(targetLink, file, progress);
+            {
+                if (!await _httpClient.DownloadDataAsync(targetLink, file, progress))
+                {
+                    Log.Error($"Download failed: {targetLink}");
+                    
+                    outputFile.Refresh();
+                    
+                    if (outputFile.Exists)
+                    {
+                        outputFile.Delete();
+                        return null;
+                    }
+                }
+            }
             
             outputFile.Refresh();
             
@@ -224,6 +236,7 @@ public static class DownloadCacheHelper
                 return cachedFile;
             }
 
+            Log.Information($"Downloading File: {targetLink}");
             return await DownloadFileAsync(fileName, targetLink, progress);
         }
         catch (Exception ex)
@@ -250,6 +263,7 @@ public static class DownloadCacheHelper
             if (CheckCacheHash(fileName, expectedHash, out var cacheFile))
                 return cacheFile;
             
+            Log.Information($"Downloading File: {targetLink}");
             return await DownloadFileAsync(fileName, targetLink, progress);
         }
         catch (Exception ex)

@@ -6,7 +6,7 @@ namespace SPTInstaller.Helpers;
 
 public static class HttpClientProgressExtensions
 {
-    public static async Task DownloadDataAsync(this HttpClient client, string requestUrl, Stream destination,
+    public static async Task<bool> DownloadDataAsync(this HttpClient client, string requestUrl, Stream destination,
         IProgress<double> progress = null, CancellationToken cancellationToken = default(CancellationToken))
     {
         using (var response = await client.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead))
@@ -18,20 +18,21 @@ public static class HttpClientProgressExtensions
                 if (progress is null || !contentLength.HasValue)
                 {
                     await download.CopyToAsync(destination);
-                    return;
+                    return true;
                 }
                 
                 // Such progress and contentLength much reporting Wow!
                 var progressWrapper = new Progress<long>(totalBytes =>
                     progress.Report(GetProgressPercentage(totalBytes, contentLength.Value)));
-                await download.CopyToAsync(destination, 81920, progressWrapper, cancellationToken);
+                var readBytes = await download.CopyToAsync(destination, 81920, progressWrapper, cancellationToken);
+                return readBytes == contentLength.Value;
             }
         }
         
         float GetProgressPercentage(float totalBytes, float currentBytes) => (totalBytes / currentBytes) * 100f;
     }
     
-    static async Task CopyToAsync(this Stream source, Stream destination, int bufferSize,
+    static async Task<long> CopyToAsync(this Stream source, Stream destination, int bufferSize,
         IProgress<long> progress = null, CancellationToken cancellationToken = default(CancellationToken))
     {
         if (bufferSize < 0)
@@ -55,5 +56,7 @@ public static class HttpClientProgressExtensions
             totalBytesRead += bytesRead;
             progress?.Report(totalBytesRead);
         }
+
+        return totalBytesRead;
     }
 }
