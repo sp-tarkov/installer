@@ -9,8 +9,8 @@
         <PackageIcon>icon.ico</PackageIcon>
         <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
         <Configurations>Debug;Release;TEST</Configurations>
-        <AssemblyVersion>2.64</AssemblyVersion>
-        <FileVersion>2.64</FileVersion>
+        <AssemblyVersion>2.66</AssemblyVersion>
+        <FileVersion>2.66</FileVersion>
         <Company>SPT-AKI</Company>
     </PropertyGroup>
 
