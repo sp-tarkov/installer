@@ -6,7 +6,7 @@
              xmlns:dialogHost="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SPTInstaller.CustomControls.Dialogs.WhyCacheThoughDialog">
-    <Grid RowDefinitions="AUTO,AUTO,AUTO,*,AUTO" ColumnDefinitions="*,AUTO, AUTO"
+    <Grid RowDefinitions="AUTO,AUTO,AUTO,*,AUTO" ColumnDefinitions="*,AUTO"
           Background="{StaticResource AKI_Background_Light}">
         <Label Content="What is the installer cache for?" FontSize="20"
                Foreground="{StaticResource AKI_Brush_Yellow}" />
@@ -16,7 +16,6 @@ The installer cache is used to ensure you don't re-download large files that you
     - You are low on space
     or
     - You are not planning on installing SPT again any time soon
-
 If possible, you should leave the cache in place to avoid uneccessary, lengthy downloads.
 It also helps us prevent extra traffic to our limited download mirrors. Every bit helps <Span Foreground="red"
                 FontSize="25">♥️</Span>
@@ -25,7 +24,6 @@ It also helps us prevent extra traffic to our limited download mirrors. Every bi
         <Button Grid.Row="3" Grid.ColumnSpan="2"
                 Content="{Binding Source={x:Static helpers:DownloadCacheHelper.CachePath}}"
                 Classes="link"
-                Margin="0 10"
                 IsVisible="{Binding CacheExists, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 Command="{Binding OpenCacheFolder, RelativeSource={RelativeSource AncestorType=UserControl}}" />
         <Label Grid.Row="3" Content="No cache folder exists"
@@ -34,11 +32,17 @@ It also helps us prevent extra traffic to our limited download mirrors. Every bi
         <Label Grid.Row="4"
                Content="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=AdditionalInfo}"
                Foreground="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=AdditionalInfoColor}" />
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1" Spacing="10">
+            <Button Content="Move Downloaded Patcher"
+                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=MoveDownloadsPatcherToCache}" />
+            
+            <Button Content="Clear Metadata Cache" 
+                    Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ClearCachedMetaData}"
+                    />
 
-        <Button Grid.Row="4" Grid.Column="1" Content="Move Downloaded Patcher" Margin="0 0 10 0"
-                Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=MoveDownloadsPatcherToCache}" />
-
-        <Button Grid.Row="4" Grid.Column="2" Content="Close" Classes="yellow"
-                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}" />
+            <Button Content="Close" Classes="yellow"
+                    Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}" />
+        </StackPanel>
     </Grid>
 </UserControl>
