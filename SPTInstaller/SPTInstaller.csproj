@@ -12,6 +12,9 @@
         <AssemblyVersion>2.66</AssemblyVersion>
         <FileVersion>2.66</FileVersion>
         <Company>SPT-AKI</Company>
+        <PublishSingleFile>true</PublishSingleFile>
+        <SelfContained>true</SelfContained>
+        <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
     </PropertyGroup>
 
     <ItemGroup>
