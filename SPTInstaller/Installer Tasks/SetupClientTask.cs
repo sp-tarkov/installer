@@ -35,7 +35,7 @@ public class SetupClientTask : InstallerTaskBase
         if (_data.PatchNeeded)
         {
             // extract patcher files
-            SetStatus("Extrating Patcher", "", 0);
+            SetStatus("Extracting Patcher", "", 0);
             
             var extractPatcherResult = ZipHelper.Decompress(_data.PatcherZipInfo, patcherOutputDir, progress);
             
