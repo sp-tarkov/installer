@@ -12,7 +12,7 @@ namespace SPTInstaller;
 
 public partial class App : Application
 {
-    private readonly string _logPath = Path.Join(Environment.CurrentDirectory, "spt-aki-installer_.log");
+    private readonly string _logPath = Path.Join(Environment.CurrentDirectory, "spt-installer_.log");
     
     public override void Initialize()
     {

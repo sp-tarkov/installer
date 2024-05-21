@@ -62,7 +62,7 @@
 
         <Ellipse Height="30" Width="30"
                  StrokeThickness="4"
-                 Fill="{StaticResource AKI_Background_Dark}"
+                 Fill="{StaticResource SPT_Background_Dark}"
                  HorizontalAlignment="Left"
                  Classes.running="{Binding IsRunning, RelativeSource={RelativeSource AncestorType=UserControl}}"
                  Classes.completed="{Binding IsCompleted, RelativeSource={RelativeSource AncestorType=UserControl}}" />

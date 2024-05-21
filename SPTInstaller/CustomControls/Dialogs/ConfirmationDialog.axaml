@@ -8,7 +8,7 @@
              MinWidth="300" MinHeight="100"
              MaxWidth="600" MaxHeight="300">
     <Grid RowDefinitions="10,AUTO,*,AUTO,10" ColumnDefinitions="10,*,AUTO,10,AUTO,10"
-          Background="{StaticResource AKI_Background_Light}">
+          Background="{StaticResource SPT_Background_Light}">
         <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4"
                    Text="{Binding Message, RelativeSource={RelativeSource AncestorType=UserControl}}"
                    TextWrapping="Wrap" />

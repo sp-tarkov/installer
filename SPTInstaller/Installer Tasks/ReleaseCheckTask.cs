@@ -24,58 +24,58 @@ public class ReleaseCheckTask : InstallerTaskBase
             SetStatus("Checking SPT Releases", "", null, ProgressStyle.Indeterminate);
             
             var progress = new Progress<double>((d) => { SetStatus(null, null, (int)Math.Floor(d)); });
-            var akiReleaseInfoFile =
+            var SPTReleaseInfoFile =
                 await DownloadCacheHelper.GetOrDownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl,
                     progress, DownloadCacheHelper.SuggestedTtl);
             
-            if (akiReleaseInfoFile == null)
+            if (SPTReleaseInfoFile == null)
             {
                 return Result.FromError("Failed to download release metadata");
             }
             
-            var akiReleaseInfo =
-                JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(akiReleaseInfoFile.FullName));
+            var SPTReleaseInfo =
+                JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(SPTReleaseInfoFile.FullName));
             
             SetStatus("Checking for Patches", "", null, ProgressStyle.Indeterminate);
             
-            var akiPatchMirrorsFile =
+            var SPTPatchMirrorsFile =
                 await DownloadCacheHelper.GetOrDownloadFileAsync("mirrors.json", DownloadCacheHelper.PatchMirrorUrl,
                     progress, DownloadCacheHelper.SuggestedTtl);
             
-            if (akiPatchMirrorsFile == null)
+            if (SPTPatchMirrorsFile == null)
             {
                 return Result.FromError("Failed to download patch mirror data");
             }
             
             var patchMirrorInfo =
-                JsonConvert.DeserializeObject<PatchInfo>(File.ReadAllText(akiPatchMirrorsFile.FullName));
+                JsonConvert.DeserializeObject<PatchInfo>(File.ReadAllText(SPTPatchMirrorsFile.FullName));
             
-            if (akiReleaseInfo == null || patchMirrorInfo == null)
+            if (SPTReleaseInfo == null || patchMirrorInfo == null)
             {
-                return Result.FromError("An error occurred while deserializing aki or patch data");
+                return Result.FromError("An error occurred while deserializing SPT or patch data");
             }
             
-            _data.ReleaseInfo = akiReleaseInfo;
+            _data.ReleaseInfo = SPTReleaseInfo;
             _data.PatchInfo = patchMirrorInfo;
-            int intAkiVersion = int.Parse(akiReleaseInfo.ClientVersion);
+            int intSPTVersion = int.Parse(SPTReleaseInfo.ClientVersion);
             int intGameVersion = int.Parse(_data.OriginalGameVersion);
             
-            // note: it's possible the game version could be lower than the aki version and still need a patch if the major version numbers change
+            // note: it's possible the game version could be lower than the SPT version and still need a patch if the major version numbers change
             //     : it's probably a low chance though
-            bool patchNeedCheck = intGameVersion > intAkiVersion;
+            bool patchNeedCheck = intGameVersion > intSPTVersion;
             
-            if (intGameVersion < intAkiVersion)
+            if (intGameVersion < intSPTVersion)
             {
                 return Result.FromError("Your client is outdated. Please update EFT");
             }
             
-            if (intGameVersion == intAkiVersion)
+            if (intGameVersion == intSPTVersion)
             {
                 patchNeedCheck = false;
             }
             
             if ((intGameVersion != patchMirrorInfo.SourceClientVersion ||
-                 intAkiVersion != patchMirrorInfo.TargetClientVersion) && patchNeedCheck)
+                 intSPTVersion != patchMirrorInfo.TargetClientVersion) && patchNeedCheck)
             {
                 return Result.FromError(
                     "No patcher available for your version.\nA patcher is usually created within 24 hours of an EFT update.");
@@ -84,7 +84,7 @@ public class ReleaseCheckTask : InstallerTaskBase
             _data.PatchNeeded = patchNeedCheck;
             
             string status =
-                $"Current Release: {akiReleaseInfo.ClientVersion} - {(_data.PatchNeeded ? "Patch Available" : "No Patch Needed")}";
+                $"Current Release: {SPTReleaseInfo.ClientVersion} - {(_data.PatchNeeded ? "Patch Available" : "No Patch Needed")}";
             
             SetStatus(null, status);
             

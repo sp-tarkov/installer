@@ -38,7 +38,7 @@ public static class ProcessHelper
         switch ((PatcherExitCode)process.ExitCode)
         {
             case PatcherExitCode.Success:
-                return Result.FromSuccess("Patcher Finished Successfully, extracting Aki");
+                return Result.FromSuccess("Patcher Finished Successfully, extracting SPT");
             
             case PatcherExitCode.ProgramClosed:
                 return Result.FromError("Patcher was closed before completing!");
@@ -47,7 +47,7 @@ public static class ProcessHelper
                 return Result.FromError("EscapeFromTarkov.exe is missing from the install Path");
             
             case PatcherExitCode.NoPatchFolder:
-                return Result.FromError("Patchers Folder called 'Aki_Patches' is missing");
+                return Result.FromError("Patchers Folder called 'SPT_Patches' is missing");
             
             case PatcherExitCode.MissingFile:
                 return Result.FromError("EFT files was missing a Vital file to continue");

@@ -26,9 +26,9 @@ public class InternalData
     public FileInfo PatcherZipInfo { get; set; }
     
     /// <summary>
-    /// SPT-AKI zip file info
+    /// SPT zip file info
     /// </summary>
-    public FileInfo AkiZipInfo { get; set; }
+    public FileInfo SPTZipInfo { get; set; }
     
     /// <summary>
     /// The release information from release.json
