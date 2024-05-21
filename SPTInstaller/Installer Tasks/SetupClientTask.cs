@@ -71,7 +71,7 @@ public class SetupClientTask : InstallerTaskBase
         // extract release files
         SetStatus("Extracting Release", "", 0);
         
-        var extractReleaseResult = ZipHelper.Decompress(_data.AkiZipInfo, targetInstallDirInfo, progress);
+        var extractReleaseResult = ZipHelper.Decompress(_data.SPTZipInfo, targetInstallDirInfo, progress);
         
         if (!extractReleaseResult.Succeeded)
         {

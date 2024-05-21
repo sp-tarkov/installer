@@ -156,7 +156,7 @@ public class PreChecksViewModel : ViewModelBase
         {
             Log.CloseAndFlush();
             
-            var logFiles = Directory.GetFiles(InstallPath, "spt-aki-installer_*.log");
+            var logFiles = Directory.GetFiles(InstallPath, "spt-installer_*.log");
             
             // remove log file from original game path if they exist
             foreach (var file in logFiles)
@@ -287,27 +287,27 @@ public class PreChecksViewModel : ViewModelBase
             
             var progress = new Progress<double>((d) => { });
             
-            var akiReleaseInfoFile =
+            var SPTReleaseInfoFile =
                 await DownloadCacheHelper.GetOrDownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl,
                     progress, DownloadCacheHelper.SuggestedTtl);
             
-            if (akiReleaseInfoFile == null)
+            if (SPTReleaseInfoFile == null)
             {
                 InstallButtonText = "Could not get SPT release metadata";
                 InstallButtonCheckState = StatusSpinner.SpinnerState.Error;
                 return;
             }
             
-            var akiReleaseInfo =
-                JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(akiReleaseInfoFile.FullName));
-            if (akiReleaseInfo == null)
+            var SPTReleaseInfo =
+                JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(SPTReleaseInfoFile.FullName));
+            if (SPTReleaseInfo == null)
             {
                 InstallButtonText = "Could not parse latest SPT release";
                 InstallButtonCheckState = StatusSpinner.SpinnerState.Error;
                 return;
             }
             
-            InstallButtonText = $"Start Install: SPT v{akiReleaseInfo.AkiVersion}";
+            InstallButtonText = $"Start Install: SPT v{SPTReleaseInfo.SPTVersion}";
             InstallButtonCheckState = StatusSpinner.SpinnerState.OK;
             
             AllowDetailsButton = true;

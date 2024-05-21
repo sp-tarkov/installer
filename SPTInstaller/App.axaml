@@ -16,21 +16,21 @@
     <Application.Resources>
 
         <!-- Colors -->
-        <Color x:Key="AKI_DarkGray">#121212</Color>
-        <Color x:Key="AKI_Yellow">#FFC107</Color>
-        <Color x:Key="AKI_White">#FFFFFF</Color>
-        <Color x:Key="AKI_Gray">#282828</Color>
-        <Color x:Key="AKI_DarkGrayBlue">#323947</Color>
-        <Color x:Key="AKI_LightGrayBlue">#444259</Color>
+        <Color x:Key="SPT_DarkGray">#121212</Color>
+        <Color x:Key="SPT_Yellow">#FFC107</Color>
+        <Color x:Key="SPT_White">#FFFFFF</Color>
+        <Color x:Key="SPT_Gray">#282828</Color>
+        <Color x:Key="SPT_DarkGrayBlue">#323947</Color>
+        <Color x:Key="SPT_LightGrayBlue">#444259</Color>
 
         <!-- Brushes -->
-        <SolidColorBrush x:Key="AKI_Foreground_Light" Color="{StaticResource AKI_White}" />
-        <SolidColorBrush x:Key="AKI_Background_Light" Color="{StaticResource AKI_Gray}" />
-        <SolidColorBrush x:Key="AKI_Background_Dark" Color="{StaticResource AKI_DarkGray}" />
-        <SolidColorBrush x:Key="AKI_Brush_Yellow" Color="{StaticResource AKI_Yellow}" />
-        <SolidColorBrush x:Key="AKI_Brush_DarkGrayBlue" Color="{StaticResource AKI_DarkGrayBlue}" />
-        <SolidColorBrush x:Key="AKI_Brush_LightGrayBlue" Color="{StaticResource AKI_LightGrayBlue}" />
-        <SolidColorBrush x:Key="AKI_Brush_Lighter" Color="Gainsboro" />
+        <SolidColorBrush x:Key="SPT_Foreground_Light" Color="{StaticResource SPT_White}" />
+        <SolidColorBrush x:Key="SPT_Background_Light" Color="{StaticResource SPT_Gray}" />
+        <SolidColorBrush x:Key="SPT_Background_Dark" Color="{StaticResource SPT_DarkGray}" />
+        <SolidColorBrush x:Key="SPT_Brush_Yellow" Color="{StaticResource SPT_Yellow}" />
+        <SolidColorBrush x:Key="SPT_Brush_DarkGrayBlue" Color="{StaticResource SPT_DarkGrayBlue}" />
+        <SolidColorBrush x:Key="SPT_Brush_LightGrayBlue" Color="{StaticResource SPT_LightGrayBlue}" />
+        <SolidColorBrush x:Key="SPT_Brush_Lighter" Color="Gainsboro" />
 
         <!-- Path Geometry -->
         <PathGeometry x:Key="CircledCheck"
