@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Serilog;
+using SPTInstaller.Models;
 using Color = System.Drawing.Color;
 
 namespace SPTInstaller.CustomControls.Dialogs;
@@ -101,8 +102,7 @@ public partial class WhyCacheThoughDialog : UserControl
         switch (_movePatcherState)
         {
             case 0:
-                var downloadsPath =
-                    Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                var downloadsPath = KnownFolders.GetPath(KnownFolder.Downloads);
                 
                 var downloadsFolder = new DirectoryInfo(downloadsPath);
                 
