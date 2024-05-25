@@ -66,7 +66,7 @@ public class ReleaseCheckTask : InstallerTaskBase
             
             if (intGameVersion < intSPTVersion)
             {
-                return Result.FromError("Your client is outdated. Please update EFT");
+                return Result.FromError("Your client is outdated. Please update EFT using your BSG Launcher");
             }
             
             if (intGameVersion == intSPTVersion)
@@ -78,7 +78,10 @@ public class ReleaseCheckTask : InstallerTaskBase
                  intSPTVersion != patchMirrorInfo.TargetClientVersion) && patchNeedCheck)
             {
                 return Result.FromError(
-                    "No patcher available for your version.\nA patcher is usually created within 24 hours of an EFT update.");
+                    "We could not find a downgrade patcher for the version of EFT you have installed." +
+                    "\nThis can happen due to one of the following reasons:" +
+                    "\n* Live EFT just updated. The SPT team will create a new patcher within 24 hours, hold tight!" +
+                    "\n* Live EFT just updated. You have not installed it on your computer using the BSG launcher.");
             }
             
             _data.PatchNeeded = patchNeedCheck;

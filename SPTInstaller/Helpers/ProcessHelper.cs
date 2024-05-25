@@ -56,7 +56,7 @@ public static class ProcessHelper
                 return Result.FromError("A patch failed to apply");
             
             default:
-                return Result.FromError("an unknown error occurred in the patcher");
+                return Result.FromError("An unknown error occurred in the patcher");
         }
     }
     

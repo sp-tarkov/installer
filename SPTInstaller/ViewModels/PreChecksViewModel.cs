@@ -147,7 +147,7 @@ public class PreChecksViewModel : ViewModelBase
         if (data.OriginalGamePath == null)
         {
             NavigateTo(new MessageViewModel(HostScreen,
-                Result.FromError("Could not find EFT install.\n\nDo you own and have the game installed?")));
+                Result.FromError("Could not find where you installed EFT.\n\nDo you own and have the game installed?")));
             return;
         }
 #endif
@@ -172,7 +172,7 @@ public class PreChecksViewModel : ViewModelBase
             
             NavigateTo(new MessageViewModel(HostScreen,
                 Result.FromError(
-                    "Installer is located in EFT's original directory. Please move the installer to a seperate folder as per the guide"),
+                    "You have placed the installer in the same folder as EFT. Please move the installer to a seperate folder. Refer to the install guide on where best to place the installer before running it."),
                 noLog: true));
             return;
         }
@@ -189,7 +189,9 @@ public class PreChecksViewModel : ViewModelBase
                         {
                             Log.Warning("Problem path detected, confirming install path ...");
                             var confirmation = await DialogHost.Show(new ConfirmationDialog(
-                                $"We suspect you may be installing into a problematic folder: {failedCheck.Target}.\nYou might want to consider installing somewhere else to avoid issues.\n\nAre you sure you want to install to this path?\n{InstallPath}"));
+                                $"It appears you are installing into a folder known to cause problems: {failedCheck.Target}." +
+                                $"\nPlease consider installing SPT somewhere else to avoid issues later on." +
+                                $"\n\nAre you sure you want to install to this path?\n{InstallPath}"));
                             
                             if (confirmation == null || !bool.TryParse(confirmation.ToString(), out var confirm) ||
                                 !confirm)
