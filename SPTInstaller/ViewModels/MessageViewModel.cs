@@ -6,6 +6,9 @@ using SPTInstaller.Helpers;
 using SPTInstaller.Interfaces;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
+using Avalonia.Platform.Storage;
 
 namespace SPTInstaller.ViewModels;
 
@@ -43,6 +46,47 @@ public class MessageViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _cacheInfoText, value);
     }
     
+    private string _clipCommandText;
+    
+    public string ClipCommandText
+    {
+        get => _clipCommandText;
+        set => this.RaiseAndSetIfChanged(ref _clipCommandText, value);
+    }
+    
+    public ICommand CopyLogFileToClipboard => ReactiveCommand.CreateFromTask(async () =>
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            try
+            {
+                if (desktop.MainWindow?.Clipboard == null)
+                {
+                    ClipCommandText = "Could not get clipboard :(";
+                    return;
+                }
+                
+                var dataObject = new DataObject();
+                var logFile = await desktop.MainWindow.StorageProvider.TryGetFileFromPathAsync(App.LogPath);
+                
+                if (logFile == null)
+                {
+                    ClipCommandText = "Could not get log file :(";
+                    return;
+                }
+                
+                dataObject.Set(DataFormats.Files, new[] {logFile});
+                
+                await desktop.MainWindow.Clipboard.SetDataObjectAsync(dataObject);
+                ClipCommandText = "Copied!";
+            }
+            catch (Exception ex)
+            {
+                ClipCommandText = ex.Message;
+            }
+        } 
+    });
+    
     private StatusSpinner.SpinnerState _cacheCheckState;
     
     public StatusSpinner.SpinnerState CacheCheckState
@@ -64,6 +108,7 @@ public class MessageViewModel : ViewModelBase
     {
         ShowCloseButton = showCloseButton;
         Message = result.Message;
+        ClipCommandText = "Copy installer log to clipboard";
         
         Task.Run(() =>
         {

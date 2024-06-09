@@ -20,6 +20,7 @@
         <entry key="SPTInstaller/CustomControls/UpdateInfoCard.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/Views/DetailedPreChecksView.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/Views/MainWindow.axaml" value="SPTInstaller/SPTInstaller.csproj" />
+        <entry key="SPTInstaller/Views/MessageView.axaml" value="SPTInstaller/SPTInstaller.csproj" />
         <entry key="SPTInstaller/Views/PreChecksView.axaml" value="SPTInstaller/SPTInstaller.csproj" />
       </map>
     </option>
