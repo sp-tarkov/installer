@@ -20,7 +20,10 @@ public static class PreCheckHelper
             ?.GetValue("InstallLocation");
         var info = (uninstallStringValue is string key) ? new DirectoryInfo(key) : null;
         
-        return info?.FullName;
+        if (info == null)
+            return null;
+        
+        return Path.TrimEndingDirectorySeparator(info.FullName);
     }
     
     public static Result DetectOriginalGameVersion(string gamePath)
