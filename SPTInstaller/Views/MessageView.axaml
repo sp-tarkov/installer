@@ -15,7 +15,7 @@
 
     </UserControl.Styles>
 
-    <Grid ColumnDefinitions="*,AUTO,*" RowDefinitions="*,AUTO,20,AUTO,*"
+    <Grid ColumnDefinitions="*,AUTO,*" RowDefinitions="*,AUTO,20,AUTO,20,Auto,*"
           Classes.error="{Binding HasErrors}">
 
         <Label Grid.Column="1" Grid.Row="1"
@@ -34,8 +34,12 @@
                 HorizontalAlignment="Center"
                 VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                 Padding="20 10" />
+        
+        <Button Grid.Row="5" Grid.Column="1" Classes="link" Content="{Binding ClipCommandText}"
+                Command="{Binding CopyLogFileToClipboard}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                />
 
-        <cc:CacheInfo Grid.Row="4" Grid.ColumnSpan="3" Padding="10" Margin="10 0 0 0"
+        <cc:CacheInfo Grid.Row="6" Grid.ColumnSpan="3" Padding="10" Margin="10 0 0 0"
                       VerticalAlignment="Bottom"
                       InfoText="{Binding CacheInfoText}" State="{Binding CacheCheckState}" />
     </Grid>

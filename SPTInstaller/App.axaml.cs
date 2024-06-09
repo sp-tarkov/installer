@@ -12,7 +12,7 @@ namespace SPTInstaller;
 
 public partial class App : Application
 {
-    private readonly string _logPath = Path.Join(Environment.CurrentDirectory, "spt-installer_.log");
+    public static string LogPath = Path.Join(Environment.CurrentDirectory, "spt-installer.log");
     
     public override void Initialize()
     {
@@ -21,9 +21,8 @@ public partial class App : Application
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Information()
             .WriteTo
-            .File(path: _logPath,
-                restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information,
-                rollingInterval: RollingInterval.Day)
+            .File(path: LogPath,
+                restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
             .CreateLogger();
         
         RxApp.DefaultExceptionHandler = Observer.Create<Exception>((exception) =>
@@ -42,9 +41,8 @@ public partial class App : Application
                 Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
                     .WriteTo
-                    .File(path: _logPath,
-                        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug,
-                        rollingInterval: RollingInterval.Day)
+                    .File(path: LogPath,
+                        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug)
                     .CreateLogger();
                 
                 System.Diagnostics.Trace.Listeners.Add(new SerilogTraceListener.SerilogTraceListener());
