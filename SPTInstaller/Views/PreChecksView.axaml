@@ -93,19 +93,5 @@
                                   IsVisible="{Binding !AllowInstall}" />
             </StackPanel>
         </Button>
-
-        <!-- Update installer button -->
-        <cc:UpdateButton Grid.Column="2" Grid.Row="3"
-                         IsVisible="{Binding UpdateInfo.Show}"
-                         IsEnabled="{Binding UpdateInfo.Show}"
-                         IsIndeterminate="{Binding UpdateInfo.CheckingForUpdates}"
-                         InfoText="{Binding UpdateInfo.UpdateInfoText}"
-                         Updating="{Binding UpdateInfo.Updating}"
-                         DismissCommand="{Binding DismissUpdateCommand}"
-                         UpdateCommand="{Binding UpdateInstallerCommand}"
-                         WhatsNewCommand="{Binding  WhatsNewCommand}"
-                         DownloadProgress="{Binding UpdateInfo.DownloadProgress}"
-                         UpdateAvailable="{Binding UpdateInfo.UpdateAvailable}"
-                         CheckingForUpdate="{Binding UpdateInfo.CheckingForUpdates}" />
     </Grid>
 </UserControl>

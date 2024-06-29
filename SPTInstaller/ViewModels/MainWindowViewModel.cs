@@ -31,7 +31,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
         
         Log.Information("System Language: {iso} - {name}", uiCulture.TwoLetterISOLanguageName, uiCulture.DisplayName);
         
-        Router.Navigate.Execute(new PreChecksViewModel(this, debugging));
+        Router.Navigate.Execute(new InstallerUpdateViewModel(this, debugging));
     }
     
     public void CloseCommand()

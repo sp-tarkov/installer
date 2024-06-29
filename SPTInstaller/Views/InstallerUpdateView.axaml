@@ -1,0 +1,30 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cc="using:SPTInstaller.CustomControls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SPTInstaller.Views.InstallerUpdateView">
+    <Grid RowDefinitions="10,Auto,*,10" ColumnDefinitions="10,*,10">
+        <StackPanel Grid.Row="1" Grid.Column="1" IsVisible="{Binding UpdateInfo.UpdateAvailable}">
+            <Label Content="{Binding UpdateInfo.NewVersion, StringFormat='{}Installer Change Log for {0}'}" FontSize="18" FontWeight="SemiBold"
+            />
+            <Separator Margin="0 10" Padding="0" Background="{StaticResource SPT_Yellow}"/>
+            <ScrollViewer MaxHeight="250" Background="#323232">
+                <TextBlock Text="{Binding UpdateInfo.ChangeLog}"
+                           TextWrapping="Wrap" MinHeight="100"
+                />
+            </ScrollViewer>
+        </StackPanel>
+        <cc:UpdateButton Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+                         IsIndeterminate="{Binding UpdateInfo.CheckingForUpdates}"
+                         InfoText="{Binding UpdateInfo.UpdateInfoText}"
+                         Updating="{Binding UpdateInfo.Updating}"
+                         DismissCommand="{Binding NotNowCommand}"
+                         UpdateCommand="{Binding UpdateInstallCommand}"
+                         DownloadProgress="{Binding UpdateInfo.DownloadProgress}"
+                         UpdateAvailable="{Binding UpdateInfo.UpdateAvailable}"
+                         CheckingForUpdate="{Binding UpdateInfo.CheckingForUpdates}"
+        />
+    </Grid>
+</UserControl>

@@ -134,12 +134,21 @@ public static class FileHelper
         }
     }
     
+    /// <summary>
+    /// Check if a path is problematic
+    /// </summary>
+    /// <param name="path">The path the check</param>
+    /// <param name="failedCheck">The check that failed</param>
+    /// <returns>Returns true if the path is bad, otherwise false</returns>
     public static bool CheckPathForProblemLocations(string path, out PathCheck failedCheck)
     {
+        path = Path.TrimEndingDirectorySeparator(path);
+        
         failedCheck = new();
         
         var problemPaths = new List<PathCheck>()
         {
+            new("SteamApps", PathCheckType.EndsWith, PathCheckAction.Warn),
             new("Documents", PathCheckType.EndsWith, PathCheckAction.Warn),
             new("Desktop", PathCheckType.EndsWith, PathCheckAction.Deny),
             new("Battlestate Games", PathCheckType.Contains, PathCheckAction.Deny),

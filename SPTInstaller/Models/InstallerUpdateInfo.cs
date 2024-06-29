@@ -11,7 +11,7 @@ public class InstallerUpdateInfo : ReactiveObject
 {
     public Version? NewVersion { get; private set; }
     
-    public string ChangeLog = "";
+    public string ChangeLog { get; private set; }= "";
     
     private string _updateInfoText = "";
     
@@ -19,14 +19,6 @@ public class InstallerUpdateInfo : ReactiveObject
     {
         get => _updateInfoText;
         set => this.RaiseAndSetIfChanged(ref _updateInfoText, value);
-    }
-    
-    private bool _show = false;
-    
-    public bool Show
-    {
-        get => _show;
-        set => this.RaiseAndSetIfChanged(ref _show, value);
     }
     
     private bool _updating = false;
@@ -123,7 +115,6 @@ public class InstallerUpdateInfo : ReactiveObject
         }
         
         UpdateInfoText = infoText;
-        Show = updateAvailable;
         CheckingForUpdates = false;
         UpdateAvailable = updateAvailable;
     }
@@ -134,7 +125,6 @@ public class InstallerUpdateInfo : ReactiveObject
             return;
         
         UpdateInfoText = "Checking for installer updates";
-        Show = true;
         CheckingForUpdates = true;
         
         try
