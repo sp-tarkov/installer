@@ -138,7 +138,6 @@ public class PreChecksViewModel : ViewModelBase
         
         data.OriginalGamePath = PreCheckHelper.DetectOriginalGamePath();
         
-        data.TargetInstallPath = Environment.CurrentDirectory;
         InstallPath = data.TargetInstallPath;
         
         Log.Information($"Install Path: {FileHelper.GetRedactedPath(InstallPath)}");
@@ -224,7 +223,8 @@ public class PreChecksViewModel : ViewModelBase
         {
             try
             {
-                var installerPath = Path.Join(_installPath, "SPTInstaller.exe");
+                var installerPath = Path.Join(Environment.CurrentDirectory, "SPTInstaller.exe");
+                
                 Process.Start(new ProcessStartInfo()
                 {
                     FileName = installerPath,
@@ -302,6 +302,7 @@ public class PreChecksViewModel : ViewModelBase
             
             var SPTReleaseInfo =
                 JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(SPTReleaseInfoFile.FullName));
+            
             if (SPTReleaseInfo == null)
             {
                 InstallButtonText = "Could not parse latest SPT release";

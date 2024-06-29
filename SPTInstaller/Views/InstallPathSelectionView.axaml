@@ -1,0 +1,63 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SPTInstaller.Views.InstallPathSelectionView">
+    
+    <Grid RowDefinitions="10,*,Auto,*,10" ColumnDefinitions="10,*,Auto,10">
+        
+        <!-- Path Controls Grid -->
+        <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
+              RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto"
+              VerticalAlignment="Center"
+              >
+        <Label Grid.Row="0" Grid.Column="0" Content="Install Folder Path" FontSize="20"/>
+        <TextBox Grid.Row="1" Grid.Column="0"
+                 TextChanged="TextBox_OnTextChanged"
+                 Watermark="Where we dropping?"
+                 FontSize="16"
+                 Text="{Binding SelectedPath}"
+                 Classes.hasErrors="{Binding !ValidPath}"
+                 >
+            <TextBox.Styles>
+                <Style Selector="TextBox.hasErrors">
+                    <Setter Property="Foreground" Value="Red"/>
+                </Style>
+            </TextBox.Styles>
+        </TextBox>
+        <Button Grid.Row="1" Grid.Column="1"
+                Margin="10 0 0 0"
+                Command="{Binding SelectFolderCommand}"
+                >
+            <StackPanel Orientation="Horizontal">
+                <Path Data="{StaticResource OpenFolder}" Fill="{Binding $parent[Button].Foreground}"
+                      VerticalAlignment="Center"/>
+                <Label Content="Select Folder"/>
+            </StackPanel>
+        </Button>
+        </Grid>
+        
+        <!-- Validation error text -->
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ErrorMessage}"
+                   TextWrapping="Wrap"
+                   FontSize="16" Foreground="red" FontWeight="SemiBold"
+                   IsVisible="{Binding !ValidPath}"
+                   />
+        
+        <!-- Next button -->
+        <Button Grid.Row="3" Grid.Column="2"
+                MinWidth="100"
+                MinHeight="30"
+                FontSize="16"
+                FontWeight="SemiBold"
+                VerticalAlignment="Bottom"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Classes="yellow"
+                Content="Next"
+                Command="{Binding NextCommand}"
+                IsEnabled="{Binding ValidPath}"
+                />
+    </Grid>
+</UserControl>
