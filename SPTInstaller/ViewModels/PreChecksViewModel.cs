@@ -162,7 +162,7 @@ public class PreChecksViewModel : ViewModelBase
             
             NavigateTo(new MessageViewModel(HostScreen,
                 Result.FromError(
-                    "You have placed the installer in the same folder as EFT. Please move the installer to a seperate folder. Refer to the install guide on where best to place the installer before running it."),
+                    "You have chosen to install in the same folder as EFT. Please choose a another folder. Refer to the install guide on where best to place the installer before running it."),
                 noLog: true));
             return;
         }
@@ -199,7 +199,7 @@ public class PreChecksViewModel : ViewModelBase
                         Log.Error("Problem path detected, install denied");
                         NavigateTo(new MessageViewModel(HostScreen,
                             Result.FromError(
-                                $"We suspect you may be installing into a problematic folder: {failedCheck.Target}.\nWe won't be letting you install here. Please move the installer to another folder.\nSuggestion: a folder under your drive root, such as 'C:\\spt\\'\nDenied Path: {InstallPath}")));
+                                $"We suspect you may be installing into a problematic folder: {failedCheck.Target}.\nWe won't be letting you install here. How did you do this?")));
                         break;
                     }
                     default:
