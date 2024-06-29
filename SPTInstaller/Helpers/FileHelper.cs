@@ -142,6 +142,8 @@ public static class FileHelper
     /// <returns>Returns true if the path is bad, otherwise false</returns>
     public static bool CheckPathForProblemLocations(string path, out PathCheck failedCheck)
     {
+        path = Path.TrimEndingDirectorySeparator(path);
+        
         failedCheck = new();
         
         var problemPaths = new List<PathCheck>()

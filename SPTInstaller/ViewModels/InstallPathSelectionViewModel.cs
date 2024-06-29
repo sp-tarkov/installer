@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -81,11 +82,19 @@ public class InstallPathSelectionViewModel : ViewModelBase
             return;
         }
         
+        var match = Regex.Match(SelectedPath[2..], @"[\/:*?""<>|]");
+        if (match.Success)
+        {
+            ErrorMessage = "Path cannot contain these characters: / : * ? \" < > |";
+            ValidPath = false;
+            return;
+        }
+        
         if (FileHelper.CheckPathForProblemLocations(SelectedPath, out var failedCheck))
         {
             if (failedCheck.CheckType == PathCheckType.EndsWith)
             {
-                ErrorMessage = "This folder can be install in, but only in a subdirectory";
+                ErrorMessage = $"You can install in {failedCheck.Target}, but only in a subdirectory. Example: ..\\{failedCheck.Target}\\SPT";
                 ValidPath = false;
                 return;
             }
@@ -124,7 +133,7 @@ public class InstallPathSelectionViewModel : ViewModelBase
     
     public async Task NextCommand()
     {
-        if (FileHelper.CheckPathForProblemLocations(SelectedPath, out _))
+        if (FileHelper.CheckPathForProblemLocations(SelectedPath, out var failedCheck) && failedCheck.CheckAction == PathCheckAction.Deny)
         {
             return;
         }

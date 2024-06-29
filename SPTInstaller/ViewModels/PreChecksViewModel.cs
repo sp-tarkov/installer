@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
@@ -32,15 +31,7 @@ public class PreChecksViewModel : ViewModelBase
     public ICommand SelectPreCheckCommand { get; set; }
     public ICommand StartInstallCommand { get; set; }
     
-    public ICommand UpdateInstallerCommand { get; set; }
-    
-    public ICommand DismissUpdateCommand { get; set; }
-    
-    public ICommand WhatsNewCommand { get; set; }
-    
     public ICommand LaunchWithDebug { get; set; }
-    
-    public InstallerUpdateInfo UpdateInfo { get; set; } = new();
     
     private bool _debugging;
     
@@ -195,8 +186,8 @@ public class PreChecksViewModel : ViewModelBase
                             if (confirmation == null || !bool.TryParse(confirmation.ToString(), out var confirm) ||
                                 !confirm)
                             {
-                                Log.Information("User declined install path, exiting");
-                                Environment.Exit(0);
+                                Log.Information("User declined install path");
+                                NavigateBack();
                             }
                         });
                         
@@ -258,30 +249,13 @@ public class PreChecksViewModel : ViewModelBase
         
         StartInstallCommand = ReactiveCommand.Create(async () =>
         {
-            UpdateInfo.Show = false;
             NavigateTo(new InstallViewModel(HostScreen));
         });
-        
-        UpdateInstallerCommand = ReactiveCommand.Create(async () =>
-        {
-            AllowDetailsButton = false;
-            AllowInstall = false;
-            await UpdateInfo.UpdateInstaller();
-        });
-        
-        DismissUpdateCommand = ReactiveCommand.Create(() => { UpdateInfo.Show = false; });
-        
-        WhatsNewCommand =
-            ReactiveCommand.Create(async () => await DialogHost.Show(new ChangeLogDialog(UpdateInfo.NewVersion.ToString(), UpdateInfo.ChangeLog)));
-        
         
         Task.Run(async () =>
         {
             // run prechecks
             var result = await installer.RunPreChecks();
-            
-            // check for updates
-            await UpdateInfo.CheckForUpdates(Assembly.GetExecutingAssembly().GetName()?.Version);
             
             // get latest spt version
             InstallButtonText = "Getting latest release ...";

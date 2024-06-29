@@ -48,6 +48,11 @@ public class ViewModelBase : ReactiveObject, IActivatableViewModel, IRoutableVie
         Dispatcher.UIThread.InvokeAsync(() => { HostScreen.Router.Navigate.Execute(ViewModel); });
     }
     
+    public void NavigateBack()
+    {
+        Dispatcher.UIThread.InvokeAsync(() => { HostScreen.Router.NavigateBack.Execute(); });
+    }
+    
     public ViewModelBase(IScreen Host)
     {
         HostScreen = Host;
