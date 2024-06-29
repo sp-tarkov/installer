@@ -9,9 +9,21 @@ namespace SPTInstaller.Models;
 
 public class InstallerUpdateInfo : ReactiveObject
 {
-    public Version? NewVersion { get; private set; }
+    private Version? _newVersion;
     
-    public string ChangeLog { get; private set; }= "";
+    public Version? NewVersion
+    {
+        get => _newVersion;
+        set => this.RaiseAndSetIfChanged(ref _newVersion, value);
+    }
+    
+    private string _changeLog;
+    
+    public string ChangeLog
+    {
+        get => _changeLog;
+        set => this.RaiseAndSetIfChanged(ref _changeLog, value);
+    }
     
     private string _updateInfoText = "";
     
