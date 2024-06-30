@@ -69,7 +69,7 @@ public class InstallPathSelectionViewModel : ViewModelBase
                     Title = "Select a folder to install SPT into"
                 });
             
-            SelectedPath = selections.First().Path.AbsolutePath.Replace("/", "\\");
+            SelectedPath = selections.First().Path.LocalPath;
         } 
     }
     
