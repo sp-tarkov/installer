@@ -10,8 +10,8 @@
         <PackageIcon>icon.ico</PackageIcon>
         <ApplicationIcon>Assets\spt_installer.ico</ApplicationIcon>
         <Configurations>Debug;Release;TEST</Configurations>
-        <AssemblyVersion>2.81</AssemblyVersion>
-        <FileVersion>2.81</FileVersion>
+        <AssemblyVersion>2.82</AssemblyVersion>
+        <FileVersion>2.82</FileVersion>
         <Company>SPT</Company>
     </PropertyGroup>
 

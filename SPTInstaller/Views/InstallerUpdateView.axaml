@@ -13,6 +13,7 @@
             <ScrollViewer MaxHeight="250" Background="#323232">
                 <TextBlock Text="{Binding UpdateInfo.ChangeLog}"
                            TextWrapping="Wrap" MinHeight="100"
+                           Margin="10"
                 />
             </ScrollViewer>
         </StackPanel>
