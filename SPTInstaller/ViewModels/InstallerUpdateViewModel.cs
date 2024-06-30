@@ -21,6 +21,7 @@ public class InstallerUpdateViewModel : ViewModelBase
         Task.Run(async () =>
         {
             await UpdateInfo.CheckForUpdates(Assembly.GetExecutingAssembly().GetName().Version);
+            
             if (!UpdateInfo.UpdateAvailable)
             {
                 NavigateTo(new InstallPathSelectionViewModel(HostScreen, _debugging));
