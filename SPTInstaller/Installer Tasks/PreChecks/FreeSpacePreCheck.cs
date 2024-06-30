@@ -33,7 +33,7 @@ public class FreeSpacePreCheck : PreCheckBase
             
             if (eftSourceDirSize == -1)
             {
-                return PreCheckResult.FromError("An error occurred while getting the EFT source directory size");
+                return PreCheckResult.FromError("An error occurred while getting the EFT source directory size. This is most likely because EFT is not installed");
             }
             
             var availableSize = DriveInfo.GetDrives()

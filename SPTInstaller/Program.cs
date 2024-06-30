@@ -44,6 +44,7 @@ internal class Program
         ServiceHelper.Register<InternalData>();
         
 #if !TEST
+        ServiceHelper.Register<PreCheckBase, EftInstalledPreCheck>();
         ServiceHelper.Register<PreCheckBase, NetFramework472PreCheck>();
         ServiceHelper.Register<PreCheckBase, Net8PreCheck>();
         ServiceHelper.Register<PreCheckBase, FreeSpacePreCheck>();
