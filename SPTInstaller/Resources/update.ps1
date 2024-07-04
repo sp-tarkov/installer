@@ -43,7 +43,7 @@ while (-not $copied) {
     }
     
     Remove-Item $destination -ErrorAction SilentlyContinue
-    Copy-Item $source $destination
+    Copy-Item $source $destination -ErrorAction SilentlyContinue
     
     if (Test-Path $destination) {
         $sLength = (Get-Item $source).Length
