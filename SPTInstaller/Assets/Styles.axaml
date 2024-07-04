@@ -9,6 +9,7 @@
             </Button>
             <TextBox Text="Some cool text here" Margin="5" />
             <TextBox Watermark="This is a watermark" Margin="5" />
+            <CheckBox Content="sldkflskdf" />
         </StackPanel>
     </Design.PreviewWith>
 
@@ -266,5 +267,31 @@
     </Style>
     <Style Selector="Button.icon:pressed">
         <Setter Property="Foreground" Value="{StaticResource SPT_DarkGrayBlue}"></Setter>
+    </Style>
+    
+    <!-- Checkbox Styles -->
+    <Style Selector="CheckBox">
+        <Setter Property="Foreground" Value="White"/>
+        <Style.Resources>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeUnchecked" Color="DimGray"/>
+        </Style.Resources>
+    </Style>
+    <Style Selector="CheckBox:pointerover /template/ ContentPresenter#ContentPresenter">
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    
+    <Style Selector="CheckBox:checked /template/ ContentPresenter#ContentPresenter">
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    
+    <Style Selector="CheckBox:pointerover /template/ Border#NormalRectangle">
+        <Setter Property="BorderBrush" Value="{StaticResource SPT_Yellow}"/>
+    </Style>
+    <Style Selector="CheckBox:checked /template/ Border#NormalRectangle">
+        <Setter Property="BorderBrush" Value="{StaticResource SPT_Yellow}"/>
+        <Setter Property="Background" Value="{StaticResource SPT_DarkGrayBlue}"/>
+    </Style>
+    <Style Selector="CheckBox:checked /template/ Path#CheckGlyph">
+        <Setter Property="Fill" Value="{StaticResource SPT_Yellow}"/>
     </Style>
 </Styles>

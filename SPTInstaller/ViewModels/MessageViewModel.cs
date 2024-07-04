@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Diagnostics;
+using Avalonia;
 using ReactiveUI;
 using Serilog;
 using SPTInstaller.CustomControls;
@@ -9,6 +10,7 @@ using System.Windows.Input;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
+using SPTInstaller.Models;
 
 namespace SPTInstaller.ViewModels;
 
@@ -38,6 +40,14 @@ public class MessageViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _showCloseButton, value);
     }
     
+    private bool _showOptions;
+    
+    public bool ShowOptions
+    {
+        get => _showOptions;
+        set => this.RaiseAndSetIfChanged(ref _showOptions, value);
+    }
+    
     private string _cacheInfoText;
     
     public string CacheInfoText
@@ -52,6 +62,20 @@ public class MessageViewModel : ViewModelBase
     {
         get => _clipCommandText;
         set => this.RaiseAndSetIfChanged(ref _clipCommandText, value);
+    }
+    
+    private bool _addShortcuts;
+    public bool AddShortcuts
+    {
+        get => _addShortcuts;
+        set => this.RaiseAndSetIfChanged(ref _addShortcuts, value);
+    }
+    
+    private bool _openInstallFolder = true;
+    public bool OpenInstallFolder
+    {
+        get => _openInstallFolder;
+        set => this.RaiseAndSetIfChanged(ref _openInstallFolder, value);
     }
     
     public ICommand CopyLogFileToClipboard => ReactiveCommand.CreateFromTask(async () =>
@@ -97,8 +121,7 @@ public class MessageViewModel : ViewModelBase
     
     public ICommand CloseCommand { get; set; } = ReactiveCommand.Create(() =>
     {
-        if (Application.Current.ApplicationLifetime is
-            Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktopApp)
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopApp)
         {
             desktopApp.MainWindow.Close();
         }
@@ -109,6 +132,64 @@ public class MessageViewModel : ViewModelBase
         ShowCloseButton = showCloseButton;
         Message = result.Message;
         ClipCommandText = "Copy installer log to clipboard";
+        
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopApp)
+        {
+            var data = ServiceHelper.Get<InternalData?>();
+            
+            desktopApp.MainWindow.Closing += (_, _) =>
+            {
+                if (ShowOptions)
+                {
+                    if (OpenInstallFolder)
+                    {
+                        Process.Start(new ProcessStartInfo()
+                        {
+                           FileName = "explorer.exe",
+                           Arguments = data.TargetInstallPath
+                        });
+                    }
+                    
+                    if (AddShortcuts)
+                    {
+                        var shortcuts = new FileInfo(Path.Join(DownloadCacheHelper.CachePath, "add_shortcuts.ps1"));
+
+                        if (!FileHelper.StreamAssemblyResourceOut("add_shortcuts.ps1", shortcuts.FullName))
+                        {
+                            Log.Fatal("Failed to prepare shortcuts file");
+                            return;
+                        }
+                        
+                        if (!File.Exists(shortcuts.FullName))
+                        {
+                            Log.Fatal("Shortcuts file not found");
+                            return;
+                        }
+                        
+                        Log.Information("Running add shortcuts script ...");
+                        
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "powershell.exe",
+                            CreateNoWindow = true,
+                            ArgumentList =
+                            {
+                                "-ExecutionPolicy", "Bypass", "-File", $"{shortcuts.FullName}", $"{data.TargetInstallPath}"
+                            }
+                        });
+                    }
+                }
+                
+                try
+                {
+                    File.Copy(App.LogPath, Path.Join(data.TargetInstallPath, "spt-installer.log"), true);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Failed to copy installer log to install path");
+                }
+            };
+        }
         
         Task.Run(() =>
         {
@@ -122,6 +203,7 @@ public class MessageViewModel : ViewModelBase
         if (result.Succeeded)
         {
             Log.Information(Message);
+            ShowOptions = true;
             return;
         }
         

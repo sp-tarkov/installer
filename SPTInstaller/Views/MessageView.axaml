@@ -15,7 +15,7 @@
 
     </UserControl.Styles>
 
-    <Grid ColumnDefinitions="*,AUTO,*" RowDefinitions="*,AUTO,20,AUTO,20,Auto,*"
+    <Grid ColumnDefinitions="*,AUTO,*" RowDefinitions="*,AUTO,20,AUTO,20,Auto,Auto,*"
           Classes.error="{Binding HasErrors}">
 
         <Label Grid.Column="1" Grid.Row="1"
@@ -35,12 +35,18 @@
                 VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                 Padding="20 10" />
         
-        <Button Grid.Row="5" Grid.Column="1" Classes="link" Content="{Binding ClipCommandText}"
-                Command="{Binding CopyLogFileToClipboard}" HorizontalAlignment="Center" VerticalAlignment="Center"
-                />
+        <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" Spacing="10">
+            <CheckBox IsChecked="{Binding OpenInstallFolder}" Content="Open Install Folder" IsVisible="{Binding ShowOptions}"/>
+            <CheckBox IsChecked="{Binding AddShortcuts}" Content="Add Desktop Shortcuts" IsVisible="{Binding ShowOptions}"/>
+        </StackPanel>
 
-        <cc:CacheInfo Grid.Row="6" Grid.ColumnSpan="3" Padding="10" Margin="10 0 0 0"
+        <cc:CacheInfo Grid.Row="7" Grid.ColumnSpan="3" Padding="10" Margin="10 0 0 0"
                       VerticalAlignment="Bottom"
-                      InfoText="{Binding CacheInfoText}" State="{Binding CacheCheckState}" />
+                      InfoText="{Binding CacheInfoText}" State="{Binding CacheCheckState}"
+                      />
+        
+        <Button Grid.Row="7" Grid.Column="2" Classes="link" Content="{Binding ClipCommandText}"
+                Command="{Binding CopyLogFileToClipboard}" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                />
     </Grid>
 </UserControl>

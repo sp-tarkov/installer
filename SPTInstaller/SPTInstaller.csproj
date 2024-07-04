@@ -10,8 +10,8 @@
         <PackageIcon>icon.ico</PackageIcon>
         <ApplicationIcon>Assets\spt_installer.ico</ApplicationIcon>
         <Configurations>Debug;Release;TEST</Configurations>
-        <AssemblyVersion>2.82</AssemblyVersion>
-        <FileVersion>2.82</FileVersion>
+        <AssemblyVersion>2.83</AssemblyVersion>
+        <FileVersion>2.83</FileVersion>
         <Company>SPT</Company>
     </PropertyGroup>
 
@@ -26,6 +26,8 @@
         <EmbeddedResource Include="Resources\update.ps1"/>
         <None Remove="Resources\7z.dll"/>
         <EmbeddedResource Include="Resources\7z.dll"/>
+        <None Remove="Resources\add_shortcuts.ps1" />
+        <EmbeddedResource Include="Resources\add_shortcuts.ps1" />
     </ItemGroup>
 
     <ItemGroup>

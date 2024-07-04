@@ -98,33 +98,29 @@ public static class FileHelper
         {
             Log.Debug($"Starting StreamAssemblyResourceOut, resourcename: {resourceName}, outputFilePath: {outputFilePath}");
             var assembly = Assembly.GetExecutingAssembly();
-            Log.Debug($"1");
             
             FileInfo outputFile = new FileInfo(outputFilePath);
-            Log.Debug($"2");
+            
             if (outputFile.Exists)
             {
-                Log.Debug($"3");
                 outputFile.Delete();
             }
-            Log.Debug($"4");
+            
             if (!outputFile.Directory.Exists)
             {
-                Log.Debug($"5");
                 Directory.CreateDirectory(outputFile.Directory.FullName);
             }
-            Log.Debug($"6");
+            
             var resName = assembly.GetManifestResourceNames().First(x => x.EndsWith(resourceName));
-            Log.Debug($"7");
+            
             using (FileStream fs = File.Create(outputFilePath))
             using (Stream s = assembly.GetManifestResourceStream(resName))
             {
-                Log.Debug($"8");
                 s.CopyTo(fs);
             }
-            Log.Debug($"9");
+            
             outputFile.Refresh();
-            Log.Debug(outputFile.Exists.ToString());
+            
             return outputFile.Exists;
         }
         catch (Exception ex)
