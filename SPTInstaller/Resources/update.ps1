@@ -5,15 +5,17 @@
 
 Clear-Host
 
-Write-Host "Stopping installer ..."
+Write-Host "Stopping installer ... " -ForegroundColor cyan -NoNewLine
 
 $installer = Stop-Process -Name "SPTInstaller" -ErrorAction SilentlyContinue
 
 if ($installer -ne $null)
 {
-    Write-Host "Something went wrong, couldn't stop installer process'"
+    Write-Warning "Something went wrong, couldn't stop installer process'"
     return;
 }
+
+Write-Host "OK" -ForegroundColor green
 
 if (-not(Test-Path $source) -and -not(Test-Path $destination)) {
     Write-Warning "Can't find a required file"
@@ -23,7 +25,7 @@ if (-not(Test-Path $source) -and -not(Test-Path $destination)) {
     exit
 }
 
-Write-Host "Copying new installer ..."
+Write-Host "Copying new installer ... " -ForegroundColor cyan
 
 $maxAttempts = 10
 $copied = $false
@@ -32,7 +34,7 @@ while (-not $copied) {
 
     $maxAttempts--
     
-    Write-Host "Please wait ..."
+    Write-Host "  > Please wait ... " -NoNewLine
     
     if ($maxAttempts -le 0) {
         Write-Host "Couldn't copy new installer :(   Please re-download the installer"
@@ -42,8 +44,15 @@ while (-not $copied) {
         exit
     }
     
-    Remove-Item $destination -ErrorAction SilentlyContinue
-    Copy-Item $source $destination -ErrorAction SilentlyContinue
+    try {
+        Remove-Item $destination -ErrorAction SilentlyContinue
+        Copy-Item $source $destination -ErrorAction SilentlyContinue
+    }
+    catch {
+        Write-Host "file locked, retrying ..." -ForegroundColor yellow
+        sleep(2)
+        continue
+    }
     
     if (Test-Path $destination) {
         $sLength = (Get-Item $source).Length
@@ -51,9 +60,11 @@ while (-not $copied) {
         
         if ($sLength -eq $dLength) {
             $copied = $true
+            Write-Host "OK" -ForegroundColor green
             break
         }
         
+        Write-Host "sizes differ, retrying ..." -ForegroundColor yellow
         sleep(2)
     }
 }
