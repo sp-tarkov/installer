@@ -182,6 +182,11 @@ public class MessageViewModel : ViewModelBase
                 
                 try
                 {
+                    if (data.TargetInstallPath == Environment.CurrentDirectory)
+                    {
+                        return;
+                    }
+                    
                     File.Copy(App.LogPath, Path.Join(data.TargetInstallPath, "spt-installer.log"), true);
                 }
                 catch (Exception ex)
