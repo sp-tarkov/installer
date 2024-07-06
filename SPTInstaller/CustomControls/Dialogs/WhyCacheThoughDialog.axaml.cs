@@ -95,6 +95,10 @@ public partial class WhyCacheThoughDialog : UserControl
         AdditionalInfo = message;
         AdditionalInfoColor = allDeleted ? "green" : "red";
         Log.Information(message);
+        
+        var data = ServiceHelper.Get<InternalData>();
+        
+        App.ReLaunch(false, data.TargetInstallPath!);
     }
     
     public void MoveDownloadsPatcherToCache()

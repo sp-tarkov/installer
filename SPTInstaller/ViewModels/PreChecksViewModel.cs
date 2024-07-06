@@ -214,15 +214,7 @@ public class PreChecksViewModel : ViewModelBase
         {
             try
             {
-                var installerPath = Path.Join(Environment.CurrentDirectory, "SPTInstaller.exe");
-                
-                Process.Start(new ProcessStartInfo()
-                {
-                    FileName = installerPath,
-                    Arguments = "debug"
-                });
-                
-                Environment.Exit(0);
+                App.ReLaunch(true, InstallPath);
             }
             catch (Exception ex)
             {

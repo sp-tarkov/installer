@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using ReactiveUI;
+using Serilog;
 using SPTInstaller.Helpers;
 using SPTInstaller.Models;
 
@@ -38,12 +39,25 @@ public class InstallPathSelectionViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _errorMessage, value);
     }
     
-    public InstallPathSelectionViewModel(IScreen host, bool debugging) : base(host)
+    public InstallPathSelectionViewModel(IScreen host, string installPath, bool debugging) : base(host)
     {
         _debugging = debugging;
         _data = ServiceHelper.Get<InternalData?>() ?? throw new Exception("Failed to get internal data");
         SelectedPath = Environment.CurrentDirectory;
         ValidPath = false;
+        
+        if (!string.IsNullOrEmpty(installPath))
+        {
+            SelectedPath = installPath;
+            ValidatePath();
+            
+            if (ValidPath)
+            {
+                Log.Information("Install Path was provided by parameter and seems valid");
+                Task.Run(NextCommand);
+                return;
+            }
+        }
         
         AdjustInstallPath();
     }
@@ -131,7 +145,7 @@ public class InstallPathSelectionViewModel : ViewModelBase
         }
     }
     
-    public async Task NextCommand()
+    public void NextCommand()
     {
         if (FileHelper.CheckPathForProblemLocations(SelectedPath, out var failedCheck) && failedCheck.CheckAction == PathCheckAction.Deny)
         {
