@@ -12,11 +12,9 @@ public class InstallerUpdateViewModel : ViewModelBase
     public InstallerUpdateInfo UpdateInfo { get; set; } = new();
     private InternalData _data;
     
-    private bool _debugging;
     private string _installPath;
-    public InstallerUpdateViewModel(IScreen Host, string installPath, bool debugging) : base(Host)
+    public InstallerUpdateViewModel(IScreen Host, string installPath) : base(Host)
     {
-        _debugging = debugging;
         _installPath = installPath;
         
         _data = ServiceHelper.Get<InternalData>() ?? throw new Exception("Failed to get internal data");
@@ -27,14 +25,14 @@ public class InstallerUpdateViewModel : ViewModelBase
             
             if (!UpdateInfo.UpdateAvailable)
             {
-                NavigateTo(new OverviewViewModel(HostScreen, _installPath, _debugging));
+                NavigateTo(new OverviewViewModel(HostScreen, _installPath));
             }
         });
     }
     
     public void NotNowCommand()
     {
-        NavigateTo(new OverviewViewModel(HostScreen, _installPath, _debugging));
+        NavigateTo(new OverviewViewModel(HostScreen, _installPath));
     }
     
     public async Task UpdateInstallCommand()

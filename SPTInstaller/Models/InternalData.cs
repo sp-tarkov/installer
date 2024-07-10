@@ -5,6 +5,7 @@ namespace SPTInstaller.Models;
 
 public class InternalData
 {
+    public bool DebugMode { get; set; } = false;
     /// <summary>
     /// The folder to install SPT into
     /// </summary>

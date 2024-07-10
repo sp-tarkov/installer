@@ -6,11 +6,9 @@ namespace SPTInstaller.ViewModels;
 public class OverviewViewModel : ViewModelBase
 {
     private string _providedPath;
-    private bool _debugging;
-    public OverviewViewModel(IScreen Host, string providedPath, bool debugging) : base(Host)
+    public OverviewViewModel(IScreen Host, string providedPath) : base(Host)
     {
         _providedPath = providedPath;
-        _debugging = debugging;
         
         if (!string.IsNullOrEmpty(_providedPath))
         {
@@ -20,6 +18,6 @@ public class OverviewViewModel : ViewModelBase
     
     public void NextCommand()
     {
-        NavigateTo(new InstallPathSelectionViewModel(HostScreen, _providedPath, _debugging));
+        NavigateTo(new InstallPathSelectionViewModel(HostScreen, _providedPath));
     }
 }

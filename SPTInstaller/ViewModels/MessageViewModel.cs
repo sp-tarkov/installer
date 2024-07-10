@@ -80,6 +80,8 @@ public class MessageViewModel : ViewModelBase
     
     public ICommand CopyLogFileToClipboard => ReactiveCommand.CreateFromTask(async () =>
     {
+        var data = ServiceHelper.Get<InternalData>();
+        
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             try
@@ -91,7 +93,7 @@ public class MessageViewModel : ViewModelBase
                 }
                 
                 var dataObject = new DataObject();
-                var logFile = await desktop.MainWindow.StorageProvider.TryGetFileFromPathAsync(App.LogPath);
+                var logFile = await desktop.MainWindow.StorageProvider.TryGetFileFromPathAsync(data.DebugMode ? App.LogDebugPath : App.LogPath);
                 
                 if (logFile == null)
                 {
