@@ -1,0 +1,55 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SPTInstaller.Views.OverviewView">
+    <Grid RowDefinitions="10,Auto,Auto,Auto,Auto,*,10" ColumnDefinitions="10,*,Auto,10">
+        
+        <!-- Overview text -->
+        <Label Grid.Row="1" Grid.Column="1" Content="This installer will:" FontSize="20" Margin="0 5"
+               Foreground="{StaticResource SPT_Yellow}"
+               />
+        
+        <!-- Overview info -->
+        <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2">
+            <Label>◉ Check dependencies are installed, such as .NET</Label>
+            <Label>◉ Automatically locate and copy your EFT client files to the path you supply on the next page</Label>
+            <Label>◉ Downgrade your client files to the version SPT uses, if needed</Label>
+            <Label>◉ Download and extract the SPT release files</Label>
+        </StackPanel>
+        
+        <!-- Notes text -->
+        <Label Grid.Row="3" Grid.Column="1" Content="Additional Notes:" FontSize="20" Margin="0 5"
+               Foreground="{StaticResource SPT_Yellow}"
+               />
+        
+        <!-- Notes info -->
+        <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2">
+            <Label>◉ You do not need to install SPT in the same drive as EFT</Label>
+            <Label Margin="0" Padding="0">
+                <StackPanel Orientation="Horizontal">
+                    <Label VerticalAlignment="Center">◉ This tool does</Label>
+                    <TextBlock TextDecorations="Underline" FontWeight="SemiBold" Foreground="Crimson" VerticalAlignment="Center">NOT</TextBlock>
+                    <Label VerticalAlignment="Center">update an existing SPT install</Label>
+                </StackPanel>
+            </Label>
+        </StackPanel>
+        
+        <!-- Next button -->
+        <Button Grid.Row="5" Grid.Column="2"
+                MinWidth="100"
+                MinHeight="30"
+                FontSize="16"
+                CornerRadius="20"
+                FontWeight="SemiBold"
+                VerticalAlignment="Bottom"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Classes="yellow"
+                Content="Next"
+                Command="{Binding NextCommand}"
+                IsEnabled="{Binding ValidPath}"
+        />
+    </Grid>
+</UserControl>

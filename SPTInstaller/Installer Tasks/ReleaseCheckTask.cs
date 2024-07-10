@@ -76,12 +76,7 @@ public class ReleaseCheckTask : InstallerTaskBase
 
             bool sptClientIsOutdated = intSPTVersion != patchMirrorInfo.TargetClientVersion && patchNeedCheck;
             bool liveClientIsOutdated = intGameVersion != patchMirrorInfo.SourceClientVersion && patchNeedCheck;
-
-            if (liveClientIsOutdated)
-            {
-                return Result.FromError("Your live EFT is out of date. Please update it using the BSG Launcher then run the SPT Installer again");
-            }
-
+            
             if (sptClientIsOutdated)
             {
                 return Result.FromError(
@@ -89,6 +84,11 @@ public class ReleaseCheckTask : InstallerTaskBase
                     "\nThis can happen due to one of the following reasons:" +
                     "\n* Live EFT just updated. The SPT team will create a new patcher within 24 hours, hold tight!" +
                     "\n* Live EFT just updated. You have not installed it on your computer using the BSG launcher");
+            }
+
+            if (liveClientIsOutdated)
+            {
+                return Result.FromError("Your live EFT is out of date. Please update it using the BSG Launcher then run the SPT Installer again");
             }
             
             _data.PatchNeeded = patchNeedCheck;

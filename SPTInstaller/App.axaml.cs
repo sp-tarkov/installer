@@ -15,7 +15,7 @@ namespace SPTInstaller;
 
 public partial class App : Application
 {
-    public static string LogPath = Path.Join(Environment.CurrentDirectory, "spt-installer.log");
+    public static string LogPath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "spt-installer", "spt-installer.log");
     
     public static void ReLaunch(bool debug, string installPath = "")
     {
@@ -66,8 +66,6 @@ public partial class App : Application
                 
                 providedPath = installPath != null && installPath.Contains('=') ? installPath?.Split('=')[1] ?? "" : "";
             }
-            
-            
             
             if (debug)
             {
