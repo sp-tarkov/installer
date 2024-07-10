@@ -109,11 +109,12 @@ public class PreChecksViewModel : ViewModelBase
         });
     }
     
-    public PreChecksViewModel(IScreen host, bool debugging) : base(host)
+    public PreChecksViewModel(IScreen host) : base(host)
     {
-        Debugging = debugging;
         var data = ServiceHelper.Get<InternalData?>();
         var installer = ServiceHelper.Get<InstallController?>();
+        
+        Debugging = data.DebugMode;
         
         installer.RecheckRequested += ReCheckRequested;
         

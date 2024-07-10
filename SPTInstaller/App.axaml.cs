@@ -9,13 +9,16 @@ using SPTInstaller.ViewModels;
 using SPTInstaller.Views;
 using System.Reactive;
 using System.Text;
-using DynamicData;
+using SPTInstaller.Helpers;
+using SPTInstaller.Models;
 
 namespace SPTInstaller;
 
 public partial class App : Application
 {
     public static string LogPath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "spt-installer", "spt-installer.log");
+    public static string LogDebugPath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "spt-installer", "spt-isntaller-debug.log");
     
     public static void ReLaunch(bool debug, string installPath = "")
     {
@@ -56,34 +59,38 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var debug = false;
+            var data = ServiceHelper.Get<InternalData>() ?? throw new Exception("failed to get internal data");
+            
+            data.DebugMode = false;
             var providedPath = "";
             
             if (desktop.Args != null)
             {
-                debug = desktop.Args.Any(x => x.ToLower() == "debug");
+                data.DebugMode = desktop.Args.Any(x => x.ToLower() == "debug");
                 var installPath = desktop.Args.FirstOrDefault(x => x.StartsWith("installPath=", StringComparison.CurrentCultureIgnoreCase));
                 
                 providedPath = installPath != null && installPath.Contains('=') ? installPath?.Split('=')[1] ?? "" : "";
             }
             
-            if (debug)
+            if (data.DebugMode)
             {
+                Log.CloseAndFlush();
+                
                 Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
                     .WriteTo
-                    .File(path: LogPath,
+                    .File(path: LogDebugPath,
                         restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug)
                     .CreateLogger();
                 
-                System.Diagnostics.Trace.Listeners.Add(new SerilogTraceListener.SerilogTraceListener());
+                Trace.Listeners.Add(new SerilogTraceListener.SerilogTraceListener());
                 
                 Log.Debug("TraceListener is registered");
             }
             
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(providedPath, debug),
+                DataContext = new MainWindowViewModel(providedPath),
             };
         }
         

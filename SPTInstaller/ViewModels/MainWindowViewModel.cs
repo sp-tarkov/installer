@@ -3,6 +3,8 @@ using ReactiveUI;
 using Serilog;
 using System.Globalization;
 using System.Reflection;
+using SPTInstaller.Helpers;
+using SPTInstaller.Models;
 
 namespace SPTInstaller.ViewModels;
 
@@ -19,10 +21,12 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
         set => this.RaiseAndSetIfChanged(ref _title, value);
     }
     
-    public MainWindowViewModel(string installPath, bool debugging)
+    public MainWindowViewModel(string installPath)
     {
+        var data = ServiceHelper.Get<InternalData>() ?? throw new Exception("failed to get interanl data");
+        
         Title =
-            $"{(debugging ? "-debug-" : "")} SPT Installer {"v" + Assembly.GetExecutingAssembly().GetName()?.Version?.ToString() ?? "--unknown version--"}";
+            $"{(data.DebugMode ? "-debug-" : "")} SPT Installer {"v" + Assembly.GetExecutingAssembly().GetName()?.Version?.ToString() ?? "--unknown version--"}";
         
         Log.Information($"========= {Title} Started =========");
         Log.Information(Environment.OSVersion.VersionString);
@@ -31,7 +35,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel, IScree
         
         Log.Information("System Language: {iso} - {name}", uiCulture.TwoLetterISOLanguageName, uiCulture.DisplayName);
         
-        Router.Navigate.Execute(new InstallerUpdateViewModel(this, installPath, debugging));
+        Router.Navigate.Execute(new InstallerUpdateViewModel(this, installPath));
     }
     
     public void CloseCommand()

@@ -13,7 +13,6 @@ namespace SPTInstaller.ViewModels;
 
 public class InstallPathSelectionViewModel : ViewModelBase
 {
-    private bool _debugging = false;
     private InternalData _data;
     
     private string _selectedPath;
@@ -39,9 +38,8 @@ public class InstallPathSelectionViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _errorMessage, value);
     }
     
-    public InstallPathSelectionViewModel(IScreen host, string installPath, bool debugging) : base(host)
+    public InstallPathSelectionViewModel(IScreen host, string installPath) : base(host)
     {
-        _debugging = debugging;
         _data = ServiceHelper.Get<InternalData?>() ?? throw new Exception("Failed to get internal data");
         SelectedPath = Environment.CurrentDirectory;
         ValidPath = false;
@@ -154,6 +152,6 @@ public class InstallPathSelectionViewModel : ViewModelBase
         
         _data.TargetInstallPath = SelectedPath;
         
-        NavigateTo(new PreChecksViewModel(HostScreen, _debugging));
+        NavigateTo(new PreChecksViewModel(HostScreen));
     }
 }
