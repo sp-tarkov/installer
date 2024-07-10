@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Avalonia;
 using ReactiveUI;
 using Serilog;
@@ -93,15 +94,26 @@ public class MessageViewModel : ViewModelBase
                 }
                 
                 var dataObject = new DataObject();
-                var logFile = await desktop.MainWindow.StorageProvider.TryGetFileFromPathAsync(data.DebugMode ? App.LogDebugPath : App.LogPath);
+
+                var filesToCopy = new List<IStorageFile>();
                 
+                var logFile = await desktop.MainWindow.StorageProvider.TryGetFileFromPathAsync(data.DebugMode ? App.LogDebugPath : App.LogPath);
+                var patcherLogFile = await desktop.MainWindow.StorageProvider.TryGetFileFromPathAsync(Path.Join(data.TargetInstallPath, "patcher.log"));
+                    
                 if (logFile == null)
                 {
                     ClipCommandText = "Could not get log file :(";
                     return;
                 }
                 
-                dataObject.Set(DataFormats.Files, new[] {logFile});
+                filesToCopy.Add(logFile);
+
+                if (patcherLogFile != null)
+                {
+                    filesToCopy.Add(patcherLogFile);
+                }
+                
+                dataObject.Set(DataFormats.Files, filesToCopy.ToArray());
                 
                 await desktop.MainWindow.Clipboard.SetDataObjectAsync(dataObject);
                 ClipCommandText = "Copied!";
@@ -190,6 +202,11 @@ public class MessageViewModel : ViewModelBase
                     }
                     
                     File.Copy(App.LogPath, Path.Join(data.TargetInstallPath, "spt-installer.log"), true);
+
+                    if (data.DebugMode)
+                    {
+                        File.Copy(App.LogDebugPath, Path.Join(data.TargetInstallPath, "spt-installer-debug.log"), true);
+                    }
                 }
                 catch (Exception ex)
                 {
