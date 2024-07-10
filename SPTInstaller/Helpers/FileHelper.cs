@@ -61,7 +61,7 @@ public static class FileHelper
                 if (currentFileRelativePath.EndsWith(".bak"))
                 {
                     Log.Debug($"EXCLUDING BAK FILE :: {currentFileRelativePath}");
-                    break;
+                    continue;
                 }
                 
                 fileCopies.Add(new CopyInfo(file.FullName, file.FullName.Replace(sourceDir.FullName, targetDir.FullName)));
