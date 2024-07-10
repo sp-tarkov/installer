@@ -27,14 +27,14 @@ public class InstallerUpdateViewModel : ViewModelBase
             
             if (!UpdateInfo.UpdateAvailable)
             {
-                NavigateTo(new InstallPathSelectionViewModel(HostScreen, _installPath, _debugging));
+                NavigateTo(new OverviewViewModel(HostScreen, _installPath, _debugging));
             }
         });
     }
     
     public void NotNowCommand()
     {
-        NavigateTo(new InstallPathSelectionViewModel(HostScreen, _installPath, _debugging));
+        NavigateTo(new OverviewViewModel(HostScreen, _installPath, _debugging));
     }
     
     public async Task UpdateInstallCommand()
