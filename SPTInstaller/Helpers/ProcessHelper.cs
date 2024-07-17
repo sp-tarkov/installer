@@ -50,7 +50,7 @@ public static class ProcessHelper
                 return Result.FromError("Patchers Folder called 'SPT_Patches' is missing");
             
             case PatcherExitCode.MissingFile:
-                return Result.FromError("EFT files was missing a Vital file to continue");
+                return Result.FromError("Vital EFT files were not found. The installer is unable to continue. Please reinstall EFT and try again.");
             
             case PatcherExitCode.PatchFailed:
                 return Result.FromError("A patch failed to apply");
