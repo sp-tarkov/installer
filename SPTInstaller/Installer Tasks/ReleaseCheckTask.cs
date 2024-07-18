@@ -30,7 +30,7 @@ public class ReleaseCheckTask : InstallerTaskBase
             
             if (SPTReleaseInfoFile == null)
             {
-                return Result.FromError("Failed to download release metadata");
+                return Result.FromError("Failed to download release metadata, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button"");
             }
             
             var SPTReleaseInfo =
@@ -44,7 +44,7 @@ public class ReleaseCheckTask : InstallerTaskBase
             
             if (SPTPatchMirrorsFile == null)
             {
-                return Result.FromError("Failed to download patch mirror data");
+                return Result.FromError("Failed to download patch mirror data, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button");
             }
             
             var patchMirrorInfo =
@@ -52,7 +52,7 @@ public class ReleaseCheckTask : InstallerTaskBase
             
             if (SPTReleaseInfo == null || patchMirrorInfo == null)
             {
-                return Result.FromError("An error occurred while deserializing SPT or patch data");
+                return Result.FromError("An error occurred while deserializing SPT or patch data, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button"");
             }
             
             _data.ReleaseInfo = SPTReleaseInfo;
@@ -66,7 +66,7 @@ public class ReleaseCheckTask : InstallerTaskBase
             
             if (intGameVersion < intSPTVersion)
             {
-                return Result.FromError("Your live EFT is out of date. Please update it using the BSG Launcher then run the SPT Installer again");
+                return Result.FromError("Your live EFT is out of date. Please update it using the Battlestate Games Launcher and try runing the SPT Installer again");
             }
             
             if (intGameVersion == intSPTVersion)
@@ -83,12 +83,12 @@ public class ReleaseCheckTask : InstallerTaskBase
                     "Could not find a downgrade patcher for the version of EFT you have installed." +
                     "\nThis can happen due to one of the following reasons:" +
                     "\n* Live EFT just updated. The SPT team will create a new patcher within 24 hours, hold tight!" +
-                    "\n* Live EFT just updated. You have not installed it on your computer using the BSG launcher");
+                    "\n* Live EFT just updated. You have not installed it on your computer using your Battlestate Games launcher");
             }
 
             if (liveClientIsOutdated)
             {
-                return Result.FromError("Your live EFT is out of date. Please update it using the BSG Launcher then run the SPT Installer again");
+                return Result.FromError("Your live EFT is out of date. Please update it using your Battlestate Games Launcher then run the SPT Installer again");
             }
             
             _data.PatchNeeded = patchNeedCheck;

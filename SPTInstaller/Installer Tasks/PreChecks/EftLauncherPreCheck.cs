@@ -17,7 +17,7 @@ public class EftLauncherPreCheck : PreCheckBase
         
         return eftLauncherProcs.Length == 0
             ? PreCheckResult.FromSuccess("Eft launcher is closed")
-            : PreCheckResult.FromError("Your BSG launcher is open. Please close it to continue installing SPT",
+            : PreCheckResult.FromError("Your Battlestate Games Launcher is open. Please close it to continue installing SPT",
                 "Kill EFT Launcher Processes",
                 () =>
                 {
