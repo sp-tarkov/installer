@@ -30,7 +30,7 @@ public class ReleaseCheckTask : InstallerTaskBase
             
             if (SPTReleaseInfoFile == null)
             {
-                return Result.FromError("Failed to download release metadata, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button"");
+                return Result.FromError("Failed to download release metadata, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button");
             }
             
             var SPTReleaseInfo =
@@ -52,7 +52,7 @@ public class ReleaseCheckTask : InstallerTaskBase
             
             if (SPTReleaseInfo == null || patchMirrorInfo == null)
             {
-                return Result.FromError("An error occurred while deserializing SPT or patch data, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button"");
+                return Result.FromError("An error occurred while deserializing SPT or patch data, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button");
             }
             
             _data.ReleaseInfo = SPTReleaseInfo;
