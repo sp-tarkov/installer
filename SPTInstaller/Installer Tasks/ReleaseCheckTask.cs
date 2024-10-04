@@ -73,8 +73,27 @@ public class ReleaseCheckTask : InstallerTaskBase
             {
                 patchNeedCheck = false;
             }
+            
+            /*
+              An example of the logic going on here because holy shit I can't keep track of why we do it this way -waffle.lazy
+              ----    Example data    ----
+              gameVersion         : 32738
+              sptVersion          : 30626
+              SourceClientVersion : 32678
+              TargetClientVersion : 30626
+              patchNeeded         : true
+              ----------------------------
+              
+              * spt client is 'outdated' if the game and target versions don't match
+              * or
+              * the game version is behind the mirror's source client version
+              sptClientIsOutdated  = (30626 != 30626 || 32738 > 32678) && true
+              
+              * otherwise, if the game version doesn't match the mirror's source version, we assume live is outdated 
+              liveClientIsOutdated = 32738 != 32678 && true
+             */
 
-            bool sptClientIsOutdated = intSPTVersion != patchMirrorInfo.TargetClientVersion && patchNeedCheck;
+            bool sptClientIsOutdated = (intSPTVersion != patchMirrorInfo.TargetClientVersion || intGameVersion > patchMirrorInfo.SourceClientVersion) && patchNeedCheck;
             bool liveClientIsOutdated = intGameVersion != patchMirrorInfo.SourceClientVersion && patchNeedCheck;
             
             if (sptClientIsOutdated)
