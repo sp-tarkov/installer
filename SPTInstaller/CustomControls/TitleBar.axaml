@@ -20,7 +20,7 @@
                VerticalContentAlignment="Center" />
 
         <!-- Minimize (-) Button -->
-        <Button Content="&#xE949;" Grid.Column="2"
+        <Button Grid.Column="2"
                 Foreground="{Binding ButtonForeground, RelativeSource={
 												 RelativeSource AncestorType=UserControl}}"
                 Command="{Binding MinButtonCommand, RelativeSource={
@@ -29,9 +29,15 @@
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 VerticalAlignment="Stretch"
-                FontFamily="Segoe MDL2 Assets"
                 CornerRadius="0"
                 Width="35">
+            <Viewbox Width="15" Height="15">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Path Data="{StaticResource Minimize}"
+                          Fill="{Binding $parent[TextBlock].Foreground}"
+					/>
+				</TextBlock>
+			</Viewbox>
             <Button.Styles>
                 <Style Selector="Button:pointerover /template/ ContentPresenter">
                     <Setter Property="Background" Value="{StaticResource SPT_Brush_DarkGrayBlue}" />
@@ -44,7 +50,7 @@
         </Button>
 
         <!-- Close (X) Button -->
-        <Button Content="&#xE106;" Grid.Column="3"
+        <Button Grid.Column="3"
                 Foreground="{Binding ButtonForeground, RelativeSource={
 				             RelativeSource AncestorType=UserControl}}"
                 Command="{Binding XButtonCommand, RelativeSource={
@@ -53,9 +59,15 @@
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 VerticalAlignment="Stretch"
-                FontFamily="Segoe MDL2 Assets"
                 CornerRadius="0"
                 Width="35">
+			<Viewbox Width="15" Height="15">
+				<TextBlock>
+					<Path Data="{StaticResource Close}"
+					      Fill="{Binding $parent[TextBlock].Foreground}"
+					/>
+				</TextBlock>
+			</Viewbox>
             <Button.Styles>
                 <Style Selector="Button:pointerover /template/ ContentPresenter">
                     <Setter Property="Background" Value="IndianRed" />
