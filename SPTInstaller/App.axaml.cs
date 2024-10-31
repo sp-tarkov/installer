@@ -18,7 +18,7 @@ public partial class App : Application
 {
     public static string LogPath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "spt-installer", "spt-installer.log");
     public static string LogDebugPath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "spt-installer", "spt-isntaller-debug.log");
+        "spt-installer", "spt-installer-debug.log");
     
     public static void ReLaunch(bool debug, string installPath = "")
     {
