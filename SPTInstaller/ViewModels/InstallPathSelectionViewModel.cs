@@ -87,17 +87,17 @@ public class InstallPathSelectionViewModel : ViewModelBase
     
     public void ValidatePath()
     {
-        if (String.IsNullOrEmpty(SelectedPath))
+        if (String.IsNullOrEmpty(SelectedPath) || SelectedPath.Length < 4)
         {
             ErrorMessage = "Please provide an install path";
             ValidPath = false;
             return;
         }
         
-        var match = Regex.Match(SelectedPath[2..], @"[\/:*?""<>|]");
+        var match = Regex.Match(SelectedPath[2..], @"[\/:*?""<>|!@#$%^&*+=,[\]{}`~;']|\\\\");
         if (match.Success)
         {
-            ErrorMessage = "Path cannot contain these characters: / : * ? \" < > |";
+            ErrorMessage = "Path cannot contain symbols other than ( ) \\ - _ .";
             ValidPath = false;
             return;
         }
