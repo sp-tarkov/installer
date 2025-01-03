@@ -244,29 +244,44 @@ public class PreChecksViewModel : ViewModelBase
             InstallButtonCheckState = StatusSpinner.SpinnerState.Running;
             
             var progress = new Progress<double>((d) => { });
-            
-            var SPTReleaseInfoFile =
-                await DownloadCacheHelper.GetOrDownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl,
-                    progress, DownloadCacheHelper.SuggestedTtl);
-            
-            if (SPTReleaseInfoFile == null)
+
+            ReleaseInfo? sptReleaseInfo = null;
+            var retries = 1;
+
+            while (retries >= 0)
             {
-                InstallButtonText = "Could not get SPT release metadata";
-                InstallButtonCheckState = StatusSpinner.SpinnerState.Error;
-                return;
+                retries--;
+                
+                try
+                {
+                    var sptReleaseInfoFile =
+                        await DownloadCacheHelper.GetOrDownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl,
+                            progress, DownloadCacheHelper.SuggestedTtl);
+            
+                    if (sptReleaseInfoFile == null)
+                    {
+                        InstallButtonText = "Could not get SPT release metadata";
+                        InstallButtonCheckState = StatusSpinner.SpinnerState.Error;
+                        return;
+                    }
+                    
+                    sptReleaseInfo =
+                        JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(sptReleaseInfoFile.FullName));
+                }
+                catch (Exception)
+                {
+                    DownloadCacheHelper.ClearMetadataCache();
+                }
             }
-            
-            var SPTReleaseInfo =
-                JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(SPTReleaseInfoFile.FullName));
-            
-            if (SPTReleaseInfo == null)
+
+            if (sptReleaseInfo == null)
             {
                 InstallButtonText = "Could not parse latest SPT release";
                 InstallButtonCheckState = StatusSpinner.SpinnerState.Error;
                 return;
             }
             
-            InstallButtonText = $"Start Install: SPT v{SPTReleaseInfo.SPTVersion}";
+            InstallButtonText = $"Start Install: SPT v{sptReleaseInfo.SPTVersion}";
             InstallButtonCheckState = StatusSpinner.SpinnerState.OK;
             
             AllowDetailsButton = true;

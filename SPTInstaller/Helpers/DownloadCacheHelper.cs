@@ -42,6 +42,26 @@ public static class DownloadCacheHelper
         
         return DirectorySizeHelper.SizeSuffix(cacheSize);
     }
+
+
+    public static bool ClearMetadataCache()
+    {
+        var metaData = new DirectoryInfo(CachePath).GetFiles("*.json", SearchOption.TopDirectoryOnly);
+        var allDeleted = true;
+
+        foreach (var file in metaData)
+        {
+            file.Delete();
+            file.Refresh();
+
+            if (file.Exists)
+            {
+                allDeleted = false;
+            }
+        }
+        
+        return allDeleted;
+    }
     
     /// <summary>
     /// Check if a file in the cache already exists
