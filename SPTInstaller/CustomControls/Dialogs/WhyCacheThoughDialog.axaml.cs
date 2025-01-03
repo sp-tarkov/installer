@@ -59,39 +59,8 @@ public partial class WhyCacheThoughDialog : UserControl
     
     public void ClearCachedMetaData()
     {
-        var cachedMetadata =
-            new DirectoryInfo(DownloadCacheHelper.CachePath).GetFiles("*.json", SearchOption.TopDirectoryOnly);
-        
-        var message = "no cached metadata to remove";
-        
-        if (cachedMetadata.Length == 0)
-        {
-            AdditionalInfo = message;
-            AdditionalInfoColor = "dodgerblue";
-            Log.Information(message);
-            return;
-        }
-        
-        var allDeleted = true;
-        
-        foreach (var file in cachedMetadata)
-        {
-            try
-            {
-                file.Delete();
-                file.Refresh();
-                if (file.Exists)
-                {
-                    allDeleted = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, $"Failed to delete cached metadata file: {file.Name}");
-            }
-        }
-        
-        message = allDeleted ? "cached metadata removed" : "some files could not be removed. Check logs";
+        var allDeleted = DownloadCacheHelper.ClearMetadataCache();
+        var message =  allDeleted ? "cached metadata removed" : "some files could not be removed. Check logs";
         AdditionalInfo = message;
         AdditionalInfoColor = allDeleted ? "green" : "red";
         Log.Information(message);
