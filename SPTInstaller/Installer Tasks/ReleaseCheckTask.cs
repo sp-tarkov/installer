@@ -24,44 +24,70 @@ public class ReleaseCheckTask : InstallerTaskBase
             SetStatus("Checking SPT Releases", "", null, ProgressStyle.Indeterminate);
             
             var progress = new Progress<double>((d) => { SetStatus(null, null, (int)Math.Floor(d)); });
-            var SPTReleaseInfoFile =
-                await DownloadCacheHelper.GetOrDownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl,
-                    progress, DownloadCacheHelper.SuggestedTtl);
             
-            if (SPTReleaseInfoFile == null)
+            ReleaseInfo? sptReleaseInfo = null;
+            PatchInfo? patchMirrorInfo = null;
+            
+            int retries = 1;
+
+            while (retries >= 0)
             {
-                return Result.FromError("Failed to download release metadata, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button");
-            }
+                retries--;
+                
+                try
+                {
+                    var sptReleaseInfoFile =
+                        await DownloadCacheHelper.GetOrDownloadFileAsync("release.json", DownloadCacheHelper.ReleaseMirrorUrl,
+                            progress, DownloadCacheHelper.SuggestedTtl);
             
-            SetStatus("Checking for Patches", "", null, ProgressStyle.Indeterminate);
+                    if (sptReleaseInfoFile == null)
+                    {
+                        return Result.FromError("Failed to download release metadata, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button");
+                    }
             
-            var SPTPatchMirrorsFile =
-                await DownloadCacheHelper.GetOrDownloadFileAsync("mirrors.json", DownloadCacheHelper.PatchMirrorUrl,
-                    progress, DownloadCacheHelper.SuggestedTtl);
+                    SetStatus("Checking for Patches", "", null, ProgressStyle.Indeterminate);
             
-            if (SPTPatchMirrorsFile == null)
-            {
-                return Result.FromError("Failed to download patch mirror data, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button");
+                    var sptPatchMirrorsFile =
+                        await DownloadCacheHelper.GetOrDownloadFileAsync("mirrors.json", DownloadCacheHelper.PatchMirrorUrl,
+                            progress, DownloadCacheHelper.SuggestedTtl);
+            
+                    if (sptPatchMirrorsFile == null)
+                    {
+                        return Result.FromError("Failed to download patch mirror data, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button");
+                    }
+                    
+                    sptReleaseInfo =
+                        JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(sptReleaseInfoFile.FullName));
+
+                    patchMirrorInfo =
+                        JsonConvert.DeserializeObject<PatchInfo>(File.ReadAllText(sptPatchMirrorsFile.FullName));
+
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    if (retries >= 0)
+                    {
+                        SetStatus("Clearing cache and retrying ...", "", null, ProgressStyle.Indeterminate);
+                        await Task.Delay(1000);
+                        DownloadCacheHelper.ClearMetadataCache();
+                        continue;
+                    }
+                    
+                    return Result.FromError(
+                        $"An error occurred while deserializing SPT or patch data.\n\nMost likely we are uploading a new patch.\nPlease wait and try again in an hour\n\nERROR: {ex.Message}");
+                }
             }
 
-            ReleaseInfo? SPTReleaseInfo;
-            PatchInfo? patchMirrorInfo;
-            
-            try
+            if (sptReleaseInfo == null || patchMirrorInfo == null)
             {
-                SPTReleaseInfo = JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(SPTReleaseInfoFile.FullName));
-                
-                patchMirrorInfo =
-                    JsonConvert.DeserializeObject<PatchInfo>(File.ReadAllText(SPTPatchMirrorsFile.FullName));
+                return Result.FromError(
+                    "Release or mirror info was null. If you are seeing this report it. This should never be hit");
             }
-            catch (Exception ex)
-            {
-                return Result.FromError($"An error occurred while deserializing SPT or patch data, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button.\n\nERROR: {ex.Message}");
-            }
-            
-            _data.ReleaseInfo = SPTReleaseInfo;
+
+            _data.ReleaseInfo = sptReleaseInfo;
             _data.PatchInfo = patchMirrorInfo;
-            int intSPTVersion = int.Parse(SPTReleaseInfo.ClientVersion);
+            int intSPTVersion = int.Parse(sptReleaseInfo.ClientVersion);
             int intGameVersion = int.Parse(_data.OriginalGameVersion);
             
             // note: it's possible the game version could be lower than the SPT version and still need a patch if the major version numbers change
@@ -103,10 +129,10 @@ public class ReleaseCheckTask : InstallerTaskBase
             if (sptClientIsOutdated)
             {
                 return Result.FromError(
-                    "Could not find a downgrade patcher for the version of EFT you have installed." +
-                    "\nThis can happen due to one of the following reasons:" +
-                    "\n* Live EFT just updated. The SPT team will create a new patcher within 24 hours, hold tight!" +
-                    "\n* Live EFT just updated. You have not installed it on your computer using your Battlestate Games launcher");
+                    "Live EFT has recently updated. The SPT team needs to make a new patcher." +
+                    "\n* It's usually made within 24 hours." +
+                    "\n* The patcher is only for turning your EFT files into an older version for SPT to use." +
+                    "\n* This does not mean SPT is being updated to a newer version.");
             }
 
             if (liveClientIsOutdated)
@@ -117,7 +143,7 @@ public class ReleaseCheckTask : InstallerTaskBase
             _data.PatchNeeded = patchNeedCheck;
             
             string status =
-                $"Current Release: {SPTReleaseInfo.ClientVersion} - {(_data.PatchNeeded ? "Patch Available" : "No Patch Needed")}";
+                $"Current Release: {sptReleaseInfo.ClientVersion} - {(_data.PatchNeeded ? "Patch Available" : "No Patch Needed")}";
             
             SetStatus(null, status);
             
