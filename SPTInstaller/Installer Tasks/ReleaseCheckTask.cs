@@ -33,9 +33,6 @@ public class ReleaseCheckTask : InstallerTaskBase
                 return Result.FromError("Failed to download release metadata, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button");
             }
             
-            var SPTReleaseInfo =
-                JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(SPTReleaseInfoFile.FullName));
-            
             SetStatus("Checking for Patches", "", null, ProgressStyle.Indeterminate);
             
             var SPTPatchMirrorsFile =
@@ -46,13 +43,20 @@ public class ReleaseCheckTask : InstallerTaskBase
             {
                 return Result.FromError("Failed to download patch mirror data, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button");
             }
+
+            ReleaseInfo? SPTReleaseInfo;
+            PatchInfo? patchMirrorInfo;
             
-            var patchMirrorInfo =
-                JsonConvert.DeserializeObject<PatchInfo>(File.ReadAllText(SPTPatchMirrorsFile.FullName));
-            
-            if (SPTReleaseInfo == null || patchMirrorInfo == null)
+            try
             {
-                return Result.FromError("An error occurred while deserializing SPT or patch data, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button");
+                SPTReleaseInfo = JsonConvert.DeserializeObject<ReleaseInfo>(File.ReadAllText(SPTReleaseInfoFile.FullName));
+                
+                patchMirrorInfo =
+                    JsonConvert.DeserializeObject<PatchInfo>(File.ReadAllText(SPTPatchMirrorsFile.FullName));
+            }
+            catch (Exception ex)
+            {
+                return Result.FromError($"An error occurred while deserializing SPT or patch data, try clicking the 'Whats this' button below followed by the 'Clear Metadata cache' button.\n\nERROR: {ex.Message}");
             }
             
             _data.ReleaseInfo = SPTReleaseInfo;
