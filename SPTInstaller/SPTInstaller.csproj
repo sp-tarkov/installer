@@ -1,53 +1,27 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
-        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <LangVersion>latestmajor</LangVersion>
         <Nullable>enable</Nullable>
-        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
-        <!-- TODO: To change -->
-        <PackageIcon>icon.ico</PackageIcon>
-        <ApplicationIcon>Assets\spt_installer.ico</ApplicationIcon>
-        <Configurations>Debug;Release;TEST</Configurations>
-        <AssemblyVersion>2.96</AssemblyVersion>
-        <FileVersion>2.96</FileVersion>
-        <Company>SPT</Company>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+        <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+        <!-- Required to allow Webview to load, make sure this is enabled in your publish settings too! -->
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+        <PackageVersion>3.1.0</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**"/>
-        <None Remove=".gitignore"/>
-        <None Remove="Assets\spt_installer.ico"/>
-        <None Remove="Resources\update.ps1"/>
+        <None Remove="Resources\*"/>
+        <EmbeddedResource Include="Resources\*"/>
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Resources\update.ps1"/>
-        <None Remove="Resources\7z.dll"/>
-        <EmbeddedResource Include="Resources\7z.dll"/>
-        <None Remove="Resources\add_shortcuts.ps1" />
-        <EmbeddedResource Include="Resources\add_shortcuts.ps1" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="9.0.50"/>
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="9.0.3"/>
+        <PackageReference Include="MudBlazor" Version="8.5.0"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <TrimmerRootDescriptor Include="Roots.xml"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Include="Avalonia" Version="11.0.5"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.0.5"/>
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.0.5"/>
-        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.5"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.5"/>
-        <PackageReference Include="DialogHost.Avalonia" Version="0.7.7"/>
-        <PackageReference Include="FubarCoder.RestSharp.Portable.HttpClient" Version="4.0.8"/>
-        <PackageReference Include="MegaApiClient" Version="1.10.4"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
-        <PackageReference Include="SerilogTraceListener" Version="3.2.0"/>
-        <PackageReference Include="Squid-Box.SevenZipSharp" Version="1.6.1.23"/>
-        <PackageReference Include="System.Reactive" Version="6.0.0"/>
-    </ItemGroup>
 </Project>
