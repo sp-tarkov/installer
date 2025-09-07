@@ -34,6 +34,13 @@
                     <Label VerticalAlignment="Center">update an existing SPT install</Label>
                 </StackPanel>
             </Label>
+            <Label Margin="0" Padding="0">
+                <StackPanel Orientation="Horizontal">
+                    <Label VerticalAlignment="Center">◉ EFT Updates</Label>
+                    <TextBlock TextDecorations="Underline" FontWeight="SemiBold" Foreground="Crimson" VerticalAlignment="Center">CANNOT</TextBlock>
+                    <Label VerticalAlignment="Center">affect this install of SPT</Label>
+                </StackPanel>
+            </Label>
         </StackPanel>
         
         <!-- Next button -->
