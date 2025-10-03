@@ -7,18 +7,18 @@ using SPTInstaller.Helpers;
 
 namespace SPTInstaller.Installer_Tasks.PreChecks;
 
-public class Net8PreCheck : PreCheckBase
+public class Net9PreCheck : PreCheckBase
 {
-    public Net8PreCheck() : base(".Net 8 Desktop Runtime", true)
+    public Net9PreCheck() : base(".Net 9 Desktop Runtime", true)
     {
     }
     
     public override async Task<PreCheckResult> CheckOperation()
     {
-        var minRequiredVersion = new Version("8.0.0");
+        var minRequiredVersion = new Version("9.0.0");
         string[] output;
         
-        var failedButtonText = "Download .Net 8 Desktop Runtime";
+        var failedButtonText = "Download .Net 9 Desktop Runtime";
         
         var failedButtonAction = () =>
         {
@@ -30,7 +30,7 @@ public class Net8PreCheck : PreCheckBase
                 ArgumentList =
                 {
                     "/C", "start",
-                    "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.2-windows-x64-installer"
+                    "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-9.0.9-windows-x64-installer"
                 }
             });
         };
@@ -43,7 +43,7 @@ public class Net8PreCheck : PreCheckBase
             
             if (!result.Succeeded)
             {
-                return PreCheckResult.FromError(result.Message + "\n\nYou most likely don't have .net 8 installed",
+                return PreCheckResult.FromError(result.Message + "\n\nYou most likely don't have .net 9 installed",
                     failedButtonText, failedButtonAction);
             }
             

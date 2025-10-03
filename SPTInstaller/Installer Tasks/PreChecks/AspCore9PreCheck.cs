@@ -7,20 +7,18 @@ using SPTInstaller.Helpers;
 
 namespace SPTInstaller.Installer_Tasks.PreChecks;
 
-[Obsolete(
-    "No longer needed, but keeping around for now just in case. Can be removed from code after 7/1/2024 if no issues are found")]
-public class NetCore6PreCheck : PreCheckBase
+public class AspCore9PreCheck : PreCheckBase
 {
-    public NetCore6PreCheck() : base(".Net Core 6 Desktop Runtime", true)
+    public AspCore9PreCheck() : base("Asp.Net Core 9 Runtime", true)
     {
     }
     
     public override async Task<PreCheckResult> CheckOperation()
     {
-        var minRequiredVersion = new Version("6.0.0");
+        var minRequiredVersion = new Version("9.0.0");
         string[] output;
         
-        var failedButtonText = "Download .Net Core 6 Desktop Runtime";
+        var failedButtonText = "Download Asp.Net Core 9 Desktop Runtime";
         
         var failedButtonAction = () =>
         {
@@ -32,7 +30,7 @@ public class NetCore6PreCheck : PreCheckBase
                 ArgumentList =
                 {
                     "/C", "start",
-                    "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.4-windows-x64-installer"
+                    "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-aspnetcore-9.0.9-windows-x64-installer"
                 }
             });
         };
@@ -45,7 +43,7 @@ public class NetCore6PreCheck : PreCheckBase
             
             if (!result.Succeeded)
             {
-                return PreCheckResult.FromError(result.Message + "\n\nYou most likely don't have .net 6 installed",
+                return PreCheckResult.FromError(result.Message + "\n\nYou most likely don't have asp.net 9 installed",
                     failedButtonText, failedButtonAction);
             }
             
@@ -61,7 +59,7 @@ public class NetCore6PreCheck : PreCheckBase
         
         foreach (var lineVersion in output)
         {
-            var regex = Regex.Match(lineVersion, @"Microsoft.WindowsDesktop.App (\d\.\d\.\d)");
+            var regex = Regex.Match(lineVersion, @"Microsoft.AspNetCore.App (\d\.\d\.\d)");
             
             if (!regex.Success || regex.Groups.Count < 1)
                 continue;
@@ -73,14 +71,14 @@ public class NetCore6PreCheck : PreCheckBase
             if (foundVersion >= minRequiredVersion)
             {
                 return PreCheckResult.FromSuccess(
-                    $".Net Core {minRequiredVersion} Desktop Runtime or higher is installed.\n\nInstalled Version: {foundVersion}");
+                    $"Asp.Net Core {minRequiredVersion} Desktop Runtime or higher is installed.\n\nInstalled Version: {foundVersion}");
             }
             
             highestFoundVersion = foundVersion > highestFoundVersion ? foundVersion : highestFoundVersion;
         }
         
         return PreCheckResult.FromError(
-            $".Net Core Desktop Runtime version {minRequiredVersion} or higher is required.\n\nHighest Version Found: {(highestFoundVersion > new Version("0.0.0") ? highestFoundVersion : "Not Found")}\n\nThis is required to play SPT, but you can install it later if and shouldn't affect the SPT install process.",
+            $"Asp.Net Core Desktop Runtime version {minRequiredVersion} or higher is required.\n\nHighest Version Found: {(highestFoundVersion > new Version("0.0.0") ? highestFoundVersion : "Not Found")}\n\nThis is required to play SPT, but you can install it later if and shouldn't affect the SPT install process.",
             failedButtonText, failedButtonAction);
     }
 }
