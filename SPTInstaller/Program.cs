@@ -47,7 +47,7 @@ internal class Program
         ServiceHelper.Register<PreCheckBase, EftInstalledPreCheck>();
         ServiceHelper.Register<PreCheckBase, NetFramework472PreCheck>();
         ServiceHelper.Register<PreCheckBase, Net9PreCheck>();
-        ServiceHelper.Register<PreCheckBase, AspCore9PreCheck>();
+        ServiceHelper.Register<PreCheckBase, AspNetCore9PreCheck>();
         ServiceHelper.Register<PreCheckBase, FreeSpacePreCheck>();
         ServiceHelper.Register<PreCheckBase, EftLauncherPreCheck>();
         

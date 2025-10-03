@@ -7,9 +7,9 @@ using SPTInstaller.Helpers;
 
 namespace SPTInstaller.Installer_Tasks.PreChecks;
 
-public class AspCore9PreCheck : PreCheckBase
+public class AspNetCore9PreCheck : PreCheckBase
 {
-    public AspCore9PreCheck() : base("Asp.Net Core 9 Runtime", true)
+    public AspNetCore9PreCheck() : base("Asp.Net Core 9 Runtime", true)
     {
     }
     
