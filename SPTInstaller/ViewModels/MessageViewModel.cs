@@ -166,31 +166,14 @@ public class MessageViewModel : ViewModelBase
                     
                     if (AddShortcuts)
                     {
-                        var shortcuts = new FileInfo(Path.Join(DownloadCacheHelper.CachePath, "add_shortcuts.ps1"));
-
-                        if (!FileHelper.StreamAssemblyResourceOut("add_shortcuts.ps1", shortcuts.FullName))
-                        {
-                            Log.Fatal("Failed to prepare shortcuts file");
-                            return;
-                        }
-                        
-                        if (!File.Exists(shortcuts.FullName))
-                        {
-                            Log.Fatal("Shortcuts file not found");
-                            return;
-                        }
-                        
                         Log.Information("Running add shortcuts script ...");
-                        
-                        Process.Start(new ProcessStartInfo
+                        var sptPath = $"{Path.Join(data.TargetInstallPath, "SPT")}";
+                        var shortcutResult = ProcessHelper.RunEmbeddedScript("desktop_shortcut.ps1", sptPath);
+                        if (!shortcutResult.Succeeded)
                         {
-                            FileName = "powershell.exe",
-                            CreateNoWindow = true,
-                            ArgumentList =
-                            {
-                                "-ExecutionPolicy", "Bypass", "-File", $"{shortcuts.FullName}", $"{data.TargetInstallPath}"
-                            }
-                        });
+                            Log.Fatal(shortcutResult.Message);
+                            return;
+                        }
                     }
                 }
                 

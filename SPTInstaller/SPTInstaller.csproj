@@ -27,7 +27,9 @@
         <None Remove="Resources\7z.dll"/>
         <EmbeddedResource Include="Resources\7z.dll"/>
         <None Remove="Resources\add_shortcuts.ps1" />
+        <None Remove="Resources\desktop_shortcuts.ps1" />
         <EmbeddedResource Include="Resources\add_shortcuts.ps1" />
+        <EmbeddedResource Include="Resources\desktop_shortcuts.ps1" />
     </ItemGroup>
 
     <ItemGroup>

@@ -77,14 +77,30 @@ public class SetupClientTask : InstallerTaskBase
         {
             return extractReleaseResult;
         }
-        
+
+        SetStatus("Creating Shortcuts", "", 0);
+
+        var sptPath = $"{Path.Join(_data.TargetInstallPath, "SPT")}";
+        var shortcutResult = ProcessHelper.RunEmbeddedScript("add_shortcuts.ps1", _data.TargetInstallPath, sptPath);
+        if (!shortcutResult.Succeeded)
+        {
+            return shortcutResult;
+        }
+
         // cleanup temp files
         SetStatus("Cleanup", "almost done :)", null, ProgressStyle.Indeterminate);
         
         if (_data.PatchNeeded)
         {
-            patcherOutputDir.Delete(true);
-            patcherEXE.Delete();
+            if (patcherOutputDir.Exists)
+            {
+                patcherOutputDir.Delete(true);
+            }
+
+            if (patcherEXE.Exists)
+            {
+                patcherEXE.Delete();
+            }
         }
         
         return Result.FromSuccess("SPT is Setup. Happy Playing!");

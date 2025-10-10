@@ -122,4 +122,35 @@ public static class ProcessHelper
         
         return ReadProcessResult.FromSuccess(outputBuilder.ToString(), errorBuilder.ToString());
     }
+
+    public static Result RunEmbeddedScript(string scriptName, params string[] arguments)
+    {
+        var scriptFileInfo = new FileInfo(Path.Join(DownloadCacheHelper.CachePath, scriptName));
+
+        if (!FileHelper.StreamAssemblyResourceOut(scriptName, scriptFileInfo.FullName))
+        {
+            return Result.FromError($"Failed to prepare script file {scriptName}");
+        }
+
+        if (!File.Exists(scriptFileInfo.FullName))
+        {
+            return Result.FromError($"Script file {scriptName} not found");
+        }
+
+        var processInfo = new ProcessStartInfo
+        {
+            FileName = "powershell.exe",
+            CreateNoWindow = true,
+            ArgumentList = {"-ExecutionPolicy", "Bypass", "-File", $"{scriptFileInfo.FullName}"}
+        };
+
+        foreach (var arg in arguments)
+        {
+            processInfo.ArgumentList.Add(arg);
+        }
+
+        Process.Start(processInfo);
+
+        return Result.FromSuccess();
+    }
 }
