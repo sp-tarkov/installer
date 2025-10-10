@@ -168,7 +168,7 @@ public class MessageViewModel : ViewModelBase
                     {
                         Log.Information("Running add shortcuts script ...");
                         var sptPath = $"{Path.Join(data.TargetInstallPath, "SPT")}";
-                        var shortcutResult = ProcessHelper.RunEmbeddedScript("desktop_shortcut.ps1", sptPath);
+                        var shortcutResult = ProcessHelper.RunEmbeddedScript("desktop_shortcuts.ps1", sptPath);
                         if (!shortcutResult.Succeeded)
                         {
                             Log.Fatal(shortcutResult.Message);
