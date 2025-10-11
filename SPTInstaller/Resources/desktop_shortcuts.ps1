@@ -1,13 +1,14 @@
 ﻿param (
-    [string]$installPath,
     [string]$sptPath
 )
+
+$desktop = Join-Path $env:USERPROFILE "Desktop"
 
 $launcherExe = gci $sptPath | where {$_.Name -like "*.Launcher.exe"} | select -ExpandProperty FullName
 $serverExe = gci $sptPath | where {$_.Name -like "*.Server.exe"} | select -ExpandProperty FullName
 
-$launcherShortcut = Join-Path $installPath "SPT.Launcher.lnk"
-$serverShortcut = Join-Path $installPath "SPT.Server.lnk"
+$launcherShortcut = Join-Path $desktop "SPT.Launcher.lnk"
+$serverShortcut = Join-Path $desktop "SPT.Server.lnk"
 
 $WshShell = New-Object -comObject WScript.Shell
 
