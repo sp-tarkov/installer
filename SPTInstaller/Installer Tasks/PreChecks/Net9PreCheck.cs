@@ -1,9 +1,9 @@
 ﻿using Serilog;
+using SPTInstaller.Helpers;
 using SPTInstaller.Models;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SPTInstaller.Helpers;
 
 namespace SPTInstaller.Installer_Tasks.PreChecks;
 
@@ -15,10 +15,10 @@ public class Net9PreCheck : PreCheckBase
     
     public override async Task<PreCheckResult> CheckOperation()
     {
-        var minRequiredVersion = new Version("9.0.0");
+        var minRequiredVersion = new Version("9.0.9");
         string[] output;
         
-        var failedButtonText = "Download .Net 9 Desktop Runtime";
+        const string failedButtonText = "Download .Net 9 Desktop Runtime";
         
         var failedButtonAction = () =>
         {
