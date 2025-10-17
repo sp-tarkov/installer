@@ -30,7 +30,7 @@ public class Net9PreCheck : PreCheckBase
                 ArgumentList =
                 {
                     "/C", "start",
-                    "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-9.0.9-windows-x64-installer"
+                    "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-9.0.10-windows-x64-installer"
                 }
             });
         };
@@ -59,7 +59,7 @@ public class Net9PreCheck : PreCheckBase
         
         foreach (var lineVersion in output)
         {
-            var regex = Regex.Match(lineVersion, @"Microsoft.WindowsDesktop.App (\d\.\d\.\d)");
+            var regex = Regex.Match(lineVersion, @"Microsoft.WindowsDesktop.App (\d+\.\d+\.\d+)");
             
             if (!regex.Success || regex.Groups.Count < 1)
                 continue;
