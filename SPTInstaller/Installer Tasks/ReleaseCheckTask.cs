@@ -129,15 +129,16 @@ public class ReleaseCheckTask : InstallerTaskBase
             if (sptClientIsOutdated)
             {
                 return Result.FromError(
-                    "Live EFT has recently updated. The SPT team needs to make a new patcher." +
-                    "\n* It's usually made within 24 hours." +
-                    "\n* The patcher is only for turning your EFT files into an older version for SPT to use." +
-                    "\n* This does not mean SPT is being updated to a newer version.");
+                    "EFT has updated. The patcher needs to be updated by SPT devs before you can install SPT." +
+                    "\n* There is no time frame provided as to when this will occur. It usually happens within 24 hours." +
+                    "\n* The installer will automatically use it when the patcher gets updated." +
+                    "\n* This does not mean SPT is being updated to a new version." +
+                    "\n* The patcher is only for turning EFT files into an older version for SPT to use.");
             }
 
             if (liveClientIsOutdated)
             {
-                return Result.FromError("Your live EFT is out of date. Please update it using your Battlestate Games Launcher then run the SPT Installer again");
+                return Result.FromError("Your live EFT is out of date. Please update it using your Battlestate Games Launcher or Steam, then run the SPT Installer again.");
             }
             
             _data.PatchNeeded = patchNeedCheck;
