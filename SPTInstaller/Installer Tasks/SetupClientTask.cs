@@ -80,7 +80,7 @@ public class SetupClientTask : InstallerTaskBase
 
         SetStatus("Creating Shortcuts", "", 0);
 
-        var sptPath = $"{Path.Join(_data.TargetInstallPath, "SPT")}";
+        var sptPath = $"{Path.Join(_data.TargetInstallPath, "SPT_Runtime")}";
         var shortcutResult = ProcessHelper.RunEmbeddedScript("add_shortcuts.ps1", _data.TargetInstallPath, sptPath);
         if (!shortcutResult.Succeeded)
         {
