@@ -66,7 +66,7 @@ public class Net10PreCheck : PreCheckBase
 
         foreach (var lineVersion in output)
         {
-            var regex = Regex.Match(lineVersion, @"Microsoft.WindowsDesktop.App (\d+\.\d+\.\d+)");
+            var regex = Regex.Match(lineVersion, @"Microsoft.NETCore.App (\d+\.\d+\.\d+)");
 
             if (!regex.Success || regex.Groups.Count < 1)
                 continue;
